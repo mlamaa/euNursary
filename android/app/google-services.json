@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "79528964117",
+    "firebase_url": "https://garderieeu-5ae22.firebaseio.com",
+    "project_id": "garderieeu-5ae22",
+    "storage_bucket": "garderieeu-5ae22.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79528964117:android:80b3fab30516b451089e1c",
+        "android_client_info": {
+          "package_name": "jaber.hussein.garderieeu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "79528964117-6ndfu4odc9hh2faplfc8ss9ieac3he78.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmaNxSKStPi3UdnwMk_GB1gIHZ_larjSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "79528964117-6ndfu4odc9hh2faplfc8ss9ieac3he78.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
