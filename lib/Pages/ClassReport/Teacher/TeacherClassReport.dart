@@ -72,7 +72,7 @@ class _TeacherClassReportState extends State<TeacherClassReport> {
 
 
   GetClasses(String dateee) async{
-    await dataBaseService.GetSingleTeacher(UserCurrentInfo.Email,context).then((value) {
+    await dataBaseService.getSingleTeacher(UserCurrentInfo.Email,context).then((value) {
       GetReports(value.data["Classes"],dateee);
     });
   }
@@ -186,7 +186,7 @@ class _TeacherClassReportState extends State<TeacherClassReport> {
     );
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body: Column(
         children: <Widget>[
           Padding(

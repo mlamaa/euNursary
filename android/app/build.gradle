@@ -29,7 +29,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "jaber.hussein.garderieeu"
-        minSdkVersion 17
+        minSdkVersion 23
         targetSdkVersion 29
 //        versionCode 4
 //        versionName "4.4.18.200305"

@@ -76,7 +76,7 @@ class _StudentsState extends State<Students> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar(" "),
+      appBar: myAppBar(),
       body: Column(
         children: <Widget>[
           Padding(

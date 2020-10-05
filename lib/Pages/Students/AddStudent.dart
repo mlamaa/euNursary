@@ -17,22 +17,22 @@ class _AddStudentState extends State<AddStudent> {
   bool isAdding=false;
 
   DataBaseService dataBaseService = new DataBaseService();
-  Map<String,String> ThisClassMap=new Map<String,String>();
+  Map<String,String> thisClassMap=new Map<String,String>();
 
-  TextEditingController StudentNameeController=new TextEditingController();
+  TextEditingController studentNameeController=new TextEditingController();
 
-  Parents CurrentParent=new Parents(" ", " ");
-  Classes CurrentStudentClass=new Classes(" ", " ");
+  Parents currentParent=new Parents(" ", " ");
+  Classes currentStudentClass=new Classes(" ", " ");
   List<Parents> parentsList= new List<Parents>();
   List<Classes> classesList= new List<Classes>();
 
-  AddStudentFunction() async{
+  addStudentFunction() async{
     print("Adding student");
-    ThisClassMap["name"]=StudentNameeController.text;
-    ThisClassMap["parentEmail"]=CurrentParent.Email;
-    ThisClassMap["class"]=CurrentStudentClass.ID;
+    thisClassMap["name"]=studentNameeController.text;
+    thisClassMap["parentEmail"]=currentParent.Email;
+    thisClassMap["class"]=currentStudentClass.ID;
     // ThisClassMap["parentEmail"]=ParentEmailController.text;
-    await dataBaseService.AddStudentTODataBase(ThisClassMap,CurrentStudentClass.ID,CurrentParent.Email,context).then((value) {
+    await dataBaseService.AddStudentTODataBase(thisClassMap,currentStudentClass.ID,currentParent.Email,context).then((value) {
 
       Future.delayed(const Duration(milliseconds: 500), () {
         widget.refresh();
@@ -58,13 +58,14 @@ class _AddStudentState extends State<AddStudent> {
   }
 
   getparents() async{
+    if(this.mounted)
     await dataBaseService.GetParents(context).then((values) {
       for(int i=0;i<values.documents.length;i++){
         Parents parents=new Parents(" "," ");
         parents.Email=values.documents[i].documentID;
         parents.name=values.documents[i].data["name"];
         // parents.Childs=values.documents[i].data["Childs"];
-
+        if(this.mounted)
         setState(() {
           parentsList.add(parents);
         });
@@ -86,7 +87,7 @@ class _AddStudentState extends State<AddStudent> {
     TextStyle myTextStyle=TextStyle(fontSize: 20,color: MyColors.color1,fontWeight: FontWeight.bold);
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body:
       Builder(
         builder: (BuildContext context){
@@ -104,7 +105,7 @@ class _AddStudentState extends State<AddStudent> {
                   children: <Widget>[
                     Text("Student Name:",style:myTextStyle ,),
                     Container(width: 10,),
-                    Tools.MyInputText("Student Name", StudentNameeController),
+                    Tools.MyInputText("Student Name", studentNameeController),
                   ],
                 ),
                 Container(height: 15,),
@@ -147,8 +148,8 @@ class _AddStudentState extends State<AddStudent> {
                             label: "parent",
                             hint: "Parent Name",
                             // popupItemDisabled: (String s) => s.startsWith('I'),
-                            onChanged: (Parents p)=> CurrentParent=p,
-                            selectedItem: CurrentParent),
+                            onChanged: (Parents p)=> currentParent=p,
+                            selectedItem: currentParent),
 
                       ),
                     ),
@@ -195,8 +196,8 @@ class _AddStudentState extends State<AddStudent> {
                             label: "class",
                             hint: "Parent Name",
                             // popupItemDisabled: (String s) => s.startsWith('I'),
-                            onChanged: (Classes s)=> CurrentStudentClass=s,
-                            selectedItem: CurrentStudentClass),
+                            onChanged: (Classes s)=> currentStudentClass=s,
+                            selectedItem: currentStudentClass),
 
                       ),
                     ),
@@ -205,11 +206,11 @@ class _AddStudentState extends State<AddStudent> {
                 Container(height: 15,),
                 InkWell(
                   onTap: (){
-                    if(StudentNameeController.text.length>2&&CurrentParent.name!=" "&&CurrentStudentClass.ID!=" "){
+                    if(studentNameeController.text.length>2&&currentParent.name!=" "&&currentStudentClass.ID!=" "){
                       setState(() {
                         isAdding=true;
                       });
-                      AddStudentFunction();
+                      addStudentFunction();
                     }
                     else{
                       final snackBar = SnackBar(content: Text("Student Name must be more than 2 letters, parent and class must be empty"));

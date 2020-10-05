@@ -16,12 +16,12 @@ class Teachers extends StatefulWidget {
 
 class _TeachersState extends State<Teachers> {
 
-  List<SingleTeacherObject> ListOfTeachers = new List<SingleTeacherObject>();
+  List<SingleTeacherObject> listOfTeachers = new List<SingleTeacherObject>();
   DataBaseService dataBaseService = new DataBaseService();
 
   getTeachers() async{
     setState(() {
-      ListOfTeachers = new List<SingleTeacherObject>();
+      listOfTeachers = new List<SingleTeacherObject>();
 
     });
   await dataBaseService.GetTeachers(context).then((value) {
@@ -29,8 +29,9 @@ class _TeachersState extends State<Teachers> {
         SingleTeacherObject singleTeacherObject=new SingleTeacherObject();
         singleTeacherObject.Email=value.documents[i].documentID;
         singleTeacherObject.Name=value.documents[i].data["name"];
+        singleTeacherObject.Password=value.documents[i].data["password"];
         setState(() {
-          ListOfTeachers.add(singleTeacherObject);
+          listOfTeachers.add(singleTeacherObject);
         });
       }
 
@@ -47,12 +48,13 @@ class _TeachersState extends State<Teachers> {
           // crossAxisSpacing: 30,
           // mainAxisSpacing:20,
 
-            children: List.generate(ListOfTeachers.length, (index) {
+            children: List.generate(listOfTeachers.length, (index) {
               return SingleTeacher(
                 refresh: getTeachers,
                 context: context,
-                Email: ListOfTeachers[index].Email,
-                Name: ListOfTeachers[index].Name,
+                email: listOfTeachers[index].Email,
+                password: listOfTeachers[index].Password,
+                name: listOfTeachers[index].Name,
               );
             })
 
@@ -74,7 +76,7 @@ class _TeachersState extends State<Teachers> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar(" "),
+      appBar: myAppBar(),
       body: Column(
         children: <Widget>[
           Padding(
@@ -112,10 +114,11 @@ class _TeachersState extends State<Teachers> {
 
 class SingleTeacher extends StatefulWidget {
   final Function refresh;
-  final String Name;
-  final String Email;
+  final String name;
+  final String email;
+  final String password;
   final BuildContext context;
-  SingleTeacher({this.Name,this.Email,this.context,this.refresh});
+  SingleTeacher({this.name,this.email,this.password,this.context,this.refresh});
 
   @override
   _SingleTeacherState createState() => _SingleTeacherState();
@@ -137,9 +140,9 @@ class _SingleTeacherState extends State<SingleTeacher> {
           child: Column(
             children: <Widget>[
               Container(height: 10,),
-              Text(widget.Name,style: TextStyle(fontSize:25,color: MyColors.color1,fontWeight: FontWeight.bold),),
+              Text(widget.name,style: TextStyle(fontSize:25,color: MyColors.color1,fontWeight: FontWeight.bold),),
               Container(height: 10,),
-              Text(widget.Email,style: TextStyle(fontSize:20,color: MyColors.color1),),
+              Text(widget.email,style: TextStyle(fontSize:20,color: MyColors.color1),),
               Container(height: 10,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -149,7 +152,7 @@ class _SingleTeacherState extends State<SingleTeacher> {
                     onTap: (){
 
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                      new EditTeacher(TeacherEmail: widget.Email,refresh: widget.refresh,)));
+                      new EditTeacher(TeacherEmail: widget.email,refresh: widget.refresh,)));
 
                     },
                     child: Container(
@@ -161,7 +164,7 @@ class _SingleTeacherState extends State<SingleTeacher> {
                   InkWell(
                     onTap: (){
                     DataBaseService database=new DataBaseService();
-                    database.DeleteTeacher(widget.Email, widget.context,widget.refresh);
+                    database.deleteTeacher(widget.email,widget.password,widget.context,widget.refresh);
                     },
                     child: Container(
                         width: 35,
@@ -180,6 +183,7 @@ class _SingleTeacherState extends State<SingleTeacher> {
 
 class SingleTeacherObject{
   String Email;
+  String Password;
   String Name;
   // String Password;
 

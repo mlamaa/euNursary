@@ -21,7 +21,7 @@ class _ChangePassState extends State<ChangePass> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body: Builder(
         builder: (BuildContext context){
           return Column(

@@ -21,7 +21,7 @@ class _AddDateQuestionState extends State<AddDateQuestion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

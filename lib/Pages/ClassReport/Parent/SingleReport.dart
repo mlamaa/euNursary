@@ -94,7 +94,7 @@ class _SingleReportState extends State<SingleReport> {
     }
 
     return Scaffold(
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body: Column(
         children: <Widget>[
           // Padding(

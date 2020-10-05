@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/db.dart';
-import 'package:garderieeu/widgets.dart';
-import 'package:email_validator/email_validator.dart';
-import 'package:multiselect_formfield/multiselect_formfield.dart';
+
+import '../../Colors.dart';
+import '../../Tools.dart';
+import '../../db.dart';
+import '../../widgets.dart';
 
 class EditParent extends StatefulWidget {
   final Function refresh;
-  final String ParentName;
-  final String ParentEmail;
-  EditParent({this.ParentName,this.ParentEmail,this.refresh});
+  final String parentName;
+  final String parentEmail;
+  final String parentPassword;
+  EditParent({this.parentName,this.parentPassword,this.parentEmail,this.refresh});
 
   @override
   _EditParentState createState() => _EditParentState();
@@ -20,17 +20,18 @@ class _EditParentState extends State<EditParent> {
 
   bool isAdding=false;
   DataBaseService dataBaseService = new DataBaseService();
-  Map<String,dynamic> ThisClassMap=new Map<String,dynamic>();
+  Map<String,dynamic> thisClassMap=new Map<String,dynamic>();
 
-  TextEditingController NameController=new TextEditingController();
-
+  TextEditingController nameController=new TextEditingController();
+  String _password;
 
 
 
   AddParentFunction() async{
     print("Adding Parent");
-    ThisClassMap["name"]=NameController.text;
-    await dataBaseService.EditParentToDataBase(ThisClassMap,widget.ParentEmail,context).then((value) {
+    thisClassMap["name"]=nameController.text;
+    thisClassMap["password"]=_password;
+    await dataBaseService.EditParentToDataBase(thisClassMap,widget.parentEmail,context).then((value) {
       Future.delayed(const Duration(milliseconds: 500), () {
         widget.refresh();
         print("refresh");
@@ -46,10 +47,11 @@ class _EditParentState extends State<EditParent> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _password = widget.parentPassword;
     setState(() {
-      NameController.text=widget.ParentName;
+      nameController.text=widget.parentName;
+      
 
     });
   }
@@ -66,7 +68,7 @@ class _EditParentState extends State<EditParent> {
     TextStyle myTextStyle=TextStyle(fontSize: 20,color: MyColors.color1,fontWeight: FontWeight.bold);
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body:
       Builder(
         builder: (BuildContext context){
@@ -84,14 +86,14 @@ class _EditParentState extends State<EditParent> {
           children: <Widget>[
           Text("Parent Name: ",style:myTextStyle ,),
           Container(width: 5,),
-          Tools.MyInputText("Parent Name", NameController)
+          Tools.MyInputText("Parent Name", nameController)
           ],
           ),
 
           Container(height: 15,),
           InkWell(
           onTap: (){
-          if(NameController.text.length>4){
+          if(nameController.text.length>4){
           setState(() {
           isAdding=true;
           });

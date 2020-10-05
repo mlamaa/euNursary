@@ -19,9 +19,9 @@ class _EditTeacherState extends State<EditTeacher> {
 
   bool isAdding=false;
   DataBaseService dataBaseService = new DataBaseService();
-  Map<String,dynamic> ThisClassMap=new Map<String,dynamic>();
-
-  TextEditingController NameController=new TextEditingController();
+  Map<String,dynamic> thisClassMap=new Map<String,dynamic>();
+  String _password;
+  TextEditingController nameController=new TextEditingController();
   List _MyAnswers= [];
   final List<String> choicesDisplay=new List<String>();
   final List<String> choicesValue=new List<String>();
@@ -47,9 +47,10 @@ class _EditTeacherState extends State<EditTeacher> {
 
 
   GetOldData(){
-    dataBaseService.GetSingleTeacher(widget.TeacherEmail,context).then((value){
+    dataBaseService.getSingleTeacher(widget.TeacherEmail,context).then((value){
+      _password = value.data["password"];
       setState(() {
-        NameController.text=value.data["name"];
+        nameController.text=value.data["name"];
 
       });
     });
@@ -57,12 +58,13 @@ class _EditTeacherState extends State<EditTeacher> {
   }
 
 
-  AddClass() async{
+  addClass() async{
     print("Adding Teacher");
-    ThisClassMap["name"]=NameController.text;
-    ThisClassMap["Classes"]=_MyAnswers;
+    thisClassMap["name"]=nameController.text;
+    thisClassMap["password"] = _password;
+    thisClassMap["Classes"] = _MyAnswers;
 
-    await dataBaseService.EditTeacherToDataBase(ThisClassMap,widget.TeacherEmail,context).then((value) {
+    await dataBaseService.editTeacherToDataBase(thisClassMap,widget.TeacherEmail,context).then((value) {
       Future.delayed(const Duration(milliseconds: 500), () {
         widget.refresh();
         print("refresh");
@@ -87,7 +89,7 @@ class _EditTeacherState extends State<EditTeacher> {
     TextStyle myTextStyle=TextStyle(fontSize: 20,color: MyColors.color1,fontWeight: FontWeight.bold);
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body:
       Builder(
         builder: (BuildContext context){
@@ -108,7 +110,7 @@ class _EditTeacherState extends State<EditTeacher> {
 
                       Text("Teacher Name:",style:myTextStyle ,),
                       Container(width: 5,),
-                      Tools.MyInputText("Teacher Name", NameController)
+                      Tools.MyInputText("Teacher Name", nameController)
                     ],
                   ),
                   Container(height: 10,),
@@ -146,12 +148,12 @@ class _EditTeacherState extends State<EditTeacher> {
                   Container(height: 15,),
                   InkWell(
                       onTap: (){
-                        if(NameController.text.length>4){
+                        if(nameController.text.length>4){
 
                           setState(() {
                             isAdding=true;
                           });
-                          AddClass();
+                          addClass();
 
 
                         }

@@ -97,7 +97,7 @@ class _EditStudentState extends State<EditStudent> {
     TextStyle myTextStyle=TextStyle(fontSize: 20,color: MyColors.color1,fontWeight: FontWeight.bold);
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body:
       Builder(
         builder: (BuildContext context){

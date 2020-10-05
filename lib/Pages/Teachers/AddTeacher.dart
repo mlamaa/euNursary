@@ -17,12 +17,12 @@ class _AddTeacherState extends State<AddTeacher> {
 
   bool isAdding=false;
   DataBaseService dataBaseService = new DataBaseService();
-  Map<String,dynamic> ThisClassMap=new Map<String,dynamic>();
+  Map<String,dynamic> thisClassMap=new Map<String,dynamic>();
 
-  TextEditingController NameController=new TextEditingController();
-  TextEditingController EmailDateController=new TextEditingController();
-  TextEditingController PassDateController=new TextEditingController();
-  List _MyAnswers= [];
+  TextEditingController nameController=new TextEditingController();
+  TextEditingController emailDateController=new TextEditingController();
+  TextEditingController passDateController=new TextEditingController();
+  List _myAnswers= [];
   final List<String> choicesDisplay=new List<String>();
   final List<String> choicesValue=new List<String>();
 
@@ -46,12 +46,19 @@ class _AddTeacherState extends State<AddTeacher> {
   }
 
 
-  AddClass(BuildContext context2) async{
+  addTeacher(BuildContext context2) async{
     print("Adding Teacher");
-    ThisClassMap["name"]=NameController.text;
-    ThisClassMap["Classes"]=_MyAnswers;
-
-    await dataBaseService.AuthenticateTeacher(ThisClassMap,EmailDateController.text,PassDateController.text,context2).then((value) {
+    thisClassMap["name"]= nameController.text;
+    thisClassMap["password"]= passDateController.text;
+    thisClassMap["Classes"]=_myAnswers;
+      // await dataBaseService
+      // .addTeacherToDataBase(
+      //   thisClassMap,
+      //   emailDateController.text,
+      //   passDateController.text,
+      //   context)
+      // .then((value) {
+    await dataBaseService.authenticateTeacher(thisClassMap,emailDateController.text,passDateController.text,context2).then((value) {
 
         Future.delayed(const Duration(milliseconds: 500), () {
             widget.refresh();
@@ -74,11 +81,9 @@ class _AddTeacherState extends State<AddTeacher> {
 
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+  void initState() { 
     getClasses();
-
+    super.initState();
   }
 
 
@@ -87,7 +92,7 @@ class _AddTeacherState extends State<AddTeacher> {
     TextStyle myTextStyle=TextStyle(fontSize: 20,color: MyColors.color1,fontWeight: FontWeight.bold);
     return Scaffold(
         backgroundColor: MyColors.color4,
-        appBar: MyAppBar("title"),
+        appBar: myAppBar(),
         body:
         Builder(
           builder: (BuildContext context){
@@ -109,7 +114,7 @@ class _AddTeacherState extends State<AddTeacher> {
 
                         Text("Teacher Name:",style:myTextStyle ,),
                         Container(width: 5,),
-                        Tools.MyInputText("Teacher Name", NameController)
+                        Tools.MyInputText("Teacher Name", nameController)
                       ],
                     ),
                     Container(height: 10,),
@@ -119,7 +124,7 @@ class _AddTeacherState extends State<AddTeacher> {
                       children: <Widget>[
                         Text("Teacher Email: ",style:myTextStyle ,),
                         Container(width: 5,),
-                        Tools.MyInputText("Teacher Email", EmailDateController)
+                        Tools.MyInputText("Teacher Email", emailDateController)
                       ],
                     ),
                     Container(height: 10,),
@@ -129,7 +134,7 @@ class _AddTeacherState extends State<AddTeacher> {
                       children: <Widget>[
                         Text("Teacher Pass: ",style:myTextStyle ,),
                         Container(width: 5,),
-                        Tools.MyInputText("Teacher Pass", PassDateController)
+                        Tools.MyInputText("Teacher Pass", passDateController)
                       ],
                     ),
                     Container(height: 10,),
@@ -161,27 +166,27 @@ class _AddTeacherState extends State<AddTeacher> {
                       hintText: 'Please choose one or more class',
                       onSaved: (value) {
                         if (value == null) return;
-                        _MyAnswers = value;
+                        _myAnswers = value;
                       },
                     ),
 
                     Container(height: 15,),
                     InkWell(
                         onTap: (){
-                          if(EmailDateController.text.length<=4)
+                          if(emailDateController.text.length<=4)
                             Scaffold.of(context).showSnackBar(SnackBar(content: Text("To Short Email")));
-                          else if(NameController.text.length<=4)
+                          else if(nameController.text.length<=4)
                             Scaffold.of(context).showSnackBar(SnackBar(content: Text("To Short Name")));
 
-                          else if(PassDateController.text.length<6)
+                          else if(passDateController.text.length<6)
                             Scaffold.of(context).showSnackBar(SnackBar(content: Text("To Short password")));
-                          else if(!EmailValidator.validate(EmailDateController.text))
+                          else if(!EmailValidator.validate(emailDateController.text))
                             Scaffold.of(context).showSnackBar(SnackBar(content: Text("Email must be valid")));
                           else{
                             setState(() {
                               isAdding=true;
                             });
-                            AddClass(context);
+                            addTeacher(context);
                           }
 
 

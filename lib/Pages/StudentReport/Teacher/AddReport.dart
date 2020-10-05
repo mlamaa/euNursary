@@ -310,202 +310,197 @@ class _AddReportState extends State<AddReport> {
   Widget build(BuildContext context) {
     TextStyle myTextStyle=TextStyle(fontSize: 20,color: MyColors.color1,fontWeight: FontWeight.bold);
 
-    return WillPopScope(
-      // onWillPop: () {
-      //   return new Future(() => false);
-      // },
-      child: Scaffold(
-        backgroundColor: MyColors.color4,
-        appBar: MyAppBar(" "),
-        body: items.length>0 ? GestureDetector(
-          onTap: () {
+    return Scaffold(
+      backgroundColor: MyColors.color4,
+      appBar: myAppBar(),
+      body: items.length>0 ? GestureDetector(
+        onTap: () {
 
-            FocusScope.of(context).requestFocus(new FocusNode());
-          },
-          child: Stack(
-            children: <Widget>[
-              SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                      child: Text("Your Report",style: TextStyle(fontSize: 40,color: MyColors.color1,fontWeight: FontWeight.bold),),
-                    ),
-                    Container(height: 10,),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text("Student Class:",style:myTextStyle,),
-                        Container(width: 10,),
-                        Container(
-                          width: 200,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: Tools.myBorderRadius2,
-                            // color: MyColors.color1
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                            child:
-                            DropdownSearch<Classes>(
-                                mode: Mode.DIALOG,
-                                showSearchBox: true,
-                                // showSelectedItem: true,
-                                itemAsString:(Classes s) =>s.name,
-                                onFind: (String filter) async{
-                                  if(filter.length!=0){
-                                    List<Classes> classesCurrentList=new List<Classes>();
-                                    for(int i=0;i<classesList.length;i++){
-                                      if(classesList[i].name.contains(filter))
-                                      {
-                                        classesCurrentList.add(classesList[i]);
-                                      }
-                                    }
-                                    return classesCurrentList;
-                                  }else{
-                                    return classesList;
-                                  }
-
-                                },
-                                label: "class",
-                                hint: "class Name",
-                                // popupItemDisabled: (String s) => s.startsWith('I'),
-                                onChanged: (Classes s){
-                                  CurrentStudentClass=s;
-                                } ,
-                                selectedItem: CurrentStudentClass),
-
-                          ),
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: Stack(
+          children: <Widget>[
+            SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: Text("Your Report",style: TextStyle(fontSize: 40,color: MyColors.color1,fontWeight: FontWeight.bold),),
+                  ),
+                  Container(height: 10,),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text("Student Class:",style:myTextStyle,),
+                      Container(width: 10,),
+                      Container(
+                        width: 200,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: Tools.myBorderRadius2,
+                          // color: MyColors.color1
                         ),
-                      ],
-                    ),
-                    Container(height: 10,),
-
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text("Student Name:",style:myTextStyle,),
-                        Container(width: 10,),
-                        Container(
-                          width: 200,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: Tools.myBorderRadius2,
-                            // color: MyColors.color1
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                            child:
-                            DropdownSearch<Studetns>(
-                                mode: Mode.DIALOG,
-                                showSearchBox: true,
-                                // showSelectedItem: true,
-                                itemAsString:(Studetns s) =>s.name,
-                                onFind: (String filter) async{
-                                  if(filter.length!=0){
-                                    List<Studetns> studentsCurrentList=new List<Studetns>();
-                                    for(int i=0;i<studetnsList.length;i++){
-                                      if(studetnsList[i].name.contains(filter))
-                                      {
-                                        studentsCurrentList.add(studetnsList[i]);
-                                      }
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                          child:
+                          DropdownSearch<Classes>(
+                              mode: Mode.DIALOG,
+                              showSearchBox: true,
+                              // showSelectedItem: true,
+                              itemAsString:(Classes s) =>s.name,
+                              onFind: (String filter) async{
+                                if(filter.length!=0){
+                                  List<Classes> classesCurrentList=new List<Classes>();
+                                  for(int i=0;i<classesList.length;i++){
+                                    if(classesList[i].name.contains(filter))
+                                    {
+                                      classesCurrentList.add(classesList[i]);
                                     }
-                                    return studentsCurrentList;
-                                  }else{
-                                    return studetnsList;
                                   }
+                                  return classesCurrentList;
+                                }else{
+                                  return classesList;
+                                }
 
-                                },
-                                label: "Student name",
-                                hint: "Student Name",
-                                // popupItemDisabled: (String s) => s.startsWith('I'),
-                                onChanged: (Studetns s){
-                                  CurrentStudent=s;
-                                  GetAnswers();
-                                } ,
-                                selectedItem: CurrentStudent),
+                              },
+                              label: "class",
+                              hint: "class Name",
+                              // popupItemDisabled: (String s) => s.startsWith('I'),
+                              onChanged: (Classes s){
+                                CurrentStudentClass=s;
+                              } ,
+                              selectedItem: CurrentStudentClass),
 
-                          ),
                         ),
-                      ],
-                    ),
-                    Container(height: 10,),
+                      ),
+                    ],
+                  ),
+                  Container(height: 10,),
 
-                    ItemsHere(),
-                    Container(height: 20,),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        InkWell(
-                          onTap: (){
-                            if(CurrentStudentClass.ID!=" "&&CurrentStudent.ParentEmail!=" "){
-                              ReportData["ClassName"]=CurrentStudentClass.name;
-                              ReportData["ClassId"]=CurrentStudentClass.ID;
-                              ReportData["StudentName"]=CurrentStudent.name;
-                              ReportData["StudentParentEmail"]=CurrentStudent.ParentEmail;
-                              submit();
-                            }
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text("Student Name:",style:myTextStyle,),
+                      Container(width: 10,),
+                      Container(
+                        width: 200,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: Tools.myBorderRadius2,
+                          // color: MyColors.color1
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                          child:
+                          DropdownSearch<Studetns>(
+                              mode: Mode.DIALOG,
+                              showSearchBox: true,
+                              // showSelectedItem: true,
+                              itemAsString:(Studetns s) =>s.name,
+                              onFind: (String filter) async{
+                                if(filter.length!=0){
+                                  List<Studetns> studentsCurrentList=new List<Studetns>();
+                                  for(int i=0;i<studetnsList.length;i++){
+                                    if(studetnsList[i].name.contains(filter))
+                                    {
+                                      studentsCurrentList.add(studetnsList[i]);
+                                    }
+                                  }
+                                  return studentsCurrentList;
+                                }else{
+                                  return studetnsList;
+                                }
+
+                              },
+                              label: "Student name",
+                              hint: "Student Name",
+                              // popupItemDisabled: (String s) => s.startsWith('I'),
+                              onChanged: (Studetns s){
+                                CurrentStudent=s;
+                                GetAnswers();
+                              } ,
+                              selectedItem: CurrentStudent),
+
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(height: 10,),
+
+                  ItemsHere(),
+                  Container(height: 20,),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: (){
+                          if(CurrentStudentClass.ID!=" "&&CurrentStudent.ParentEmail!=" "){
+                            ReportData["ClassName"]=CurrentStudentClass.name;
+                            ReportData["ClassId"]=CurrentStudentClass.ID;
+                            ReportData["StudentName"]=CurrentStudent.name;
+                            ReportData["StudentParentEmail"]=CurrentStudent.ParentEmail;
+                            submit();
+                          }
 //                        List<QuestionAndAnswers> questionAndanswers=new List<QuestionAndAnswers>();
 
 
 
-                          },
-                          child: Container(
-                            decoration: new BoxDecoration(
-                              color: MyColors.color1,
-                              borderRadius: new BorderRadius.only(
-                                topLeft: const Radius.circular(5.0),
-                                topRight: const Radius.circular(5.0),
-                                bottomLeft:const Radius.circular(5.0),
-                                bottomRight: const Radius.circular(5.0),
-                              ),),
-                            width: 150,
-                            height: 45,
-                            child: Center(child: Text("Submit",style: TextStyle(color: MyColors.color3,fontSize: 30),),),
-                          ),
+                        },
+                        child: Container(
+                          decoration: new BoxDecoration(
+                            color: MyColors.color1,
+                            borderRadius: new BorderRadius.only(
+                              topLeft: const Radius.circular(5.0),
+                              topRight: const Radius.circular(5.0),
+                              bottomLeft:const Radius.circular(5.0),
+                              bottomRight: const Radius.circular(5.0),
+                            ),),
+                          width: 150,
+                          height: 45,
+                          child: Center(child: Text("Submit",style: TextStyle(color: MyColors.color3,fontSize: 30),),),
                         ),
-                        // Container(width: 5,),
-                        // InkWell(
-                        //   onTap: (){
-                        //     Navigator.of(context).pop();
-                        //   },
-                        //   child: Container(
-                        //     decoration: new BoxDecoration(
-                        //       color: MyColors.color1,
-                        //       borderRadius: new BorderRadius.only(
-                        //         topLeft: const Radius.circular(5.0),
-                        //         topRight: const Radius.circular(5.0),
-                        //         bottomLeft:const Radius.circular(5.0),
-                        //         bottomRight: const Radius.circular(5.0),
-                        //       ),),
-                        //     width: 150,
-                        //     height: 45,
-                        //     child: Center(child: Text("Skip",style: TextStyle(color: MyColors.color3,fontSize: 30),),),
-                        //   ),
-                        // ),
+                      ),
+                      // Container(width: 5,),
+                      // InkWell(
+                      //   onTap: (){
+                      //     Navigator.of(context).pop();
+                      //   },
+                      //   child: Container(
+                      //     decoration: new BoxDecoration(
+                      //       color: MyColors.color1,
+                      //       borderRadius: new BorderRadius.only(
+                      //         topLeft: const Radius.circular(5.0),
+                      //         topRight: const Radius.circular(5.0),
+                      //         bottomLeft:const Radius.circular(5.0),
+                      //         bottomRight: const Radius.circular(5.0),
+                      //       ),),
+                      //     width: 150,
+                      //     height: 45,
+                      //     child: Center(child: Text("Skip",style: TextStyle(color: MyColors.color3,fontSize: 30),),),
+                      //   ),
+                      // ),
 
 
-                      ],
-                    ),
-                    Container(height: 10,)
+                    ],
+                  ),
+                  Container(height: 10,)
 
 
 
-                  ],
-                ),
+                ],
               ),
-            ],
-          ),
-        ):Center(
-          child: CircularProgressIndicator(),
+            ),
+          ],
         ),
-
+      ):Center(
+        child: CircularProgressIndicator(),
       ),
+
     );
   }
 }

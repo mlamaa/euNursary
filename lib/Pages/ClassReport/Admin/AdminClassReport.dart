@@ -180,7 +180,7 @@ class _AdminClassReportState extends State<AdminClassReport> {
 
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body: Column(
         children: <Widget>[
 

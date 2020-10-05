@@ -9,18 +9,18 @@ import 'package:garderieeu/db.dart';
 class AddTextQuestion extends StatefulWidget {
   final Function refreshToAdd;
   final Function ChangeColor;
-  AddTextQuestion({this.refreshToAdd,this.ChangeColor});
+  AddTextQuestion({this.refreshToAdd, this.ChangeColor});
 
   @override
   _AddTextQuestionState createState() => _AddTextQuestionState();
 }
 
 class _AddTextQuestionState extends State<AddTextQuestion> {
-  TextEditingController  textEditingController=new TextEditingController();
+  TextEditingController textEditingController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -29,23 +29,23 @@ class _AddTextQuestionState extends State<AddTextQuestion> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Enter The Question:",style: TextStyle(fontSize: 20,color: MyColors.color1),),
+              child: Text(
+                "Enter The Question:",
+                style: TextStyle(fontSize: 20, color: MyColors.color1),
+              ),
             ),
-
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
               child: TextField(
                 controller: textEditingController,
                 style: TextStyle(color: MyColors.color1, fontSize: 16),
                 decoration: InputDecoration(
-
                     hintText: " Question ...",
                     hintStyle: TextStyle(
                       color: MyColors.color1,
                       fontSize: 16,
                     ),
-                    border: InputBorder.none
-                ),
+                    border: InputBorder.none),
               ),
             ),
             Material(
@@ -56,11 +56,11 @@ class _AddTextQuestionState extends State<AddTextQuestion> {
                 minWidth: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                 onPressed: () {
-                  if(textEditingController.text.length>0){
-                    ClassReportItems item =new ClassReportItems();
-                    item.Question=textEditingController.text;
-                    item.Type="text";
-                    item.isAdded=false;
+                  if (textEditingController.text.length > 0) {
+                    ClassReportItems item = new ClassReportItems();
+                    item.Question = textEditingController.text;
+                    item.Type = "text";
+                    item.isAdded = false;
 
                     CreatingReportSomeInfo.CreatingReportItems.add(item);
                     widget.ChangeColor();
@@ -68,8 +68,7 @@ class _AddTextQuestionState extends State<AddTextQuestion> {
                     widget.refreshToAdd();
                     Navigator.pop(context);
                   }
-                  }
-                ,
+                },
                 child: Text("add question",
                     textAlign: TextAlign.center,
                     style: Tools.myTextStyle.copyWith(

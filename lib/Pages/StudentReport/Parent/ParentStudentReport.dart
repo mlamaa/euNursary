@@ -160,7 +160,7 @@ class _ParentStudentReportState extends State<ParentStudentReport> {
 
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body: Column(
         children: <Widget>[
           Padding(

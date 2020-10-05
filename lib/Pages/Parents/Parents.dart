@@ -15,21 +15,22 @@ class Parents extends StatefulWidget {
 
 class _ParentsState extends State<Parents> {
 
-  List<SingleParentObject> ListOfParents = new List<SingleParentObject>();
+  List<SingleParentObject> listOfParents = new List<SingleParentObject>();
   DataBaseService dataBaseService = new DataBaseService();
 
   GetParetns() async{
     setState(() {
-      ListOfParents = new List<SingleParentObject>();
+      listOfParents = new List<SingleParentObject>();
 
     });
     await dataBaseService.GetParents(context).then((value) {
       for(int i=0;i<value.documents.length;i++){
         SingleParentObject singleClassObject=new SingleParentObject();
-        singleClassObject.Email=value.documents[i].documentID;
-        singleClassObject.Name=value.documents[i].data["name"];
+        singleClassObject.email=value.documents[i].documentID;
+        singleClassObject.name=value.documents[i].data["name"];
+        singleClassObject.password=value.documents[i].data["password"];
         setState(() {
-          ListOfParents.add(singleClassObject);
+          listOfParents.add(singleClassObject);
         });
       }
 
@@ -46,12 +47,13 @@ class _ParentsState extends State<Parents> {
             // crossAxisSpacing: 30,
             // mainAxisSpacing:20,
 
-            children: List.generate(ListOfParents.length, (index) {
+            children: List.generate(listOfParents.length, (index) {
               return SingleParent(
                 refresh: GetParetns,
                 context: context,
-                Email: ListOfParents[index].Email,
-                Name: ListOfParents[index].Name,
+                email: listOfParents[index].email,
+                password: listOfParents[index].password,
+                name: listOfParents[index].name,
               );
             })
 
@@ -66,16 +68,15 @@ class _ParentsState extends State<Parents> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     GetParetns();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar(" "),
+      appBar: myAppBar(),
       body: Column(
         children: <Widget>[
           Padding(
@@ -113,10 +114,11 @@ class _ParentsState extends State<Parents> {
 
 class SingleParent extends StatefulWidget {
   final Function refresh;
-  final String Name;
-  final String Email;
+  final String name;
+  final String email;
+  final String password;
   final BuildContext context;
-  SingleParent({this.Name,this.Email,this.context,this.refresh});
+  SingleParent({this.name,this.email,this.password,this.context,this.refresh});
 
   @override
   _SingleParentState createState() => _SingleParentState();
@@ -139,9 +141,9 @@ class _SingleParentState extends State<SingleParent> {
           child: Column(
             children: <Widget>[
               Container(height: 10,),
-              Text(widget.Name,style: TextStyle(fontSize:25,color:MyColors.color1,fontWeight: FontWeight.bold),),
+              Text(widget.name,style: TextStyle(fontSize:25,color:MyColors.color1,fontWeight: FontWeight.bold),),
               Container(height: 10,),
-              Text(widget.Email.split("@")[0],style: TextStyle(fontSize:20,color: MyColors.color1),),
+              Text(widget.email.split("@")[0],style: TextStyle(fontSize:20,color: MyColors.color1),),
               Container(height: 10,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -151,7 +153,7 @@ class _SingleParentState extends State<SingleParent> {
                     onTap: (){
 
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                      new EditParent(ParentEmail: widget.Email,ParentName: widget.Name,refresh: widget.refresh,)));
+                      new EditParent(parentEmail: widget.email,parentPassword: widget.password,parentName: widget.name,refresh: widget.refresh,)));
 
                     },
                     child: Container(
@@ -163,7 +165,7 @@ class _SingleParentState extends State<SingleParent> {
                   InkWell(
                     onTap: (){
                     DataBaseService database=new DataBaseService();
-                    database.DeleteParent(widget.Email, widget.context,widget.refresh);
+                    database.deleteParent(widget.email,widget.password, widget.context,widget.refresh);
                     },
                     child: Container(
                         width: 35,
@@ -181,8 +183,8 @@ class _SingleParentState extends State<SingleParent> {
 }
 
 class SingleParentObject{
-  String Email;
-  String Name;
-
+  String email;
+  String name;
+  String password;
 }
 

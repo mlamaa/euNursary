@@ -218,7 +218,7 @@ class _EditStudentReportAsAdminState extends State<EditStudentReportAsAdmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(" "),
+      appBar: myAppBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => popListOption(
             context), //  popAddElement( context , "Choisir l'element"),

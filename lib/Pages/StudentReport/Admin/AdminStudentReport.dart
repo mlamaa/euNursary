@@ -167,7 +167,7 @@ class _AdminStudentReportState extends State<AdminStudentReport> {
 
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body: Column(
         children: <Widget>[
           Padding(

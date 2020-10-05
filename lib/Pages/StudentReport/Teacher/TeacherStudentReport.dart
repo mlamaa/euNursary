@@ -71,18 +71,18 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
 
 
 
-  GetClasses(String Dateee) async{
-    await dataBaseService.GetSingleTeacher(UserCurrentInfo.Email,context).then((value) {
-      GetReports(value.data["Classes"],Dateee);
+  GetClasses(String date) async{
+    await dataBaseService.getSingleTeacher(UserCurrentInfo.Email,context).then((value) {
+      GetReports(value.data["Classes"],date);
     });
   }
 
-  GetReports(List<dynamic> ClassesId,String Dateee) async{
+  GetReports(List<dynamic> classesId,String date) async{
     setState(() {
       ListOfReports = new List<SingleReportt>();
 
     });
-    await dataBaseService.GetStudentReports(Dateee,context).then((value) {
+    await dataBaseService.GetStudentReports(date,context).then((value) {
       for(int i=0;i<value.documents.length;i++){
         SingleReportt singleReport=new SingleReportt();
         singleReport.ReportID=value.documents[i].documentID;
@@ -96,13 +96,13 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
 
         setState(() {
           // print(singleReport.Date.toDate().toIso8601String()+singleReport.ClassName+singleReport.ReportSenderEmail+singleReport.ReportSenderID+singleReport.ReportSenderType+singleReport.ReportID);
-          if(ClassesId.length>0){
+          if(classesId.length>0){
             bool mustBeAdded=false;
-            for(int j=0;j<ClassesId.length;j++){
-              if(ClassesId[j]==singleReport.ClassId){
+            for(int j=0;j<classesId.length;j++){
+              if(classesId[j]==singleReport.ClassId){
                 mustBeAdded=true;
               }
-              if(mustBeAdded&&j==ClassesId.length-1){
+              if(mustBeAdded&&j==classesId.length-1){
                 ListOfReports.add(singleReport);
               }
             }
@@ -145,11 +145,9 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
   }
 
   @override
-  void initState() {
-    // TODO: implement initState
+  void initState() { 
+    GetClasses(dataBaseService.getDateNow()); 
     super.initState();
-    GetClasses(dataBaseService.getDateNow());
-    // getDates();
   }
 
 
@@ -186,7 +184,7 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
 
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body: Column(
         children: <Widget>[
           Padding(
@@ -211,30 +209,11 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
               ),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: InkWell(
-          //     onTap: (){
-          //       // Navigator.push(context, MaterialPageRoute(builder: (context)=>new AddParent()));
-          //     },
-          //     child: Container(
-          //       height: 30,
-          //       decoration: BoxDecoration(
-          //         borderRadius: Tools.myBorderRadius2,
-          //         color: MyColors.color1,
-          //       ),
-          //       child: Center(
-          //           child: Text("Add Class Report",style: TextStyle(color: Colors.white,fontSize: 20),)
-          //       ),
-          //     ),
-          //   ),
-          // ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DatesList,
           ),
           ItemsHere(),
-
         ],
       ),
     );

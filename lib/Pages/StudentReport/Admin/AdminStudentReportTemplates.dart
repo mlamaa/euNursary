@@ -80,7 +80,7 @@ class _AdminClassReportTemplatesState extends State<AdminClassReportTemplates> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: MyAppBar("title"),
+      appBar: myAppBar(),
       body: Column(
         children: <Widget>[
           Padding(
