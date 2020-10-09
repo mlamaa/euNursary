@@ -1,13 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'; 
-import 'package:garderieeu/UserInfo.dart'; 
+import 'package:garderieeu/UserInfo.dart';
+import 'package:garderieeu/services/FirebaseFunctions.dart'; 
 import 'auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:intl/intl.dart';
+
+import 'services/FirebaseMessageService.dart';
 
 class DataBaseService {
   FirebaseStorage storage = FirebaseStorage.instance;
@@ -33,7 +35,7 @@ class DataBaseService {
         ? "Admins"
         : type == "teacher"
             ? "Teachers"
-            : type == "parents"
+            : type == "parent"
                 ? "parents"
                 : '';
     try {
@@ -41,22 +43,23 @@ class DataBaseService {
       await firebaseMessaging.getToken().then((token) async {
         Map<String, dynamic> map = new Map<String, dynamic>();
         map["UserTooken"] = token;
-        var data = await firestore
-            .collection(getCollectionName())
-            ?.document(email)
-            ?.get();
-        print(data);
-        if (data != null) {
-          firestore
-              .collection(getCollectionName())
-              .document(email)
-              .updateData(map);
-        } else {
+        // var data = await firestore
+        //     .collection(getCollectionName())
+        //     ?.document(email)
+        //     ?.get();
+        // print(data);
+        // if (data != null) {
+        //   firestore
+        //       .collection(getCollectionName())
+        //       .document(email)
+        //       .updateData(map);
+        // } else {
+          await Future.delayed(Duration(seconds: 2));
           firestore
               .collection(getCollectionName())
               .document(email)
               .setData(map);
-        }
+        // }
       });
     } catch (error) {
 //       final snackBar = SnackBar(content: Text('Error: '+error.toString()));
@@ -373,12 +376,12 @@ class DataBaseService {
     }
   }
 
-  Future<void> AddStudentTODataBase(Map ClassMap, String classID,
-      String ParentEmail, BuildContext context) async {
+  Future<void> addStudentTODataBase(Map classMap, String classID,
+      String parentEmail, BuildContext context) async {
     try {
       await firestore
           .collection("parents")
-          .document(ParentEmail)
+          .document(parentEmail)
           .get()
           .then((value) {
         List<dynamic> ChildsClassesId;
@@ -400,22 +403,22 @@ class DataBaseService {
 
         firestore
             .collection("parents")
-            .document(ParentEmail)
+            .document(parentEmail)
             .updateData(newMap)
             .then((value) {
-          firestore.collection("students").add(ClassMap).then((value) {
+          firestore.collection("students").add(classMap).then((value) {
             firestore
                 .collection("classes")
                 .document(classID)
                 .collection("students")
                 .document(value.documentID)
-                .setData(ClassMap);
+                .setData(classMap);
             firestore
                 .collection("parents")
-                .document(ParentEmail)
+                .document(parentEmail)
                 .collection("child")
                 .document(value.documentID)
-                .setData(ClassMap);
+                .setData(classMap);
           });
         });
       });
@@ -520,29 +523,29 @@ class DataBaseService {
     }
   }
 
-  SendClassReport(Map DataMap, List<QuestionAndAnswers> QuestionsMap,
-      String ClassID, String DateOfReprt, BuildContext context) async {
+  sendClassReport(Map dataMap, List<QuestionAndAnswers> questionsMap,
+      String classID, String dateOfReprt, BuildContext context) async {
     try {
-      Map<String, dynamic> ThisDateMap = new Map<String, dynamic>();
-      ThisDateMap["Date"] = DateOfReprt;
+      Map<String, dynamic> thisDateMap = new Map<String, dynamic>();
+      thisDateMap["Date"] = dateOfReprt;
       firestore
           .collection("ClassReports")
-          .document(DateOfReprt)
-          .setData(ThisDateMap);
+          .document(dateOfReprt)
+          .setData(thisDateMap);
       await firestore
           .collection("ClassReports")
-          .document(DateOfReprt)
+          .document(dateOfReprt)
           .collection("Reports")
-          .document(ClassID)
+          .document(classID)
           .collection("Questions")
           .getDocuments()
           .then((value1) {
         for (int o = 0; o < value1.documents.length; o++) {
           firestore
               .collection("ClassReports")
-              .document(DateOfReprt)
+              .document(dateOfReprt)
               .collection("Reports")
-              .document(ClassID)
+              .document(classID)
               .collection("Questions")
               .document(value1.documents[o].documentID)
               .delete();
@@ -551,33 +554,36 @@ class DataBaseService {
 
       await firestore
           .collection("ClassReports")
-          .document(DateOfReprt)
+          .document(dateOfReprt)
           .collection("Reports")
-          .document(ClassID)
-          .setData(DataMap)
+          .document(classID)
+          .setData(dataMap)
           .then((value) {
         // print(value.documentID);
-        print(QuestionsMap.length.toString());
-        for (int i = 0; i < QuestionsMap.length; i++) {
-          print(QuestionsMap[i].question);
-          Map<String, dynamic> QuestionsAndAnswersMapp =
+        print(questionsMap.length.toString());
+        for (int i = 0; i < questionsMap.length; i++) {
+          print(questionsMap[i].question);
+          Map<String, dynamic> questionsAndAnswersMapp =
               new Map<String, dynamic>();
-          QuestionsAndAnswersMapp["Question"] = QuestionsMap[i].question;
-          if (QuestionsMap[i].answer != null) {
-            QuestionsAndAnswersMapp["Answer"] = QuestionsMap[i].answer;
+          questionsAndAnswersMapp["Question"] = questionsMap[i].question;
+          questionsAndAnswersMapp["index"] = i;
+          if (questionsMap[i].answer != null) {
+            questionsAndAnswersMapp["Answer"] = questionsMap[i].answer;
           } else {
-            QuestionsAndAnswersMapp["Answer"] = QuestionsMap[i].answers;
+            questionsAndAnswersMapp["Answer"] = questionsMap[i].answers;
           }
 
           firestore
               .collection("ClassReports")
-              .document(DateOfReprt)
+              .document(dateOfReprt)
               .collection("Reports")
-              .document(ClassID)
+              .document(classID)
               .collection("Questions")
-              .add(QuestionsAndAnswersMapp);
+              .add(questionsAndAnswersMapp);
         }
       });
+      FirebaseFuncitons.notifyParents();
+      // FirebaseMessageService.sendAndRetrieveMessage(classID, 'A new Report been added', 'Tap to view details', {});
     } catch (error) {
       final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
 

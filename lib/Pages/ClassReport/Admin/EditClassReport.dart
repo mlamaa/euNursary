@@ -1,17 +1,15 @@
 import 'package:flutter/cupertino.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Pages/ClassReport/Admin/Create/MultiChoice.dart';
-import 'package:garderieeu/Pages/ClassReport/Admin/Create/SingleChoice.dart';
-import 'package:garderieeu/Pages/ClassReport/Admin/Create/TextQuestion.dart';
-import 'package:garderieeu/Pages/ClassReport/Admin/Create/DateQuestion.dart';
-import 'package:garderieeu/Tools.dart';
 //import 'package:progress_dialog/progress_dialog.dart';
-import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:garderieeu/Colors.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/widgets.dart';
-import 'package:garderieeu/UserInfo.dart';
+
+import '../../../Tools.dart';
+import 'Create/DateQuestion.dart';
+import 'Create/MultiChoice.dart';
+import 'Create/SingleChoice.dart';
+import 'Create/TextQuestion.dart';
 
 
 

@@ -34,7 +34,7 @@ class _SingleReportState extends State<SingleReport> {
     print(widget.ReportID+dataBaseService.getDateNow());
     await dataBaseService.GetQuestionsOfReport(widget.ReportID,dataBaseService.getDateNow(),context).then((value) {
       print(value.documents.length.toString()+"aa");
-
+      value.documents.sort((a,b) => a["index"]>b["index"]?1:-1);
       for(int i=0;i<value.documents.length;i++){
         SingleQuestion singleQuestion=new SingleQuestion();
         singleQuestion.Question=value.documents[i].data["Question"];
@@ -73,9 +73,8 @@ class _SingleReportState extends State<SingleReport> {
 
 @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     GetSingleQuestions();
+    super.initState();
   }
 
 
@@ -97,20 +96,6 @@ class _SingleReportState extends State<SingleReport> {
       appBar: myAppBar(),
       body: Column(
         children: <Widget>[
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Container(
-          //       height: 30,
-          //       decoration: BoxDecoration(
-          //         borderRadius: Tools.myBorderRadius2,
-          //         color: MyColors.color1,
-          //       ),
-          //       child: Center(
-          //           child: Text("bla bla",style: TextStyle(color: Colors.white,fontSize: 20),)
-          //       ),
-          //     ),
-          //
-          // ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
@@ -120,15 +105,6 @@ class _SingleReportState extends State<SingleReport> {
               child: Center(child: Text("Class:   "+widget.ClassName,style: TextStyle(fontSize: 20,color: Colors.white),)),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Container(
-          //     width: 350,
-          //     height: 40,
-          //     color: MyColors.color1,
-          //     child: Center(child: Text("sender:   "+widget.ReportSenderEmail,style: TextStyle(fontSize: 20,color: Colors.white),)),
-          //   ),
-          // ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(

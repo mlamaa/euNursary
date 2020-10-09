@@ -1,19 +1,20 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-//import 'package:progress_dialog/progress_dialog.dart';
-import 'package:multiselect_formfield/multiselect_formfield.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/db.dart';
-import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/widgets.dart';
-import 'package:garderieeu/UserInfo.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:intl/intl.dart';
-import 'EditClassReport.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+//import 'package:progress_dialog/progress_dialog.dart';
+import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
+import 'package:garderieeu/UserInfo.dart';
+import 'package:garderieeu/db.dart';
+import 'package:garderieeu/multiSelect/MultiSelectFormField.dart';
+import 'package:garderieeu/widgets.dart';
+import 'package:intl/intl.dart';
+
+import 'EditClassReport.dart';
 
 // Map<String,dynamic> AllAnswers=new Map<String,dynamic>();
 Map<String, dynamic> ReportData = new Map<String, dynamic>();
@@ -147,9 +148,9 @@ class _AddReportState extends State<AddReport> {
                     return Padding(
                       padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
                       child: ItemView(
-                        SavedAnswer: items[index].Answers,
+                        savedAnswer: items[index].Answers,
                         question: items[index].question,
-                        MultipleChoice: items[index].choicesHere.MultiChoice,
+                        multipleChoice: items[index].choicesHere.MultiChoice,
                         type: items[index].type,
                         choices: items[index].choicesHere.choices,
                       ),
@@ -160,9 +161,9 @@ class _AddReportState extends State<AddReport> {
                     return Padding(
                       padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
                       child: ItemView(
-                        SavedAnswerText: items[index].AnswersText,
+                        savedAnswerText: items[index].AnswersText,
                         question: items[index].question,
-                        MultipleChoice: items[index].choicesHere.MultiChoice,
+                        multipleChoice: items[index].choicesHere.MultiChoice,
                         type: items[index].type,
                         choices: items[index].choicesHere.choices,
                       ),
@@ -175,7 +176,7 @@ class _AddReportState extends State<AddReport> {
                   return Padding(
                     padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
                     child: ItemView(
-                      SavedAnswerText: items[index].AnswersText,
+                      savedAnswerText: items[index].AnswersText,
                       question: items[index].question,
                       type: items[index].type,
                       textEditingDynamic: items[index].textEditingDynamic,
@@ -264,7 +265,7 @@ class _AddReportState extends State<AddReport> {
   submit() async {
     await getTextAnswers().then((value) {
       if (value == true) {
-        widget.dataBaseService.SendClassReport(ReportData, AllAnswerss,
+        widget.dataBaseService.sendClassReport(ReportData, AllAnswerss,
             CurrentStudentClass.ID, getDateNow(), context);
         Future.delayed(const Duration(milliseconds: 500), () {
           widget.refresh(getDateNow());
@@ -396,13 +397,13 @@ class _AddReportState extends State<AddReport> {
                           ],
                         ),
                         Container(
-                          height: 10,
+                          height: 10, 
                         ),
-                        ItemsHere(),
+                        if((CurrentStudentClass.ID.trim() ?? '') != '') ItemsHere(),
                         Container(
                           height: 20,
                         ),
-                        Row(
+                        if((CurrentStudentClass.ID.trim() ?? '') != '') Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -433,7 +434,7 @@ class _AddReportState extends State<AddReport> {
                                   child: Text(
                                     "Submit",
                                     style: TextStyle(
-                                        color: MyColors.color3, fontSize: 30),
+                                        color: Colors.white, fontSize: 30),
                                   ),
                                 ),
                               ),
@@ -457,39 +458,40 @@ class _AddReportState extends State<AddReport> {
 }
 
 class ItemView extends StatelessWidget {
-  final bool MultipleChoice;
+  final bool multipleChoice;
   final String question;
-  final String SavedAnswerText;
+  final String savedAnswerText;
   final String type;
   final TextEditingDynamic textEditingDynamic;
   final List<String> choices;
-  final List<dynamic> SavedAnswer;
+  final List<dynamic> savedAnswer;
 
   ItemView(
       {this.textEditingDynamic,
-      this.MultipleChoice,
+      this.multipleChoice,
       this.choices,
       this.type,
       this.question,
-      this.SavedAnswer,
-      this.SavedAnswerText});
-
+      this.savedAnswer,
+      this.savedAnswerText});
   @override
   Widget build(BuildContext context) {
     List _MyAnswers = [];
-    Widget MultiChoiceOld = new Container();
+    Widget oldChoiceWidget = new Container();
 
     if (type == "choices") {
-      if (MultipleChoice) {
-        print(SavedAnswer.toString());
-
-        if (SavedAnswer != null) {
-          if (SavedAnswer.length > 0) {
-            String text = "Answers: ";
-            for (int i = 0; i < SavedAnswer.length; i++) {
-              text = text + SavedAnswer[i].toString() + ", ";
+      if (multipleChoice) {
+        print(savedAnswer.toString());
+ 
+        if (savedAnswer != null) {
+          if (savedAnswer.length > 0) {
+            String text = "Answerss: ";
+            for (int i = 0; i < savedAnswer.length; i++) {
+              text = text + savedAnswer[i].toString() + ", ";
             }
-            MultiChoiceOld = new Text(text);
+            oldChoiceWidget = new Text(text);
+            // choices.addAll(savedAnswer.map((e) => e.toString()));
+            
           }
         }
 
@@ -503,10 +505,11 @@ class ItemView extends StatelessWidget {
             Container(
               height: 5,
             ),
-            MultiChoiceOld,
+            oldChoiceWidget,
             Container(
               height: 5,
             ),
+            
             MultiSelectFormField(
 //          autovalidate: false,
               titleText: ' ',
@@ -517,30 +520,22 @@ class ItemView extends StatelessWidget {
                   return " ";
                 }
               },
-              // SelectedValuesFromMe:SavedAnswer,
+              initialValue: savedAnswer, 
               dataSource: [
                 for (int i = 0; i < choices.length; i++)
                   {
                     "display": choices[i],
-                    "value": choices[i],
-                  },
-
-//                {
-//                  "display": "Climbing",
-//                  "value": "Climbing",
-//                },
+                    "value": choices[i]
+                  }
               ],
+              
               textField: 'display',
               valueField: 'value',
               okButtonLabel: 'OK',
               cancelButtonLabel: 'CANCEL',
-              // required: true,
-              hintText: 'Please choose one or more',
-
-//      value: _MyAnswers,
+              hintText: 'Please choose one or more',  
               onSaved: (value) {
                 if (value == null) return;
-//        setState(() {
                 _MyAnswers = value;
 
                 QuestionAndAnswers questionsAndAnswersHere =
@@ -559,8 +554,8 @@ class ItemView extends StatelessWidget {
                 AllAnswerss.add(questionsAndAnswersHere);
 
                 // AllAnswers[question]=_MyAnswers.toString();
-//                print(AllAnswers.toString()+"==============================");
-//        });
+                //print(AllAnswers.toString()+"==============================");
+        //});
               },
             ),
           ],
@@ -581,13 +576,13 @@ class ItemView extends StatelessWidget {
                     choices: choices,
                     Question: question,
                     savedText:
-                        SavedAnswerText == null ? choices[0] : SavedAnswerText))
+                        savedAnswerText == null ? choices[0] : savedAnswerText))
           ],
         );
       }
     } else {
-      if (SavedAnswerText != null) {
-        textEditingDynamic.textEditingController.text = SavedAnswerText;
+      if (savedAnswerText != null) {
+        textEditingDynamic.textEditingController.text = savedAnswerText;
       }
       if (type == "date") {
         return Column(
@@ -738,19 +733,9 @@ class SingleDrop extends StatefulWidget {
 class _SingleDropState extends State<SingleDrop> {
   bool _disposed = false;
   Timer t;
+  dynamic _answer;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // widget.CurrentChoice=widget.choices[0];
-    t = Timer.periodic(Duration(milliseconds: 500), (Timer t) {
-      if (!_disposed) {
-        setState(() {});
-      }
-    });
-  }
-
+  
   @override
   void dispose() {
     _disposed = true;
@@ -772,22 +757,12 @@ class _SingleDropState extends State<SingleDrop> {
     // print(widget.savedText+"asdsadsadsadsad");
     return DropdownButton<String>(
       hint: Text("Select item"),
-      value: widget.CurrentChoice,
-      onChanged: (String Value) {
+      value: _answer ?? widget.CurrentChoice,
+      onChanged: (String value) {
+          AllAnswerss.firstWhere((element) => element.question == widget.Question).answer = value;
+          
         setState(() {
-          // widget.CurrentChoice= Value;
-          QuestionAndAnswers questionsAndAnswersHere = new QuestionAndAnswers();
-          questionsAndAnswersHere.question = widget.Question;
-          questionsAndAnswersHere.answer = Value;
-
-          // ForTextQuestion[i].questionAndAnswers=ForTextQuestion[i].textEditingController.text;
-          // print(AllAnswers.toString()+"==============================");
-          for (int j = 0; j < AllAnswerss.length; j++) {
-            if (AllAnswerss[j].question == questionsAndAnswersHere.question) {
-              AllAnswerss.removeAt(j);
-            }
-          }
-          AllAnswerss.add(questionsAndAnswersHere);
+          _answer = value;
         });
       },
       items: widget.choices.map((String textt) {

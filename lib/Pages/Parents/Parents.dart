@@ -141,9 +141,9 @@ class _SingleParentState extends State<SingleParent> {
           child: Column(
             children: <Widget>[
               Container(height: 10,),
-              Text(widget.name,style: TextStyle(fontSize:25,color:MyColors.color1,fontWeight: FontWeight.bold),),
+              Text(widget?.name??'',style: TextStyle(fontSize:25,color:MyColors.color1,fontWeight: FontWeight.bold),),
               Container(height: 10,),
-              Text(widget.email.split("@")[0],style: TextStyle(fontSize:20,color: MyColors.color1),),
+              Text(widget?.email?.split("@")[0]??'',style: TextStyle(fontSize:20,color: MyColors.color1),),
               Container(height: 10,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,

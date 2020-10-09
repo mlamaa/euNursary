@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
-import 'package:flutter/services.dart';
-import 'package:garderieeu/Pages/Home.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+
+import 'Pages/Home.dart';
+import 'services/FirebaseMessageService.dart';
+
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,7 +12,8 @@ void main() {
 //  statusBarColor: Colors.transparent,
 ////    statusBarIconBrightness:
 //  ));
-  SystemChrome.setEnabledSystemUIOverlays([]);
+  // SystemChrome.setEnabledSystemUIOverlays([]);
+  FirebaseMessageService.initialize();
   runApp(MyApp());
 }
 

@@ -302,9 +302,9 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
                 // Container(height: 10,),
                 // Text("sender:   "+widget.ReportSenderType,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
                 Container(height: 10,),
-                Text("Class Name:   "+widget.ClassName,style: TextStyle(fontSize:20,color:MyColors.color1),),
+                Text("Class Name: "+widget.ClassName,style: TextStyle(fontSize:20,color:MyColors.color1),),
                 Container(height: 10,),
-                Text("Date:   "+Datehere,style: TextStyle(fontSize:20,color: MyColors.color1),),
+                Text("Date: "+Datehere,style: TextStyle(fontSize:20,color: MyColors.color1),),
                 Container(height: 10,),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

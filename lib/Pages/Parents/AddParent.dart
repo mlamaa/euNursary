@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/db.dart';
-import 'package:garderieeu/widgets.dart';
-import 'package:email_validator/email_validator.dart';
-import 'package:multiselect_formfield/multiselect_formfield.dart';
+
+import '../../Colors.dart';
+import '../../Tools.dart';
+import '../../db.dart';
+import '../../widgets.dart';
 
 class AddParent extends StatefulWidget {
   final Function refresh;
