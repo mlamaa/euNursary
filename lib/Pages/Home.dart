@@ -1,4 +1,3 @@
-
 import "package:firebase_auth/firebase_auth.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   // List<Widget> ParentWidgets=new List<Widget>();
 
   getUserType(String email) async {
-    await dataBaseService.getUserType(email, context).then((value) async{
+    await dataBaseService.getUserType(email, context).then((value) async {
       UserCurrentInfo.Type = value.data["type"];
       if (UserCurrentInfo.Email != null && UserCurrentInfo.Type != null)
         await dataBaseService.saveTooken(
@@ -237,20 +236,25 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar:true? AppBar(title: InkWell(
-        onTap:(){
-          FirebaseMessageService.sendAndRetrieveMessage('','','',{});
-        },
-        child:Text('click')
-      ),actions: [
-        IconButton(icon: Icon(Icons.send), onPressed: () async{
-          await FirebaseMessageService.subscribeTOAdmin();
-        }),
-      ],
-      ): myAppBar(),
+      appBar: true
+          ? AppBar(
+              title: InkWell(
+                  onTap: () {
+                    FirebaseMessageService.sendMessageToGroup('classID',
+                        'A new Report been added', 'Tap to view details', {});
+                  },
+                  child: Text('click')),
+              actions: [
+                IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: () async {
+                      await FirebaseMessageService.subscribeTOAdmin();
+                    }),
+              ],
+            )
+          : myAppBar(),
       body: SafeArea(
         child: isAuthenticated
             ? Center(

@@ -51,10 +51,10 @@ class _StudentsState extends State<Students> {
               return SingleParent(
                 refresh: GetParetns,
                 context: context,
-                StudentId:ListOfStudents[index].StudentID,
-                Class: ListOfStudents[index].Class,
-                Email: ListOfStudents[index].ParentEmail,
-                Name: ListOfStudents[index].Name,
+                studentId:ListOfStudents[index].StudentID,
+                classID: ListOfStudents[index].Class,
+                parentEmail: ListOfStudents[index].ParentEmail,
+                name: ListOfStudents[index].Name,
               );
             })
 
@@ -114,12 +114,12 @@ class _StudentsState extends State<Students> {
 
 class SingleParent extends StatefulWidget {
   final Function refresh;
-  final String Name;
-  final String Email;
-  final String StudentId;
-  final String Class;
+  final String name;
+  final String parentEmail;
+  final String studentId;
+  final String classID;
   final BuildContext context;
-  SingleParent({this.Name,this.Email,this.Class,this.StudentId,this.context,this.refresh});
+  SingleParent({this.name,this.parentEmail,this.classID,this.studentId,this.context,this.refresh});
 
   @override
   _SingleParentState createState() => _SingleParentState();
@@ -141,11 +141,11 @@ class _SingleParentState extends State<SingleParent> {
           child: Column(
             children: <Widget>[
               Container(height: 10,),
-              Text(widget.Name,style: TextStyle(fontSize:25,color: MyColors.color1,fontWeight: FontWeight.bold),),
+              Text(widget.name,style: TextStyle(fontSize:25,color: MyColors.color1,fontWeight: FontWeight.bold),),
               Container(height: 10,),
               Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Text("Parent Phone: "+widget.Email.split("@")[0],style: TextStyle(fontSize:20,color: MyColors.color1),),
+                child: Text("Parent Phone: "+widget.parentEmail.split("@")[0],style: TextStyle(fontSize:20,color: MyColors.color1),),
               ),
               Container(height: 10,),
               // Padding(
@@ -161,7 +161,7 @@ class _SingleParentState extends State<SingleParent> {
                     onTap: (){
 
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                      new EditStudent(StudentId: widget.StudentId,refresh: widget.refresh,)));
+                      new EditStudent(StudentId: widget.studentId,refresh: widget.refresh,)));
 
                     },
                     child: Container(
@@ -173,7 +173,7 @@ class _SingleParentState extends State<SingleParent> {
                   InkWell(
                     onTap: (){
                       DataBaseService database=new DataBaseService();
-                      database.DeleteStudent(widget.StudentId, widget.context,widget.refresh);
+                      database.deleteStudent(widget.parentEmail,widget.classID,widget.studentId, widget.context,widget.refresh);
                     },
                     child: Container(
                         width: 35,

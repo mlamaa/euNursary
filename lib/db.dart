@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 import 'package:garderieeu/UserInfo.dart';
-import 'package:garderieeu/services/FirebaseFunctions.dart'; 
+import 'package:garderieeu/services/FirebaseFunctions.dart';
 import 'auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -30,44 +30,11 @@ class DataBaseService {
     return Datehere;
   }
 
-  Future saveTooken(String email, String type, BuildContext context) async {
-    String getCollectionName() => type == "admin"
-        ? "Admins"
-        : type == "teacher"
-            ? "Teachers"
-            : type == "parent"
-                ? "parents"
-                : '';
-    try {
-      print("saving tookem");
-      await firebaseMessaging.getToken().then((token) async {
-        Map<String, dynamic> map = new Map<String, dynamic>();
-        map["UserTooken"] = token;
-        // var data = await firestore
-        //     .collection(getCollectionName())
-        //     ?.document(email)
-        //     ?.get();
-        // print(data);
-        // if (data != null) {
-        //   firestore
-        //       .collection(getCollectionName())
-        //       .document(email)
-        //       .updateData(map);
-        // } else {
-          await Future.delayed(Duration(seconds: 2));
-          firestore
-              .collection(getCollectionName())
-              .document(email)
-              .setData(map);
-        // }
-      });
-    } catch (error) {
-//       final snackBar = SnackBar(content: Text('Error: '+error.toString()));
-//
-//       Scaffold.of(context).showSnackBar(snackBar);
-      print('error while saving token $error');
-    }
-  }
+  Future saveTooken(String email, String type, BuildContext context) =>
+      firebaseMessaging.getToken().then((token) => firestore
+          .collection('notification')
+          .document('tokens')
+          .setData({email: token}, merge: true));
 
   Future<DocumentSnapshot> getUserType(
       String email, BuildContext context) async {
@@ -305,7 +272,7 @@ class DataBaseService {
       Map classMap, String email, String pass, BuildContext context) async {
     try {
       await Auth.register(email, pass);
-      AddParentToDataBase(classMap, email,pass, context);
+      AddParentToDataBase(classMap, email, pass, context);
 
       // await auth.createUser(Email, Pass).then((valuee) {
       //   if(valuee!=null&&valuee!=UserCurrentInfo.Email)
@@ -332,7 +299,7 @@ class DataBaseService {
   }
 
   Future<void> AddParentToDataBase(
-      Map ClassMap, String Email,String pass, BuildContext context) async {
+      Map ClassMap, String Email, String pass, BuildContext context) async {
     try {
       Map<String, String> map = new Map<String, String>();
       map["type"] = "parent";
@@ -384,22 +351,22 @@ class DataBaseService {
           .document(parentEmail)
           .get()
           .then((value) {
-        List<dynamic> ChildsClassesId;
-        ChildsClassesId = value.data["ChildsClassesId"];
+        List<dynamic> childsClassesId;
+        childsClassesId = value.data["ChildsClassesId"];
 
-        if (ChildsClassesId != null) {
-          for (int i = 0; i < ChildsClassesId.length; i++) {
-            if (ChildsClassesId[i] == classID) {
-              ChildsClassesId.removeAt(i);
+        if (childsClassesId != null) {
+          for (int i = 0; i < childsClassesId.length; i++) {
+            if (childsClassesId[i] == classID) {
+              childsClassesId.removeAt(i);
             }
           }
         } else {
-          ChildsClassesId = new List<dynamic>();
+          childsClassesId = new List<dynamic>();
         }
 
-        ChildsClassesId.add(classID);
+        childsClassesId.add(classID);
         Map<String, dynamic> newMap = new Map<String, dynamic>();
-        newMap["ChildsClassesId"] = ChildsClassesId;
+        newMap["ChildsClassesId"] = childsClassesId;
 
         firestore
             .collection("parents")
@@ -422,6 +389,13 @@ class DataBaseService {
           });
         });
       });
+      firestore
+          .collection('notification')
+          .document('tokens').get().then((tokens) => (tokens?.data?.containsKey(parentEmail) ?? false) ? 
+          firestore
+          .collection('notification')
+          .document(classID)
+          .setData({parentEmail: tokens.data[parentEmail]}, merge: true):false);
     } catch (error) {
       final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
       Scaffold.of(context).showSnackBar(snackBar);
@@ -582,8 +556,10 @@ class DataBaseService {
               .add(questionsAndAnswersMapp);
         }
       });
-      FirebaseFuncitons.notifyParents();
-      // FirebaseMessageService.sendAndRetrieveMessage(classID, 'A new Report been added', 'Tap to view details', {});
+
+      //FirebaseFuncitons.notifyParents();
+      FirebaseMessageService.sendMessageToGroup(
+          classID, 'A new Report been added', '', {});
     } catch (error) {
       final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
 
@@ -848,6 +824,110 @@ class DataBaseService {
     }
   }
 
+  sendClassMessages(String ClassID, String Message, String Title,
+      BuildContext context) async {
+    try {
+      List<String> parentsToSendNotifications = new List<String>();
+      firestore.collection("parents").getDocuments().then((value2) {
+        for (int i = 0; i < value2.documents.length; i++) {
+          for (int j = 0;
+              j < value2.documents[i].data["ChildsClassesId"].length;
+              j++) {
+            if (value2.documents[i].data["ChildsClassesId"][j] == ClassID) {
+              parentsToSendNotifications.add(value2.documents[i].documentID);
+            }
+          }
+        }
+        Map<String, String> notifMap = new Map<String, String>();
+        notifMap["message"] = Message;
+        notifMap["title"] = Title;
+
+        for (int k = 0; k < parentsToSendNotifications.length; k++) {
+          firestore
+              .collection("Notification")
+              .document(parentsToSendNotifications[k])
+              .collection("notifications")
+              .add(notifMap);
+        }
+      });
+    } catch (error) {
+      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
+
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  sendAllMessage(String Message, String Title, BuildContext context) async {
+    try {
+      List<String> ParentsToSendNotifications = new List<String>();
+      firestore.collection("parents").getDocuments().then((value2) {
+        for (int i = 0; i < value2.documents.length; i++) {
+          ParentsToSendNotifications.add(value2.documents[i].documentID);
+        }
+        Map<String, String> NotifMap = new Map<String, String>();
+        NotifMap["message"] = Message;
+        NotifMap["title"] = Title;
+
+        for (int k = 0; k < ParentsToSendNotifications.length; k++) {
+          firestore
+              .collection("Notification")
+              .document(ParentsToSendNotifications[k])
+              .collection("notifications")
+              .add(NotifMap);
+        }
+      });
+    } catch (error) {
+      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
+
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  sendStudentMessages(String ParentEmail, String Message, String Title,
+      BuildContext context) async {
+    try {
+      Map<String, String> NotifMap = new Map<String, String>();
+      NotifMap["message"] = Message;
+      NotifMap["title"] = Title;
+      await firestore
+          .collection("Notification")
+          .document(ParentEmail)
+          .collection("notifications")
+          .add(NotifMap);
+    } catch (error) {
+      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
+
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<QuerySnapshot> getMessages(
+      String ParentEmail, BuildContext context) async {
+    try {
+      return await firestore
+          .collection("Notification")
+          .document(ParentEmail)
+          .collection("notifications")
+          .getDocuments();
+    } catch (error) {
+      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
+
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<void> ChangePassword(String password) async {
+    FirebaseUser user = await auth.currentUser();
+
+    //Pass in the password to updatePassword.
+    user.updatePassword(password).then((_) {
+      print("Succesfull changed password");
+    }).catchError((error) {
+      print("Password can't be changed" + error.toString());
+      //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+    });
+  }
+
   DeleteClassReport(String ClassReportID, BuildContext context,
       Function refresh, String DateOfReprt) async {
     try {
@@ -941,8 +1021,9 @@ class DataBaseService {
     }
   }
 
-  DeleteStudent(
-      String StudentId, BuildContext context, Function refresh) async {
+  deleteStudent(
+    String parentEmail,String classID,
+      String studentId, BuildContext context, Function refresh) async {
     try {
       showDialog(
         context: context,
@@ -958,12 +1039,17 @@ class DataBaseService {
                   print("yesssss");
                   firestore
                       .collection("students")
-                      .document(StudentId)
+                      .document(studentId)
                       .delete()
                       .then((value) {
                     refresh();
                     Navigator.pop(context);
                   });
+                  firestore
+                        .collection('notification')
+                        .document(classID)
+                        .setData({parentEmail: FieldValue.delete()},
+                            merge: true);
                 },
               ),
               FlatButton(
@@ -985,8 +1071,8 @@ class DataBaseService {
     }
   }
 
-  DeleteStudentFromClass(String StudentId, String ClassID, BuildContext context,
-      Function refresh) async {
+  deleteStudentFromClass(String parentEmail, String studentId, String classID,
+      BuildContext context, Function refresh) async {
     try {
       showDialog(
         context: context,
@@ -998,13 +1084,14 @@ class DataBaseService {
               FlatButton(
                 child: Text("yes"),
                 onPressed: () {
+                    
                   //yes
                   print("yesssss");
                   firestore
                       .collection("classes")
-                      .document(ClassID)
+                      .document(classID)
                       .collection("students")
-                      .document(StudentId)
+                      .document(studentId)
                       .delete()
                       .then((value) {
                     refresh();
@@ -1032,8 +1119,8 @@ class DataBaseService {
     // print(ClassID+"   ");
   }
 
-  deleteTeacher(
-      String teacherEmail,String teacherPassword, BuildContext context, Function refresh) async {
+  deleteTeacher(String teacherEmail, String teacherPassword,
+      BuildContext context, Function refresh) async {
     try {
       showDialog(
         context: context,
@@ -1077,7 +1164,7 @@ class DataBaseService {
     }
   }
 
-  DeleteClass(String ClassID, BuildContext context, Function refresh) async {
+  DeleteClass(String classID, BuildContext context, Function refresh) async {
     try {
       showDialog(
         context: context,
@@ -1093,12 +1180,13 @@ class DataBaseService {
                   print("yesssss");
                   firestore
                       .collection("classes")
-                      .document(ClassID)
+                      .document(classID)
                       .delete()
                       .then((value) {
                     refresh();
                     Navigator.pop(context);
                   });
+                  
                 },
               ),
               FlatButton(
@@ -1120,8 +1208,8 @@ class DataBaseService {
     }
   }
 
-  deleteParent(
-      String parentEmail,String parentPassword, BuildContext context, Function refresh) async {
+  deleteParent(String parentEmail, String parentPassword, BuildContext context,
+      Function refresh) async {
     try {
       showDialog(
         context: context,
@@ -1132,7 +1220,7 @@ class DataBaseService {
             actions: [
               FlatButton(
                 child: Text("yes"),
-                onPressed: () async{
+                onPressed: () async {
                   await auth.deleteUser(parentEmail, parentPassword);
                   print("yesssss");
                   firestore
@@ -1147,8 +1235,7 @@ class DataBaseService {
               ),
               FlatButton(
                 child: Text("no"),
-                onPressed: () =>
-                  Navigator.of(context).pop(),
+                onPressed: () => Navigator.of(context).pop(),
               ),
             ],
           );
@@ -1159,110 +1246,6 @@ class DataBaseService {
 
       Scaffold.of(context).showSnackBar(snackBar);
     }
-  }
-
-  sendClassMessages(String ClassID, String Message, String Title,
-      BuildContext context) async {
-    try {
-      List<String> ParentsToSendNotifications = new List<String>();
-      firestore.collection("parents").getDocuments().then((value2) {
-        for (int i = 0; i < value2.documents.length; i++) {
-          for (int j = 0;
-              j < value2.documents[i].data["ChildsClassesId"].length;
-              j++) {
-            if (value2.documents[i].data["ChildsClassesId"][j] == ClassID) {
-              ParentsToSendNotifications.add(value2.documents[i].documentID);
-            }
-          }
-        }
-        Map<String, String> NotifMap = new Map<String, String>();
-        NotifMap["message"] = Message;
-        NotifMap["title"] = Title;
-
-        for (int k = 0; k < ParentsToSendNotifications.length; k++) {
-          firestore
-              .collection("Notification")
-              .document(ParentsToSendNotifications[k])
-              .collection("notifications")
-              .add(NotifMap);
-        }
-      });
-    } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
-    }
-  }
-
-  sendAllMessage(String Message, String Title, BuildContext context) async {
-    try {
-      List<String> ParentsToSendNotifications = new List<String>();
-      firestore.collection("parents").getDocuments().then((value2) {
-        for (int i = 0; i < value2.documents.length; i++) {
-          ParentsToSendNotifications.add(value2.documents[i].documentID);
-        }
-        Map<String, String> NotifMap = new Map<String, String>();
-        NotifMap["message"] = Message;
-        NotifMap["title"] = Title;
-
-        for (int k = 0; k < ParentsToSendNotifications.length; k++) {
-          firestore
-              .collection("Notification")
-              .document(ParentsToSendNotifications[k])
-              .collection("notifications")
-              .add(NotifMap);
-        }
-      });
-    } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
-    }
-  }
-
-  sendStudentMessages(String ParentEmail, String Message, String Title,
-      BuildContext context) async {
-    try {
-      Map<String, String> NotifMap = new Map<String, String>();
-      NotifMap["message"] = Message;
-      NotifMap["title"] = Title;
-      await firestore
-          .collection("Notification")
-          .document(ParentEmail)
-          .collection("notifications")
-          .add(NotifMap);
-    } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
-    }
-  }
-
-  Future<QuerySnapshot> getMessages(
-      String ParentEmail, BuildContext context) async {
-    try {
-      return await firestore
-          .collection("Notification")
-          .document(ParentEmail)
-          .collection("notifications")
-          .getDocuments();
-    } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
-    }
-  }
-
-  Future<void> ChangePassword(String password) async {
-    FirebaseUser user = await auth.currentUser();
-
-    //Pass in the password to updatePassword.
-    user.updatePassword(password).then((_) {
-      print("Succesfull changed password");
-    }).catchError((error) {
-      print("Password can't be changed" + error.toString());
-      //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
-    });
   }
 }
 

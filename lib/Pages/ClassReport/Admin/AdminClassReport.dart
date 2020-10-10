@@ -90,6 +90,7 @@ class _AdminClassReportState extends State<AdminClassReport> {
 
     });
     await dataBaseService.GetClassReports(Date,context).then((value) {
+    
       for(int i=0;i<value.documents.length;i++){
         SingleReportt singleReport=new SingleReportt();
         singleReport.ReportID=value.documents[i].documentID;

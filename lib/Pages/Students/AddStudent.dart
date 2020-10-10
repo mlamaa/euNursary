@@ -129,7 +129,7 @@ class _AddStudentState extends State<AddStudent> {
                             mode: Mode.DIALOG,
                             showSearchBox: true,
                             // showSelectedItem: true,
-                            itemAsString:(Parents p) =>p.name+" "+p.Email,
+                            itemAsString:(Parents p) =>(p?.name??'')+" "+(p?.Email??''),
                             onFind: (String filter) async{
                               if(filter.length!=0){
                                 List<Parents> parentCurrentList=new List<Parents>();

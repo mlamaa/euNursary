@@ -15,12 +15,12 @@ class SendMessage extends StatefulWidget {
 
 class _SendMessageState extends State<SendMessage> {
   DataBaseService dataBaseService = new DataBaseService();
-  TextEditingController MessageTextController = new TextEditingController();
-  TextEditingController TtileTextController = new TextEditingController();
+  TextEditingController messageTextController = new TextEditingController();
+  TextEditingController ttileTextController = new TextEditingController();
   String group = "class";
   Widget newWidget = Container();
 
-  Studetns CurrentStudent = new Studetns(" ", " ", " ");
+  Studetns currentStudent = new Studetns(" ", " ", " ");
   List<Studetns> studetnsList = new List<Studetns>();
   getStudetns() async {
     await dataBaseService.GetStudents(context).then((values) {
@@ -158,9 +158,9 @@ class _SendMessageState extends State<SendMessage> {
                   hint: "Student Name",
                   // popupItemDisabled: (String s) => s.startsWith('I'),
                   onChanged: (Studetns s) {
-                    CurrentStudent = s;
+                    currentStudent = s;
                   },
-                  selectedItem: CurrentStudent),
+                  selectedItem: currentStudent),
             ),
           ),
         ],
@@ -251,7 +251,7 @@ class _SendMessageState extends State<SendMessage> {
                   padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                   child: TextField(
                     maxLines: 1,
-                    controller: TtileTextController,
+                    controller: ttileTextController,
                     style: TextStyle(color: MyColors.color1, fontSize: 16),
                     decoration: InputDecoration(
                         hintText: " Title ...",
@@ -272,7 +272,7 @@ class _SendMessageState extends State<SendMessage> {
                   padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                   child: TextField(
                     maxLines: 5,
-                    controller: MessageTextController,
+                    controller: messageTextController,
                     style: TextStyle(color: MyColors.color1, fontSize: 16),
                     decoration: InputDecoration(
                         hintText: " Message ...",
@@ -289,37 +289,37 @@ class _SendMessageState extends State<SendMessage> {
               padding: const EdgeInsets.all(8.0),
               child: InkWell(
                 onTap: () {
-                  if (MessageTextController.text != null &&
-                      TtileTextController.text != null) {
+                  if (messageTextController.text != null &&
+                      ttileTextController.text != null) {
                     if (group == "class") {
                       if (CurrentStudentClass.name != " ") {
                         print("message: " +
-                            MessageTextController.text +
+                            messageTextController.text +
                             " to class: " +
                             CurrentStudentClass.ID);
                         dataBaseService.sendClassMessages(
                             CurrentStudentClass.ID,
-                            MessageTextController.text,
-                            TtileTextController.text,
+                            messageTextController.text,
+                            ttileTextController.text,
                             context);
                         Navigator.pop(context);
                       }
                     } else if (group == "student") {
-                      if (CurrentStudent.name != " ") {
+                      if (currentStudent.name != " ") {
                         print("message: " +
-                            MessageTextController.text +
+                            messageTextController.text +
                             " to class: " +
-                            CurrentStudent.ParentEmail);
+                            currentStudent.ParentEmail);
                         dataBaseService.sendStudentMessages(
-                            CurrentStudent.ParentEmail,
-                            MessageTextController.text,
-                            TtileTextController.text,
+                            currentStudent.ParentEmail,
+                            messageTextController.text,
+                            ttileTextController.text,
                             context);
                         Navigator.pop(context);
                       }
                     } else {
-                      dataBaseService.sendAllMessage(MessageTextController.text,
-                          TtileTextController.text, context);
+                      dataBaseService.sendAllMessage(messageTextController.text,
+                          ttileTextController.text, context);
                       Navigator.pop(context);
                     }
                   }

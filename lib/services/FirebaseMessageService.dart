@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
@@ -21,7 +22,7 @@ class FirebaseMessageService {
     try {
       print('notification pressed');
     } catch (e) {
-      print('onSelectNotification throws and exception $e'); 
+      print('onSelectNotification throws and exception $e');
     }
   }
 
@@ -121,39 +122,51 @@ class FirebaseMessageService {
     print('subscribed to admin');
   }
 
-  static Future<Map<String, dynamic>> sendAndRetrieveMessage(
+  static Future<Map<String, dynamic>> sendMessageToGroup(
     String topic,
     String title,
-    String body, 
+    String body,
     Map data,
-    ) async {
+  ) async {
     try {
       await _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(
             sound: true, badge: true, alert: true, provisional: false),
       );
 
-      await http.post(
-        'https://fcm.googleapis.com/fcm/send',
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization': 'key=$_serverToken',
-        },
-        body: jsonEncode(
-          <String, dynamic>{
-            'notification': <String, dynamic>{
-              'body': body,
-              'title': title
-            },
-            'data': data..addAll(<String, dynamic>{
-              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-            }),
-            'priority': 'high',
-            'to': '/topics/$topic',
-          },
-        ),
-      );
-/*  */
+      Firestore _firebase = Firestore.instance;
+      _firebase.collection('notification').document('tokens').get().then(
+          (tokens) => tokens == null
+              ? null
+              : _firebase.collection('notification').document(topic).get().then(
+                  (group) => group?.data?.keys
+                      ?.map((userId) => userId != null &&
+                              (tokens.data?.containsKey(userId) ?? false)
+                          ? http.post(
+                              'https://fcm.googleapis.com/fcm/send',
+                              headers: <String, String>{
+                                'Content-Type': 'application/json',
+                                'Authorization': 'key=$_serverToken',
+                              },
+                              body: jsonEncode(
+                                <String, dynamic>{
+                                  'notification': <String, dynamic>{
+                                    'body': body,
+                                    'title': title
+                                  },
+                                  'data': data
+                                    ..addAll(<String, dynamic>{
+                                      'click_action':
+                                          'FLUTTER_NOTIFICATION_CLICK',
+                                    }),
+                                  'priority': 'high',
+                                  'to': tokens[userId],
+                                },
+                              ),
+                            )
+                          : null)
+                      ?.toList()));
+
       final Completer<Map<String, dynamic>> completer =
           Completer<Map<String, dynamic>>();
 
@@ -162,7 +175,6 @@ class FirebaseMessageService {
           completer.complete(message);
         },
       );
-
       return completer.future;
     } catch (e) {
       print("sendAndRetrieveMessage throws an exception $e");
