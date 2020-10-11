@@ -238,23 +238,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.color4,
-      appBar: true
-          ? AppBar(
-              title: InkWell(
-                  onTap: () {
-                    FirebaseMessageService.sendMessageToGroup('classID',
-                        'A new Report been added', 'Tap to view details', {});
-                  },
-                  child: Text('click')),
-              actions: [
-                IconButton(
-                    icon: Icon(Icons.send),
-                    onPressed: () async {
-                      await FirebaseMessageService.subscribeTOAdmin();
-                    }),
-              ],
-            )
-          : myAppBar(),
+      appBar: myAppBar(),
       body: SafeArea(
         child: isAuthenticated
             ? Center(
