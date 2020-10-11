@@ -123,11 +123,8 @@ class FirebaseMessageService {
   }
 
   static Future<Map<String, dynamic>> sendMessageToGroup(
-    String topic,
-    String title,
-    String body,
-    Map data,
-  ) async {
+      String topic, String title, String body, Map data,
+      {bool singleMessage = false}) async {
     try {
       await _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(
@@ -138,34 +135,87 @@ class FirebaseMessageService {
       _firebase.collection('notification').document('tokens').get().then(
           (tokens) => tokens == null
               ? null
-              : _firebase.collection('notification').document(topic).get().then(
-                  (group) => group?.data?.keys
-                      ?.map((userId) => userId != null &&
-                              (tokens.data?.containsKey(userId) ?? false)
-                          ? http.post(
-                              'https://fcm.googleapis.com/fcm/send',
-                              headers: <String, String>{
-                                'Content-Type': 'application/json',
-                                'Authorization': 'key=$_serverToken',
+              : singleMessage
+                  ? tokens.data.containsKey(topic)
+                      ? http.post(
+                          'https://fcm.googleapis.com/fcm/send',
+                          headers: <String, String>{
+                            'Content-Type': 'application/json',
+                            'Authorization': 'key=$_serverToken',
+                          },
+                          body: jsonEncode(
+                            <String, dynamic>{
+                              'notification': <String, dynamic>{
+                                'body': body,
+                                'title': title
                               },
-                              body: jsonEncode(
-                                <String, dynamic>{
-                                  'notification': <String, dynamic>{
-                                    'body': body,
-                                    'title': title
-                                  },
-                                  'data': data
-                                    ..addAll(<String, dynamic>{
-                                      'click_action':
-                                          'FLUTTER_NOTIFICATION_CLICK',
-                                    }),
-                                  'priority': 'high',
-                                  'to': tokens[userId],
+                              'data': data
+                                ..addAll(<String, dynamic>{
+                                  'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+                                }),
+                              'priority': 'high',
+                              'to': tokens[topic],
+                            },
+                          ),
+                        )
+                      : null
+                  : topic == 'tokens'
+                      ? tokens.data?.keys
+                          ?.map((token) => http.post(
+                                'https://fcm.googleapis.com/fcm/send',
+                                headers: <String, String>{
+                                  'Content-Type': 'application/json',
+                                  'Authorization': 'key=$_serverToken',
                                 },
-                              ),
-                            )
-                          : null)
-                      ?.toList()));
+                                body: jsonEncode(
+                                  <String, dynamic>{
+                                    'notification': <String, dynamic>{
+                                      'body': body,
+                                      'title': title
+                                    },
+                                    'data': data
+                                      ..addAll(<String, dynamic>{
+                                        'click_action':
+                                            'FLUTTER_NOTIFICATION_CLICK',
+                                      }),
+                                    'priority': 'high',
+                                    'to': token,
+                                  },
+                                ),
+                              ))
+                          ?.toList()
+                      : _firebase
+                          .collection('notification')
+                          .document(topic)
+                          .get()
+                          .then((group) => group?.data?.keys
+                              ?.map((userId) => userId != null &&
+                                      (tokens.data?.containsKey(userId) ??
+                                          false)
+                                  ? http.post(
+                                      'https://fcm.googleapis.com/fcm/send',
+                                      headers: <String, String>{
+                                        'Content-Type': 'application/json',
+                                        'Authorization': 'key=$_serverToken',
+                                      },
+                                      body: jsonEncode(
+                                        <String, dynamic>{
+                                          'notification': <String, dynamic>{
+                                            'body': body,
+                                            'title': title
+                                          },
+                                          'data': data
+                                            ..addAll(<String, dynamic>{
+                                              'click_action':
+                                                  'FLUTTER_NOTIFICATION_CLICK',
+                                            }),
+                                          'priority': 'high',
+                                          'to': tokens[userId],
+                                        },
+                                      ),
+                                    )
+                                  : null)
+                              ?.toList()));
 
       final Completer<Map<String, dynamic>> completer =
           Completer<Map<String, dynamic>>();

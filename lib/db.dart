@@ -850,6 +850,8 @@ class DataBaseService {
               .add(notifMap);
         }
       });
+      FirebaseMessageService.sendMessageToGroup(ClassID, Title, Message, {});
+
     } catch (error) {
       final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
 
@@ -876,6 +878,8 @@ class DataBaseService {
               .add(NotifMap);
         }
       });
+      FirebaseMessageService.sendMessageToGroup('tokens', Title, Message, {});
+
     } catch (error) {
       final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
 
@@ -894,6 +898,8 @@ class DataBaseService {
           .document(ParentEmail)
           .collection("notifications")
           .add(NotifMap);
+      FirebaseMessageService.sendMessageToGroup(ParentEmail, Title, Message, {},singleMessage: true);
+
     } catch (error) {
       final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
 
