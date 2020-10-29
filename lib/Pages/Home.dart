@@ -1,27 +1,27 @@
+import "package:firebase_auth/firebase_auth.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import "package:firebase_auth/firebase_auth.dart";
+
 import '../Colors.dart';
-import '../UserInfo.dart';
-import "login.dart";
-import '../auth.dart';
-import '../widgets.dart';
 import "../Tools.dart";
+import '../UserInfo.dart';
+import '../auth.dart';
 import '../db.dart';
-import 'Classes/Classes.dart';
-import 'Teachers/TeachersClass.dart';
-import 'Parents/Parents.dart';
-import 'Students/Students.dart';
+import '../services/FirebaseMessageService.dart';
+import '../widgets.dart';
+import 'ChangePass.dart';
 import 'ClassReport/Admin/AdminClassReport.dart';
 import 'ClassReport/Parent/ParentClassReport.dart';
 import 'ClassReport/Teacher/TeacherClassReport.dart';
-import 'StudentReport//Admin/AdminStudentReport.dart';
-import 'StudentReport/Parent/ParentStudentReport.dart';
-import 'StudentReport/Teacher/TeacherStudentReport.dart';
-import 'dart:io';
-import 'Messages/SendMessage.dart';
+import 'Classes/Classes.dart';
 import 'Messages/RecieveMessages.dart';
-import 'ChangePass.dart';
+import 'Messages/SendMessage.dart';
+import 'Parents/Parents.dart';
+import 'StudentReport//Admin/AdminStudentReport.dart';
+import 'StudentReport/Teacher/TeacherStudentReport.dart';
+import 'Students/Students.dart';
+import 'Teachers/TeachersClass.dart';
+import "login.dart";
 
 class HomePage extends StatefulWidget {
   @override
@@ -31,7 +31,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   DataBaseService dataBaseService = new DataBaseService();
-  FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+  // FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
 
   bool isAuthenticated = false;
   Auth auth = new Auth();
@@ -41,11 +41,11 @@ class _HomePageState extends State<HomePage> {
   // List<Widget> ParentWidgets=new List<Widget>();
 
   getUserType(String email) async {
-    await dataBaseService.getUserType(email, context).then((value) {
+    await dataBaseService.getUserType(email, context).then((value) async {
       UserCurrentInfo.Type = value.data["type"];
-        if (UserCurrentInfo.Email != null && UserCurrentInfo.Type != null)
-          dataBaseService.saveTooken(
-              UserCurrentInfo.Email, UserCurrentInfo.Type, context);
+      if (UserCurrentInfo.Email != null && UserCurrentInfo.Type != null)
+        await dataBaseService.saveTooken(
+            UserCurrentInfo.Email, UserCurrentInfo.Type, context);
       // print(UserCurrentInfo.Type+"a");
       setState(() {
         setMainWidgets();

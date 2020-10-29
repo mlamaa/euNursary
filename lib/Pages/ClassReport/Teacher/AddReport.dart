@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 //import 'package:progress_dialog/progress_dialog.dart';
-import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:garderieeu/Colors.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/Tools.dart';
+import 'package:garderieeu/multiSelect/MultiSelectFormField.dart';
 import 'package:garderieeu/widgets.dart';
 import 'package:garderieeu/UserInfo.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -263,7 +263,7 @@ class _AddReportState extends State<AddReport> {
   submit() async {
     await getTextAnswers().then((value) {
       if (value == true) {
-        widget.dataBaseService.SendClassReport(ReportData, AllAnswerss,
+        widget.dataBaseService.sendClassReport(ReportData, AllAnswerss,
             CurrentStudentClass.ID, getDateNow(), context);
         Future.delayed(const Duration(milliseconds: 500), () {
           widget.refresh(getDateNow());
@@ -372,11 +372,11 @@ class _AddReportState extends State<AddReport> {
                         Container(
                           height: 10,
                         ),
-                        ItemsHere(),
+                        if((CurrentStudentClass.ID?.trim() ?? '') != '') ItemsHere(),
                         Container(
                           height: 20,
                         ),
-                        Row(
+                        if((CurrentStudentClass.ID?.trim() ?? '') != '') Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -725,26 +725,7 @@ class SingleDrop extends StatefulWidget {
 }
 
 class _SingleDropState extends State<SingleDrop> {
-  bool _disposed = false;
-  Timer t;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // widget.CurrentChoice=widget.choices[0];
-    t = Timer.periodic(Duration(milliseconds: 500), (Timer t) {
-      if (!_disposed) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _disposed = true;
-    super.dispose();
-  }
+  dynamic _answer;
 
   @override
   Widget build(BuildContext context) {
@@ -761,23 +742,29 @@ class _SingleDropState extends State<SingleDrop> {
     // print(widget.savedText+"asdsadsadsadsad");
     return DropdownButton<String>(
       hint: Text("Select item"),
-      value: widget.CurrentChoice,
-      onChanged: (String Value) {
-        setState(() {
-          // widget.CurrentChoice= Value;
-          QuestionAndAnswers questionsAndAnswersHere = new QuestionAndAnswers();
-          questionsAndAnswersHere.question = widget.Question;
-          questionsAndAnswersHere.answer = Value;
+      value: _answer ?? widget.CurrentChoice,
+      onChanged: (String value) {
+        AllAnswerss.firstWhere((element) => element.question == widget.Question)
+            .answer = value;
 
-          // ForTextQuestion[i].questionAndAnswers=ForTextQuestion[i].textEditingController.text;
-          // print(AllAnswers.toString()+"==============================");
-          for (int j = 0; j < AllAnswerss.length; j++) {
-            if (AllAnswerss[j].question == questionsAndAnswersHere.question) {
-              AllAnswerss.removeAt(j);
-            }
-          }
-          AllAnswerss.add(questionsAndAnswersHere);
+        setState(() {
+          _answer = value;
         });
+        // setState(() {
+        //   // widget.CurrentChoice= Value;
+        //   QuestionAndAnswers questionsAndAnswersHere = new QuestionAndAnswers();
+        //   questionsAndAnswersHere.question = widget.Question;
+        //   questionsAndAnswersHere.answer = Value;
+
+        //   // ForTextQuestion[i].questionAndAnswers=ForTextQuestion[i].textEditingController.text;
+        //   // print(AllAnswers.toString()+"==============================");
+        //   for (int j = 0; j < AllAnswerss.length; j++) {
+        //     if (AllAnswerss[j].question == questionsAndAnswersHere.question) {
+        //       AllAnswerss.removeAt(j);
+        //     }
+        //   }
+        //   AllAnswerss.add(questionsAndAnswersHere);
+        // });
       },
       items: widget.choices.map((String textt) {
         return DropdownMenuItem<String>(

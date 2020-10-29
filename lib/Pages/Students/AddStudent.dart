@@ -32,7 +32,7 @@ class _AddStudentState extends State<AddStudent> {
     thisClassMap["parentEmail"]=currentParent.Email;
     thisClassMap["class"]=currentStudentClass.ID;
     // ThisClassMap["parentEmail"]=ParentEmailController.text;
-    await dataBaseService.AddStudentTODataBase(thisClassMap,currentStudentClass.ID,currentParent.Email,context).then((value) {
+    await dataBaseService.addStudentTODataBase(thisClassMap,currentStudentClass.ID,currentParent.Email,context).then((value) {
 
       Future.delayed(const Duration(milliseconds: 500), () {
         widget.refresh();
@@ -129,7 +129,7 @@ class _AddStudentState extends State<AddStudent> {
                             mode: Mode.DIALOG,
                             showSearchBox: true,
                             // showSelectedItem: true,
-                            itemAsString:(Parents p) =>p.name+" "+p.Email,
+                            itemAsString:(Parents p) =>(p?.name??'')+" "+(p?.Email??''),
                             onFind: (String filter) async{
                               if(filter.length!=0){
                                 List<Parents> parentCurrentList=new List<Parents>();

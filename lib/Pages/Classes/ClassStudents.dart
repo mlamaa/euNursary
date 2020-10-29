@@ -14,7 +14,7 @@ class ClassStudents extends StatefulWidget {
 }
 
 class _ClassStudentsState extends State<ClassStudents> {
-  List<SingleStudentObject> ListOfStudents = new List<SingleStudentObject>();
+  List<SingleStudentObject> listOfStudents = new List<SingleStudentObject>();
   DataBaseService dataBaseService = new DataBaseService();
 
   GetStudents() async {
@@ -28,7 +28,7 @@ class _ClassStudentsState extends State<ClassStudents> {
         singleStudentObject.StudentIdinClass = value.documents[i].documentID;
         singleStudentObject.Class = value.documents[i].data["class"];
         setState(() {
-          ListOfStudents.add(singleStudentObject);
+          listOfStudents.add(singleStudentObject);
         });
       }
     });
@@ -39,14 +39,14 @@ class _ClassStudentsState extends State<ClassStudents> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(15, 15, 15, 5),
         child: ListView(  
-            children: List.generate(ListOfStudents.length, (index) {
+            children: List.generate(listOfStudents.length, (index) {
           return SingleParent(
               refresh: GetStudents,
               context: context,
-              Class: ListOfStudents[index].Class,
-              Email: ListOfStudents[index].ParentEmail,
-              Name: ListOfStudents[index].Name,
-              StudentID: ListOfStudents[index].StudentIdinClass);
+              slass: listOfStudents[index].Class,
+              email: listOfStudents[index].ParentEmail,
+              name: listOfStudents[index].Name,
+              studentID: listOfStudents[index].StudentIdinClass);
         })),
       ),
     );
@@ -73,17 +73,17 @@ class _ClassStudentsState extends State<ClassStudents> {
 }
 
 class SingleParent extends StatefulWidget {
-  final String Name;
-  final String Email;
-  final String Class;
-  final String StudentID;
+  final String name;
+  final String email;
+  final String slass;
+  final String studentID;
   final Function refresh;
   final BuildContext context;
   SingleParent(
-      {this.Name,
-      this.Email,
-      this.Class,
-      this.StudentID,
+      {this.name,
+      this.email,
+      this.slass,
+      this.studentID,
       this.context,
       this.refresh});
 
@@ -108,7 +108,7 @@ class _SingleParentState extends State<SingleParent> {
                 height: 10,
               ),
               Text(
-                widget.Name,
+                widget.name,
                 style: TextStyle(
                     fontSize: 25,
                     color: MyColors.color1,
@@ -120,7 +120,7 @@ class _SingleParentState extends State<SingleParent> {
               Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: Text(
-                  "Parent Email: " + widget.Email,
+                  "Parent Email: " + widget.email,
                   style: TextStyle(
                     fontSize: 20,
                     color: MyColors.color1,
@@ -129,34 +129,17 @@ class _SingleParentState extends State<SingleParent> {
               ),
               Container(
                 height: 10,
-              ),
-              // Padding(
-              //   padding: const EdgeInsets.all(4.0),
-              //   child: Text("class:   "+widget.Class,style: TextStyle(fontSize:20,color: Colors.white),),
-              // ),
-              // Container(height: 10,),
+              ), 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  // InkWell(
-                  //   onTap: (){
-                  //
-                  //     Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                  //     new UpdateClass(date: widget.Year,name: widget.ClassName,Id:widget.ID,)));
-                  //
-                  //   },
-                  //   child: Container(
-                  //       width: 35,
-                  //       height: 35,
-                  //       child: Icon(Icons.edit,color: MyColors.color1,size: 30,)),
-                  // ),
-                  // Container(width: 20,),
+                children: <Widget>[ 
                   InkWell(
                     onTap: () {
+                      
                       DataBaseService database = new DataBaseService();
-                      database.DeleteStudentFromClass(widget.StudentID,
-                          widget.Class, widget.context, widget.refresh);
+                      database.deleteStudentFromClass(widget.email,widget.studentID,
+                          widget.slass, widget.context, widget.refresh);
                     },
                     child: Container(
                         width: 35,
