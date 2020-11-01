@@ -10,7 +10,8 @@ import 'package:intl/intl.dart';
 
 class AdminClassReportTemplates extends StatefulWidget {
   final Function refresh;
-  AdminClassReportTemplates({this.refresh});
+  final List<String> teacherClasses;
+  AdminClassReportTemplates(this.teacherClasses,{this.refresh});
   @override
   _AdminClassReportTemplatesState createState() => _AdminClassReportTemplatesState();
 }
@@ -47,6 +48,7 @@ class _AdminClassReportTemplatesState extends State<AdminClassReportTemplates> {
 
             children: List.generate(ListOfReports.length, (index) {
               return SingleReportTemplateWidget(
+              widget.teacherClasses,
                 refresh: widget.refresh,
                 ReportTemplateMaker: ListOfReports[index].ReportTemplateMaker,
                 Date: ListOfReports[index].Date,
@@ -95,7 +97,8 @@ class SingleReportTemplateWidget extends StatefulWidget {
   final    String ReportTemplateMaker;
   final    Timestamp Date;
   final Function refresh;
-  SingleReportTemplateWidget({this.ReportTemplateMaker,this.ReportTemplateID,this.Date ,this.refresh});
+  final List<String> teacherClasses;
+  SingleReportTemplateWidget(this.teacherClasses,{this.ReportTemplateMaker,this.ReportTemplateID,this.Date ,this.refresh});
 
   @override
   _SingleReportTemplateWidgetState createState() => _SingleReportTemplateWidgetState();
@@ -114,6 +117,8 @@ class _SingleReportTemplateWidgetState extends State<SingleReportTemplateWidget>
         onTap: (){
           Navigator.push(context, MaterialPageRoute(builder: (context)=>
           new AddReport(
+            true,
+            widget.teacherClasses,
             refresh: widget.refresh,
             ReportTemplateId: widget.ReportTemplateID,
           )

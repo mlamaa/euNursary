@@ -20,13 +20,13 @@ class Tools {
     bottomRight: const Radius.circular(5.0),
   );
 
-  static Widget MyInputText(String Text,TextEditingController textEditingController){
+  static Widget MyInputText(String Text,TextEditingController textEditingController,{double width = 200}){
     return Container(
       decoration: BoxDecoration(
         borderRadius: Tools.myBorderRadius2,
         color: Colors.white,
       ),
-      width: 200,
+      width: width,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
         child: TextField(

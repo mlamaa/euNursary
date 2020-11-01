@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/db.dart';
-import 'package:garderieeu/widgets.dart';
-import 'EditClassReport.dart';
-import 'AddReport.dart';
-import 'AdminClassReportTemplates.dart';
-import 'SingleReport.dart';
 import 'package:intl/intl.dart';
+
+import '../../../Colors.dart';
+import '../../../Tools.dart';
+import '../../../db.dart';
+import '../../../widgets.dart';
+import 'AddReport.dart';
+import 'EditClassReport.dart';
 
 class AdminClassReportTemplates extends StatefulWidget {
   final Function refresh;
@@ -137,7 +136,7 @@ class _SingleReportTemplateWidgetState extends State<SingleReportTemplateWidget>
           Navigator.push(context, MaterialPageRoute(builder: (context)=>
           new AddReport(
             refresh: widget.refresh,
-            ReportTemplateId: widget.ReportTemplateID,
+            reportTemplateId: widget.ReportTemplateID,
           )
           ));
         },

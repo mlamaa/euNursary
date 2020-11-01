@@ -248,8 +248,8 @@ class _AddReportState extends State<AddReport> {
     // AllAnswers[" "]=" ";
     ReportData[" "]=" ";
     ReportData["ReportSenderType"]="admin";
-    ReportData["ReportSenderID"]=UserCurrentInfo.UID;
-    ReportData["ReportSenderEmail"]=UserCurrentInfo.Email;
+    ReportData["ReportSenderID"]=UserCurrentInfo.currentUserId;
+    ReportData["ReportSenderEmail"]=UserCurrentInfo.email;
     ReportData["Date"]= FieldValue.serverTimestamp();
   }
 
@@ -805,53 +805,38 @@ class SingleDrop extends StatefulWidget {
 
 class _SingleDropState extends State<SingleDrop> {
   dynamic _answer;
- 
+  @override
+  void initState() { 
+    if ((widget.savedText?.trim() ?? '') != '') {
+      print("single drop is not null");
+      widget.CurrentChoice = widget.savedText;
+    }
+    if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) == null)
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-
-
-    if(widget.savedText!=null&&widget.savedText!=""&&widget.savedText!=" "){
-
-      print("single drop is not null");
-      widget.CurrentChoice=widget.savedText;
-
-    }
-    else{
-      print("this single is null");
-      // widget.CurrentChoice= widget.choices[0];
-
-    }
     // print(widget.savedText+"asdsadsadsadsad");
     return DropdownButton<String>(
-      hint:  Text("Select item"),
+      hint: Text("Select item"),
       value: _answer ?? widget.CurrentChoice,
-      onChanged: (String value) {
-        AllAnswerss.firstWhere((element) => element.question == widget.Question)
-            .answer = value;
 
-        setState(() {
+      onChanged: (value) {
+        print(AllAnswerss);
+        if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) != null)
+        AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null)?.answer = value;
+        else 
+        AllAnswerss.add(QuestionAndAnswers()
+        ..question = widget.Question
+        ..answer = _answer);
+        setState(() { 
           _answer = value;
         });
-        // setState(() {
-        //   // widget.CurrentChoice= Value;
-        //   QuestionAndAnswers questionsAndAnswersHere=new QuestionAndAnswers();
-        //   questionsAndAnswersHere.question=widget.Question;
-        //   questionsAndAnswersHere.answer=Value;
-
-        //   // ForTextQuestion[i].questionAndAnswers=ForTextQuestion[i].textEditingController.text;
-        //   // print(AllAnswers.toString()+"==============================");
-        //   for(int j=0;j<AllAnswerss.length;j++){
-        //     if(AllAnswerss[j].question==questionsAndAnswersHere.question){
-        //       AllAnswerss.removeAt(j);
-        //     }
-
-        //   }
-        //   AllAnswerss.add(questionsAndAnswersHere);
-
-        // });
       },
       items: widget.choices.map((String textt) {
-        return  DropdownMenuItem<String>(
+        return DropdownMenuItem<String>(
           value: textt,
           child: Text(textt),
         );

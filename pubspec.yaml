@@ -36,6 +36,7 @@ dependencies:
   dropdown_search: ^0.4.4
 
   flutter_launcher_icons: ^0.7.3
+  toast: any
 
   firebase_core: ^0.4.0
   flutter_local_notifications: any

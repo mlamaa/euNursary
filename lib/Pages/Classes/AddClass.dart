@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/Colors.dart';
 import 'package:garderieeu/db.dart';
+import 'package:garderieeu/helpers/HelperContext.dart';
 import 'package:garderieeu/widgets.dart';
 
 class AddClass extends StatefulWidget {
@@ -98,10 +99,8 @@ class _AddClassState extends State<AddClass> {
                           });
                           AddClass();
                         } else {
-                          final snackBar = SnackBar(
-                              content: Text(
-                                  "Class Name and year must be more than 2 letters"));
-                          Scaffold.of(context).showSnackBar(snackBar);
+                          HelperContext.showMessage(context,
+                              "Class Name and year must be more than 2 letters");
                         }
                       },
                       child: Tools.MyButton("Add Class"),

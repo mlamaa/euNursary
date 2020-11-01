@@ -1,77 +1,66 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Pages/StudentReport/Admin/Create/MultiChoice.dart';
-import 'package:garderieeu/Pages/StudentReport/Admin/Create/SingleChoice.dart';
-import 'package:garderieeu/Pages/StudentReport/Admin/Create/TextQuestion.dart';
-import 'package:garderieeu/Pages/StudentReport/Admin/Create/DateQuestion.dart';
-import 'package:garderieeu/Tools.dart';
-//import 'package:progress_dialog/progress_dialog.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/db.dart';
-import 'package:garderieeu/widgets.dart';
-import 'package:garderieeu/UserInfo.dart';
 
-
+import '../../../Colors.dart';
+import '../../../Tools.dart';
+import '../../../db.dart';
+import '../../../helpers/HelperContext.dart';
+import '../../../widgets.dart';
+import 'Create/DateQuestion.dart';
+import 'Create/MultiChoice.dart';
+import 'Create/SingleChoice.dart';
+import 'Create/TextQuestion.dart';
 
 class EditStudentReportAsAdmin extends StatefulWidget {
   // final List<ClassReportItems> listOfOldItems;
   // EditClassReportAsAdmin({this.listOfOldItems});
 
   @override
-  _EditStudentReportAsAdminState createState() => _EditStudentReportAsAdminState();
+  _EditStudentReportAsAdminState createState() =>
+      _EditStudentReportAsAdminState();
 }
 
-
 class _EditStudentReportAsAdminState extends State<EditStudentReportAsAdmin> {
- DataBaseService dataBaseService=new DataBaseService();
- // TextEditingController  textEditingController=new TextEditingController();
+  DataBaseService dataBaseService = new DataBaseService();
+  // TextEditingController  textEditingController=new TextEditingController();
 
-  refreshFromCreate(){
+  refreshFromCreate() {
     Navigator.pop(context);
 
-    setState(() {
+    setState(() {});
+  }
 
+  refreshFromItem() {
+    setState(() {});
+  }
+
+  bool MustPress = false;
+
+  MustPressIsTrue() {
+    setState(() {
+      MustPress = true;
     });
   }
 
-  refreshFromItem(){
-    setState(() {
-
-    });
-  }
-
-
-
- bool MustPress=false;
-
- MustPressIsTrue(){
-   setState(() {
-     MustPress=true;
-   });
- }
-
-
- Widget ItemsHere(){
+  Widget ItemsHere() {
     return Flexible(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-
-          child: ListView.builder(
-
-              itemCount: CreatingStudentReportSomeInfo.CreatingStudentsReportItems.length,
-              itemBuilder: (context, index){
+      padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+      child: ListView.builder(
+          itemCount:
+              CreatingStudentReportSomeInfo.CreatingStudentsReportItems.length,
+          itemBuilder: (context, index) {
 //            print("---------------------"+items["text"]);
-                  return Padding(
-                    padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
-                    child: ItemView(
-                      item: CreatingStudentReportSomeInfo.CreatingStudentsReportItems[index],
-                      toRefresh: refreshFromItem,
-                    ),
-                  );
-
-
-              }),
-        ));
+            return Padding(
+              padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
+              child: ItemView(
+                item: CreatingStudentReportSomeInfo
+                    .CreatingStudentsReportItems[index],
+                toRefresh: refreshFromItem,
+              ),
+            );
+          }),
+    ));
   }
 
   Future<void> popListOption(BuildContext context) {
@@ -80,7 +69,7 @@ class _EditStudentReportAsAdminState extends State<EditStudentReportAsAdmin> {
       builder: (context) {
         return Dialog(
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
           elevation: 16,
           child: Container(
             height: 400.0,
@@ -98,12 +87,12 @@ class _EditStudentReportAsAdminState extends State<EditStudentReportAsAdmin> {
                   ),
                 ),
                 SizedBox(height: 20),
-                addLineInDialog("MultipleChoice", "MultipleChoiceQuestion", context),
-                addLineInDialog("SingleChoice", "SingleChoiceQuestion", context),
+                addLineInDialog(
+                    "MultipleChoice", "MultipleChoiceQuestion", context),
+                addLineInDialog(
+                    "SingleChoice", "SingleChoiceQuestion", context),
                 addLineInDialog("Text", "TextQuestion", context),
                 addLineInDialog("Time", "DateQuestion", context),
-
-
 
 //                 addLineInDialog(  "Name 4" ,   "" , context),
 //                 addLineInDialog(  "Name 5" ,   "" , context),
@@ -120,17 +109,27 @@ class _EditStudentReportAsAdminState extends State<EditStudentReportAsAdmin> {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       switch (tag) {
         case "MultipleChoiceQuestion":
-          return AddMultiChoice(refreshToAdd: refreshFromCreate,ChangeColor: MustPressIsTrue,);
+          return AddMultiChoice(
+            refreshToAdd: refreshFromCreate,
+            ChangeColor: MustPressIsTrue,
+          );
 
         case "SingleChoiceQuestion":
-          return new AddSingleChoice(refreshToAdd: refreshFromCreate,ChangeColor: MustPressIsTrue,);
+          return new AddSingleChoice(
+            refreshToAdd: refreshFromCreate,
+            ChangeColor: MustPressIsTrue,
+          );
 
         case "TextQuestion":
-          return new AddTextQuestion(refreshToAdd: refreshFromCreate,ChangeColor: MustPressIsTrue,);
+          return new AddTextQuestion(
+            refreshToAdd: refreshFromCreate,
+            ChangeColor: MustPressIsTrue,
+          );
         case "DateQuestion":
-          return new AddDateQuestion(refreshToAdd: refreshFromCreate,ChangeColor: MustPressIsTrue,);
-
-
+          return new AddDateQuestion(
+            refreshToAdd: refreshFromCreate,
+            ChangeColor: MustPressIsTrue,
+          );
       }
 
       return new EditStudentReportAsAdmin();
@@ -148,7 +147,7 @@ class _EditStudentReportAsAdminState extends State<EditStudentReportAsAdmin> {
           children: <Widget>[
             Row(
               children: <Widget>[
-                  new Text(displayText),
+                new Text(displayText),
               ],
             ),
             SizedBox(height: 12),
@@ -160,49 +159,60 @@ class _EditStudentReportAsAdminState extends State<EditStudentReportAsAdmin> {
     );
   }
 
- getOldItems()async{
-    await dataBaseService.GetStudentReportTemplateQuestions(context).then((value) {
-
-      for(int i=0;i<value.documents.length;i++){
+  getOldItems() async {
+    await dataBaseService.GetStudentReportTemplateQuestions(context)
+        .then((value) {
+      for (int i = 0; i < value.documents.length; i++) {
         StudentReportItems classReportItems = new StudentReportItems();
-        classReportItems.isAdded=true;
+        classReportItems.isAdded = true;
         print(value.documents[i].data["Type"]);
-        if(value.documents[i].data["Type"]=="text"||value.documents[i].data["Type"]=="date"){
-          classReportItems.Type=value.documents[i].data["Type"];
-          classReportItems.Question=value.documents[i].data["Question"];
-        }else{
-          classReportItems.Type=value.documents[i].data["Type"];
-          classReportItems.Question=value.documents[i].data["Question"];
-          classReportItems.choicesCount=value.documents[i].data["choicesCount"];
-          classReportItems.TheChoices=value.documents[i].data["TheChoices"];
-          classReportItems.MultipleChoice=value.documents[i].data["MultipleChoice"];
+        if (value.documents[i].data["Type"] == "text" ||
+            value.documents[i].data["Type"] == "date") {
+          classReportItems.Type = value.documents[i].data["Type"];
+          classReportItems.Question = value.documents[i].data["Question"];
+        } else {
+          classReportItems.Type = value.documents[i].data["Type"];
+          classReportItems.Question = value.documents[i].data["Question"];
+          classReportItems.choicesCount =
+              value.documents[i].data["choicesCount"];
+          classReportItems.TheChoices = value.documents[i].data["TheChoices"];
+          classReportItems.MultipleChoice =
+              value.documents[i].data["MultipleChoice"];
         }
-        bool mustadd=true;
-          if(CreatingStudentReportSomeInfo.CreatingStudentsReportItems.length>0){
-            for(int j=0;j<CreatingStudentReportSomeInfo.CreatingStudentsReportItems.length;j++)
-            {
-              print(CreatingStudentReportSomeInfo.CreatingStudentsReportItems==null);
-              if(CreatingStudentReportSomeInfo.CreatingStudentsReportItems[j].Question==classReportItems.Question)
-              {
-                mustadd=false;
-              }
-              if(j==CreatingStudentReportSomeInfo.CreatingStudentsReportItems.length-1&&mustadd){
-                setState(() {
-                  CreatingStudentReportSomeInfo.CreatingStudentsReportItems.add(classReportItems);
-                });
-              }
+        bool mustadd = true;
+        if (CreatingStudentReportSomeInfo.CreatingStudentsReportItems.length >
+            0) {
+          for (int j = 0;
+              j <
+                  CreatingStudentReportSomeInfo
+                      .CreatingStudentsReportItems.length;
+              j++) {
+            print(CreatingStudentReportSomeInfo.CreatingStudentsReportItems ==
+                null);
+            if (CreatingStudentReportSomeInfo
+                    .CreatingStudentsReportItems[j].Question ==
+                classReportItems.Question) {
+              mustadd = false;
             }
-
-          }else{
-            CreatingStudentReportSomeInfo.CreatingStudentsReportItems.add(classReportItems);
+            if (j ==
+                    CreatingStudentReportSomeInfo
+                            .CreatingStudentsReportItems.length -
+                        1 &&
+                mustadd) {
+              setState(() {
+                CreatingStudentReportSomeInfo.CreatingStudentsReportItems.add(
+                    classReportItems);
+              });
+            }
           }
-
+        } else {
+          CreatingStudentReportSomeInfo.CreatingStudentsReportItems.add(
+              classReportItems);
+        }
       }
       print("++++++++++++ must return");
     });
   }
-
-
 
   @override
   void initState() {
@@ -212,19 +222,17 @@ class _EditStudentReportAsAdminState extends State<EditStudentReportAsAdmin> {
     getOldItems();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => popListOption(
-            context), //  popAddElement( context , "Choisir l'element"),
-        child: Icon(Icons.add),
-        backgroundColor: MyColors.color1,
-      ),
-      body: Builder(
-        builder: (BuildContext context){
+        appBar: myAppBar(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => popListOption(
+              context), //  popAddElement( context , "Choisir l'element"),
+          child: Icon(Icons.add),
+          backgroundColor: MyColors.color1,
+        ),
+        body: Builder(builder: (BuildContext context) {
           return Stack(
             children: <Widget>[
               Column(
@@ -266,30 +274,22 @@ class _EditStudentReportAsAdminState extends State<EditStudentReportAsAdmin> {
                   ItemsHere(),
                   Center(
                     child: InkWell(
-                      onTap: (){
-                        if(CreatingStudentReportSomeInfo.CreatingStudentsReportItems.length>0){
+                      onTap: () {
+                        if (CreatingStudentReportSomeInfo
+                                .CreatingStudentsReportItems.length >
+                            0) {
                           print("will add");
-                          dataBaseService.SendNewStudentReportTempplate(CreatingStudentReportSomeInfo.CreatingStudentsReportItems,context);
-                          CreatingStudentReportSomeInfo.CreatingStudentsReportItems=new List<StudentReportItems>();
+                          dataBaseService.SendNewStudentReportTempplate(
+                              CreatingStudentReportSomeInfo
+                                  .CreatingStudentsReportItems,
+                              context);
+                          CreatingStudentReportSomeInfo
+                                  .CreatingStudentsReportItems =
+                              new List<StudentReportItems>();
                           Navigator.pop(context);
-                        }else{
-
-                          final snackBar = SnackBar(
-                            content: Container(
-                              height: 30.0,
-                              child: Center(
-                                  child: Text(
-                                    "Report must not be empty",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.center,
-                                  )),
-                            ),
-                            duration: Duration(seconds: 2),
-                            backgroundColor:MyColors.color3,
-                          );
-                          Scaffold.of(context).showSnackBar(snackBar);
+                        } else {
+                          HelperContext.showMessage(
+                              context, "Report must not be empty");
                         }
                       },
                       child: Container(
@@ -297,9 +297,13 @@ class _EditStudentReportAsAdminState extends State<EditStudentReportAsAdmin> {
                         height: 40,
                         decoration: BoxDecoration(
                             borderRadius: Tools.myBorderRadius2,
-                            color:MustPress?MyColors.color3: MyColors.color1
-                        ),
-                        child: Center(child: Text("Edit Report",style: TextStyle(fontSize: 18,color: Colors.white),)),
+                            color:
+                                MustPress ? MyColors.color3 : MyColors.color1),
+                        child: Center(
+                            child: Text(
+                          "Edit Report",
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        )),
                       ),
                     ),
                   ),
@@ -310,19 +314,16 @@ class _EditStudentReportAsAdminState extends State<EditStudentReportAsAdmin> {
               ),
             ],
           );
-        }
-      )
-    );
+        }));
   }
 }
-
 
 class ItemView extends StatefulWidget {
   final Function ChangeColor;
 
   final StudentReportItems item;
   final Function toRefresh;
-  ItemView({this.item,this.toRefresh,this.ChangeColor});
+  ItemView({this.item, this.toRefresh, this.ChangeColor});
 
   @override
   _ItemViewState createState() => _ItemViewState();
@@ -331,22 +332,25 @@ class ItemView extends StatefulWidget {
 class _ItemViewState extends State<ItemView> {
   @override
   Widget build(BuildContext context) {
-    Widget Choices=Container();
-    if(widget.item.Type=="choices"){
+    Widget Choices = Container();
+    if (widget.item.Type == "choices") {
       ScrollController _controllerTwo = ScrollController();
       setState(() {
-        Choices= Scrollbar(
+        Choices = Scrollbar(
           isAlwaysShown: true,
           controller: _controllerTwo,
           child: SingleChildScrollView(
             controller: _controllerTwo,
             child: Column(
-              children:List.generate(widget.item.TheChoices.length, (index) {
+              children: List.generate(widget.item.TheChoices.length, (index) {
                 return Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Text(
-                    "Choice "+(index+1).toString()+" :"+widget.item.TheChoices[index],
-                    style: TextStyle(fontSize: 18,color: Colors.white),
+                    "Choice " +
+                        (index + 1).toString() +
+                        " :" +
+                        widget.item.TheChoices[index],
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 );
               }),
@@ -356,104 +360,140 @@ class _ItemViewState extends State<ItemView> {
       });
     }
 
-    if(widget.item.Type=="text"){
-      return Container(
-        width: 350,
-        // height: 50,
-        decoration: BoxDecoration(
-          borderRadius: Tools.myBorderRadius,
-            color: widget.item.isAdded? MyColors.color1:MyColors.color3
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Column(
-            children: [
-              Text("Type: "+widget.item.Type,style:TextStyle(fontSize: 18,color: Colors.white) ,),
-              Container(height: 10,),
-              Text("Question:  "+widget.item.Question,style:TextStyle(fontSize: 18,color: Colors.white) ,),
-              Container(height: 5,),
-              InkWell(
-                  onTap: (){
-                    CreatingStudentReportSomeInfo.CreatingStudentsReportItems.remove(widget.item);
-                    widget.toRefresh();
-                    widget.ChangeColor();
-
-                  },
-                  child: Icon(Icons.delete,size: 30,color: Colors.white,))
-            ],
-          )
-        ),
-      );
-    }else if(widget.item.Type=="date"){
+    if (widget.item.Type == "text") {
       return Container(
         width: 350,
         // height: 50,
         decoration: BoxDecoration(
             borderRadius: Tools.myBorderRadius,
-            color: widget.item.isAdded? MyColors.color1:MyColors.color3
-        ),
+            color: widget.item.isAdded ? MyColors.color1 : MyColors.color3),
         child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: Column(
               children: [
-                Text("Type: "+widget.item.Type,style:TextStyle(fontSize: 18,color: Colors.white) ,),
-                Container(height: 10,),
-                Text("Question:  "+widget.item.Question,style:TextStyle(fontSize: 18,color: Colors.white) ,),
-                Container(height: 5,),
+                Text(
+                  "Type: " + widget.item.Type,
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+                Container(
+                  height: 10,
+                ),
+                Text(
+                  "Question:  " + widget.item.Question,
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+                Container(
+                  height: 5,
+                ),
                 InkWell(
-                    onTap: (){
-                      CreatingStudentReportSomeInfo.CreatingStudentsReportItems.remove(widget.item);
+                    onTap: () {
+                      CreatingStudentReportSomeInfo.CreatingStudentsReportItems
+                          .remove(widget.item);
                       widget.toRefresh();
                       widget.ChangeColor();
-
                     },
-                    child: Icon(Icons.delete,size: 30,color: Colors.white,))
+                    child: Icon(
+                      Icons.delete,
+                      size: 30,
+                      color: Colors.white,
+                    ))
               ],
-            )
-        ),
+            )),
       );
-    }else if(widget.item.Type=="choices"){
-        return Container(
-          width: 350,
-          // height: 50,
-          decoration: BoxDecoration(
-              borderRadius: Tools.myBorderRadius,
-              color: widget.item.isAdded? MyColors.color1:MyColors.color3
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Column(
-                children: [
-                  Text("Type: "+widget.item.Type+"  MultipleChoice: "+(widget.item.MultipleChoice?"yes":"no"),style:TextStyle(fontSize: 18,color: Colors.white) ,),
-                  Container(height: 10,),
-                  Text("Question:  "+widget.item.Question,style:TextStyle(fontSize: 18,color: Colors.white) ,),
-                  Container(height: 5,),
-                  Text("Choices:",style:TextStyle(fontSize: 18,color: Colors.white) ,),
-                  Container(height: 5,),
-                  Container(
-                    width: 300,
-                      height:60,
-                      child: Choices),
-                  Container(height: 5,),
-                  InkWell(
-                      onTap: (){
-                        CreatingStudentReportSomeInfo.CreatingStudentsReportItems.remove(widget.item);
-                        widget.toRefresh();
-                        widget.ChangeColor();
-
-                      },
-                      child: Icon(Icons.delete,size: 30,color: Colors.white,))
-                ],
-              )
-          ),
-        );
-
-
+    } else if (widget.item.Type == "date") {
+      return Container(
+        width: 350,
+        // height: 50,
+        decoration: BoxDecoration(
+            borderRadius: Tools.myBorderRadius,
+            color: widget.item.isAdded ? MyColors.color1 : MyColors.color3),
+        child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Column(
+              children: [
+                Text(
+                  "Type: " + widget.item.Type,
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+                Container(
+                  height: 10,
+                ),
+                Text(
+                  "Question:  " + widget.item.Question,
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+                Container(
+                  height: 5,
+                ),
+                InkWell(
+                    onTap: () {
+                      CreatingStudentReportSomeInfo.CreatingStudentsReportItems
+                          .remove(widget.item);
+                      widget.toRefresh();
+                      widget.ChangeColor();
+                    },
+                    child: Icon(
+                      Icons.delete,
+                      size: 30,
+                      color: Colors.white,
+                    ))
+              ],
+            )),
+      );
+    } else if (widget.item.Type == "choices") {
+      return Container(
+        width: 350,
+        // height: 50,
+        decoration: BoxDecoration(
+            borderRadius: Tools.myBorderRadius,
+            color: widget.item.isAdded ? MyColors.color1 : MyColors.color3),
+        child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Column(
+              children: [
+                Text(
+                  "Type: " +
+                      widget.item.Type +
+                      "  MultipleChoice: " +
+                      (widget.item.MultipleChoice ? "yes" : "no"),
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+                Container(
+                  height: 10,
+                ),
+                Text(
+                  "Question:  " + widget.item.Question,
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+                Container(
+                  height: 5,
+                ),
+                Text(
+                  "Choices:",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+                Container(
+                  height: 5,
+                ),
+                Container(width: 300, height: 60, child: Choices),
+                Container(
+                  height: 5,
+                ),
+                InkWell(
+                    onTap: () {
+                      CreatingStudentReportSomeInfo.CreatingStudentsReportItems
+                          .remove(widget.item);
+                      widget.toRefresh();
+                      widget.ChangeColor();
+                    },
+                    child: Icon(
+                      Icons.delete,
+                      size: 30,
+                      color: Colors.white,
+                    ))
+              ],
+            )),
+      );
     }
-
   }
 }
-
-
-
-

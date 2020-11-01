@@ -1,76 +1,62 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/db.dart';
-import 'package:garderieeu/widgets.dart';
-import 'AddReport.dart';
 import 'package:intl/intl.dart';
+
+import '../../../Colors.dart';
+import '../../../Tools.dart';
+import '../../../db.dart';
+import '../../../widgets.dart';
+import 'AddReport.dart';
 
 class AdminClassReportTemplates extends StatefulWidget {
   final Function refresh;
   AdminClassReportTemplates({this.refresh});
   @override
-  _AdminClassReportTemplatesState createState() => _AdminClassReportTemplatesState();
+  _AdminClassReportTemplatesState createState() =>
+      _AdminClassReportTemplatesState();
 }
 
 class _AdminClassReportTemplatesState extends State<AdminClassReportTemplates> {
   List<SingleReportTemplate> ListOfReports = new List<SingleReportTemplate>();
   DataBaseService dataBaseService = new DataBaseService();
 
-  GetReports() async{
+  GetReports() async {
     await dataBaseService.GetStudentReportsTemplates(context).then((value) {
-
-        SingleReportTemplate singleReport=new SingleReportTemplate();
-        singleReport.ReportTemplateID=value.documentID;
-        singleReport.ReportTemplateMaker=value.data["ReportTemplateMaker"];
-        singleReport.Date=value.data["Date"];
-        singleReport.Reportname=value.data["ReportName"];
-        setState(() {
-          ListOfReports.add(singleReport);
-          print("===="+singleReport.ReportTemplateID);
-        });
-
-
+      SingleReportTemplate singleReport = new SingleReportTemplate();
+      singleReport.ReportTemplateID = value.documentID;
+      singleReport.ReportTemplateMaker = value.data["ReportTemplateMaker"];
+      singleReport.Date = value.data["Date"];
+      singleReport.Reportname = value.data["ReportName"];
+      setState(() {
+        ListOfReports.add(singleReport);
+      });
     });
   }
 
-  Widget ItemsHere(){
+  Widget ItemsHere() {
     return Flexible(
       child: Padding(
         padding: EdgeInsets.fromLTRB(15, 15, 15, 5),
         child: ListView(
-          // crossAxisCount: 1,
-          // crossAxisSpacing: 30,
-          // mainAxisSpacing:20,
-
             children: List.generate(ListOfReports.length, (index) {
-              return SingleReportTemplateWidget(
-                refresh: widget.refresh,
-                ReportTemplateMaker: ListOfReports[index].ReportTemplateMaker,
-                Date: ListOfReports[index].Date,
-                ReportTemplateID: ListOfReports[index].ReportTemplateID,
-                // Reportname: ListOfReports[index].Reportname,
-
-              );
-            })
-
-        ),
+          return SingleReportTemplateWidget(
+            refresh: widget.refresh,
+            reportTemplateMaker: ListOfReports[index].ReportTemplateMaker,
+            date: ListOfReports[index].Date,
+            reportTemplateID: ListOfReports[index].ReportTemplateID,
+            // Reportname: ListOfReports[index].Reportname,
+          );
+        })),
       ),
-
     );
   }
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     GetReports();
+    super.initState();
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -79,92 +65,61 @@ class _AdminClassReportTemplatesState extends State<AdminClassReportTemplates> {
       appBar: myAppBar(),
       body: Column(
         children: <Widget>[
-
           ItemsHere(),
-
         ],
       ),
     );
   }
 }
 
-
 class SingleReportTemplateWidget extends StatefulWidget {
-  final    String ReportTemplateID;
-  // final    String Reportname;
-  final    String ReportTemplateMaker;
-  final    Timestamp Date;
+  final String reportTemplateID;
+  final String reportTemplateMaker;
+  final Timestamp date;
   final Function refresh;
+  final List<String> teacherClasses;
 
-  SingleReportTemplateWidget({this.ReportTemplateMaker,this.ReportTemplateID,this.Date ,this.refresh});
+  SingleReportTemplateWidget(
+   { this.teacherClasses,
+      this.reportTemplateMaker,
+      this.reportTemplateID,
+      this.date,
+      this.refresh});
 
   @override
-  _SingleReportTemplateWidgetState createState() => _SingleReportTemplateWidgetState();
+  _SingleReportTemplateWidgetState createState() =>
+      _SingleReportTemplateWidgetState();
 }
 
-class _SingleReportTemplateWidgetState extends State<SingleReportTemplateWidget> {
+class _SingleReportTemplateWidgetState
+    extends State<SingleReportTemplateWidget> {
   @override
   Widget build(BuildContext context) {
-    DateTime datetime=widget.Date.toDate();
-    var formatter =new DateFormat.yMd().add_jm();
-    String Datehere=formatter.format(datetime);
+    DateTime datetime = widget.date.toDate();
+    var formatter = new DateFormat.yMd().add_jm();
+    String datehere = formatter.format(datetime);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
       child: InkWell(
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>
-          new AddReport(
-            refresh: widget.refresh,
-            ReportTemplateId: widget.ReportTemplateID,
-          )
-          ));
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => new AddReport(
+                    fromTeacher:true,
+                    teacherClasses:widget.teacherClasses,
+                        refresh: widget.refresh,
+                        ReportTemplateId: widget.reportTemplateID,
+                      )));
         },
         child: Container(
-          // height: 80,
+          alignment: Alignment.center,
           decoration: BoxDecoration(
-              borderRadius: Tools.myBorderRadius2,
-              color: Colors.white
-          ),
-
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                // Container(height: 10,),
-                // Text("Report Name:   "+widget.Reportname,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
-                Container(height: 10,),
-                Text("Date:   "+Datehere,style: TextStyle(fontSize:20,color: MyColors.color1),),
-                Container(height: 10,),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    // InkWell(
-                    //   onTap: (){
-                    //
-                    //     Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                    //     new UpdateClass(date: widget.Year,name: widget.ClassName,Id:widget.ID,)));
-                    //
-                    //   },
-                    //   child: Container(
-                    //       width: 35,
-                    //       height: 35,
-                    //       child: Icon(Icons.edit,color: MyColors.color1,size: 30,)),
-                    // ),
-                    // Container(width: 20,),
-                    // InkWell(
-                    //   onTap: (){
-                    //
-                    //   },
-                    //   child: Container(
-                    //       width: 35,
-                    //       height: 35,
-                    //       child: Icon(Icons.delete,color: MyColors.color1,size: 30,)),
-                    // ),
-                  ],
-                )
-              ],
-            ),
+              borderRadius: Tools.myBorderRadius2, color: Colors.white),
+          child: Text(
+            "Date: " + datehere,
+            style: TextStyle(fontSize: 20, color: MyColors.color1),
           ),
         ),
       ),
@@ -172,14 +127,11 @@ class _SingleReportTemplateWidgetState extends State<SingleReportTemplateWidget>
   }
 }
 
-
-
-class SingleReportTemplate{
+class SingleReportTemplate {
   String ReportTemplateID;
   String Reportname;
   String ReportTemplateMaker;
   Timestamp Date;
-
 }
 // class SingleQuestion{
 //   String Question;

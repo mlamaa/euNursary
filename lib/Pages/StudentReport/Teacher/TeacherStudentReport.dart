@@ -1,46 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/UserInfo.dart';
-import 'package:garderieeu/db.dart';
-import 'package:garderieeu/widgets.dart';
-// import 'CreateReport.dart';
-// import 'AddReport.dart';
-import 'TeacherStudentReportTemplates.dart';
-import 'SingleReport.dart';
 import 'package:intl/intl.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+
+import '../../../Colors.dart';
+import '../../../Tools.dart';
+import '../../../UserInfo.dart';
+import '../../../db.dart';
+import '../../../widgets.dart';
 import 'AddReport.dart';
+import 'SingleReport.dart';
 
 class TeacherStudentReport extends StatefulWidget {
+  const TeacherStudentReport({Key key}) : super(key: key);
+
   @override
   _TeacherStudentReportState createState() => _TeacherStudentReportState();
 }
 
 class _TeacherStudentReportState extends State<TeacherStudentReport> {
-  List<SingleReportt> ListOfReports = new List<SingleReportt>();
+  List<SingleReportt> listOfReports = new List<SingleReportt>();
   DataBaseService dataBaseService = new DataBaseService();
 
-  String CurrentClass;
-  String CurrentDate;
-
-
-  //
-  // List<String> ListOfDates=new List<String>();
-  // getDates(){
-  //   dataBaseService.getDatesOfStudentData(context).then((value) {
-  //     for(int i=0;i<value.documents.length;i++){
-  //       setState(() {
-  //         ListOfDates.add(value.documents[i].documentID);
-  //       });
-  //     }
-  //   });
-  // }
-
-
-  Widget DatesList;
+  String currentClass;
+  String currentDate;
+  Widget datesList;
 
   DateTime selectedDate = DateTime.now();
 
@@ -53,115 +36,106 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
-        String year=picked.year.toString();
-        String month=picked.month.toString();
-        String day=picked.day.toString();
+        String year = picked.year.toString();
+        String month = picked.month.toString();
+        String day = picked.day.toString();
 
-        if(month.length==1){
-          month="0"+month;
+        if (month.length == 1) {
+          month = "0" + month;
         }
 
-        if(day.length==1){
-          day="0"+day;
+        if (day.length == 1) {
+          day = "0" + day;
         }
-        print(year+"."+month+"."+day+"          ..................");
-        GetClasses(year+"."+month+"."+day);
+        GetClasses(year + "." + month + "." + day);
       });
   }
 
-
-
-  GetClasses(String date) async{
-    await dataBaseService.getSingleTeacher(UserCurrentInfo.Email,context).then((value) {
-      GetReports(value.data["Classes"],date);
+  GetClasses(String date) async {
+    await dataBaseService
+        .getSingleTeacher(UserCurrentInfo.email, context)
+        .then((value) {
+      getReports(value.data["Classes"], date);
     });
   }
 
-  GetReports(List<dynamic> classesId,String date) async{
+  getReports(List<dynamic> classesId, String date) async {
     setState(() {
-      ListOfReports = new List<SingleReportt>();
-
+      listOfReports = new List<SingleReportt>();
     });
-    await dataBaseService.GetStudentReports(date,context).then((value) {
-      for(int i=0;i<value.documents.length;i++){
-        SingleReportt singleReport=new SingleReportt();
-        singleReport.ReportID=value.documents[i].documentID;
-        singleReport.ClassId=value.documents[i].data["ClassId"];
-        singleReport.Date=value.documents[i].data["Date"];
-        singleReport.ClassName=value.documents[i].data["ClassName"];
-        singleReport.ReportSenderID=value.documents[i].data["ReportSenderID"];
-        singleReport.ReportSenderEmail=value.documents[i].data["ReportSenderEmail"];
-        singleReport.ReportSenderType=value.documents[i].data["ReportSenderType"];
-        singleReport.StudentName=value.documents[i].data["StudentName"];
+    await dataBaseService.GetStudentReports(date, context).then((value) {
+      for (int i = 0; i < value.documents.length; i++) {
+        SingleReportt singleReport = new SingleReportt();
+        singleReport.ReportID = value.documents[i].documentID;
+        singleReport.ClassId = value.documents[i].data["ClassId"];
+        singleReport.Date = value.documents[i].data["Date"];
+        singleReport.ClassName = value.documents[i].data["ClassName"];
+        singleReport.ReportSenderID = value.documents[i].data["ReportSenderID"];
+        singleReport.ReportSenderEmail =
+            value.documents[i].data["ReportSenderEmail"];
+        singleReport.ReportSenderType =
+            value.documents[i].data["ReportSenderType"];
+        singleReport.StudentName = value.documents[i].data["StudentName"];
 
         setState(() {
-          // print(singleReport.Date.toDate().toIso8601String()+singleReport.ClassName+singleReport.ReportSenderEmail+singleReport.ReportSenderID+singleReport.ReportSenderType+singleReport.ReportID);
-          if(classesId.length>0){
-            bool mustBeAdded=false;
-            for(int j=0;j<classesId.length;j++){
-              if(classesId[j]==singleReport.ClassId){
-                mustBeAdded=true;
+          if (classesId.length > 0) {
+            bool mustBeAdded = false;
+            for (int j = 0; j < classesId.length; j++) {
+              if (classesId[j] == singleReport.ClassId) {
+                mustBeAdded = true;
               }
-              if(mustBeAdded&&j==classesId.length-1){
-                ListOfReports.add(singleReport);
+              if (mustBeAdded && j == classesId.length - 1) {
+                listOfReports.add(singleReport);
               }
             }
           }
         });
       }
-
     });
   }
 
-  Widget ItemsHere(){
+  Widget ItemsHere() {
     return Flexible(
       child: Padding(
         padding: EdgeInsets.fromLTRB(15, 15, 15, 5),
         child: ListView(
-          // crossAxisCount: 1,
-          // crossAxisSpacing: 30,
-          // mainAxisSpacing:20,
-
-            children: List.generate(ListOfReports.length, (index) {
-              return SingleReportWidget(
-                refresh: GetReports,
-
-                context: context,
-                StudentName: ListOfReports[index].StudentName,
-                ReportId: ListOfReports[index].ReportID,
-                Date: ListOfReports[index].Date,
-                ClassId: ListOfReports[index].ClassId,
-                ClassName: ListOfReports[index].ClassName,
-                ReportSenderID: ListOfReports[index].ReportSenderID,
-                ReportSenderType: ListOfReports[index].ReportSenderType,
-                ReportSenderEmail: ListOfReports[index].ReportSenderEmail,
-              );
-            })
-
-        ),
+            children: List.generate(listOfReports.length, (index) {
+          return SingleReportWidget(
+            refresh: getReports,
+            context: context,
+            StudentName: listOfReports[index].StudentName,
+            ReportId: listOfReports[index].ReportID,
+            Date: listOfReports[index].Date,
+            ClassId: listOfReports[index].ClassId,
+            ClassName: listOfReports[index].ClassName,
+            ReportSenderID: listOfReports[index].ReportSenderID,
+            ReportSenderType: listOfReports[index].ReportSenderType,
+            ReportSenderEmail: listOfReports[index].ReportSenderEmail,
+          );
+        })),
       ),
-
     );
   }
 
   @override
-  void initState() { 
-    GetClasses(dataBaseService.getDateNow()); 
+  void initState() {
+    GetClasses(dataBaseService.getDateNow());
     super.initState();
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
-
-    DatesList=Row(
+    datesList = Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Text("Reports Date:",style:TextStyle(fontSize: 18),),
-        Container(width: 10,),
+        Text(
+          "Reports Date:",
+          style: TextStyle(fontSize: 18),
+        ),
+        Container(
+          width: 10,
+        ),
         Container(
           width: 200,
           height: 50,
@@ -171,12 +145,10 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
           ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-            child:
-            RaisedButton(
+            child: RaisedButton(
               onPressed: () => _selectDate(context),
               child: Text('Select date'),
             ),
-
           ),
         ),
       ],
@@ -185,56 +157,77 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
     return Scaffold(
       backgroundColor: MyColors.color4,
       appBar: myAppBar(),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InkWell(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                new AddReport(
-                  refresh: GetReports,
-                  ReportTemplateId: "Student",
-                )
-                ));                  },
-              child: Container(
-                height: 30,
-                decoration: BoxDecoration(
-                  borderRadius: Tools.myBorderRadius2,
-                  color: MyColors.color1,
+      body: FutureBuilder<List<String>>(
+          future: DataBaseService().getTeacherClasses(UserCurrentInfo.email),
+          builder: (context, AsyncSnapshot<List<String>> snapshot) {
+            if (snapshot.connectionState != ConnectionState.done)
+              return Center(child: CircularProgressIndicator());
+            return Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => new AddReport(
+                                    fromTeacher: true,
+                                    teacherClasses: snapshot?.data ?? [],
+                                    refresh: getReports,
+                                    ReportTemplateId: "Student",
+                                  )));
+                    },
+                    child: Container(
+                      height: 30,
+                      decoration: BoxDecoration(
+                        borderRadius: Tools.myBorderRadius2,
+                        color: MyColors.color1,
+                      ),
+                      child: Center(
+                          child: Text(
+                        "Reports Templates",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      )),
+                    ),
+                  ),
                 ),
-                child: Center(
-                    child: Text("Reports Templates",style: TextStyle(color: Colors.white,fontSize: 20),)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: datesList,
                 ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DatesList,
-          ),
-          ItemsHere(),
-        ],
-      ),
+                ItemsHere(),
+              ],
+            );
+          }),
     );
   }
 }
 
-
 class SingleReportWidget extends StatefulWidget {
-  final    String ClassId;
-  final    String ReportId;
-  final    String StudentName;
+  final String ClassId;
+  final String ReportId;
+  final String StudentName;
 
-  final    String ClassName;
-  final    String ReportSenderID;
-  final    String ReportSenderEmail;
-  final    String ReportSenderType;
-  final    Timestamp Date;
+  final String ClassName;
+  final String ReportSenderID;
+  final String ReportSenderEmail;
+  final String ReportSenderType;
+  final Timestamp Date;
   final BuildContext context;
   final Function refresh;
 
-  SingleReportWidget({this.refresh,this.context,this.StudentName,this.ReportSenderType,this.ReportSenderID,this.ReportId,this.ClassName,this.ClassId,this.Date,this.ReportSenderEmail });
+  SingleReportWidget(
+      {this.refresh,
+      this.context,
+      this.StudentName,
+      this.ReportSenderType,
+      this.ReportSenderID,
+      this.ReportId,
+      this.ClassName,
+      this.ClassId,
+      this.Date,
+      this.ReportSenderEmail});
 
   @override
   _SingleReportWidgetState createState() => _SingleReportWidgetState();
@@ -243,55 +236,71 @@ class SingleReportWidget extends StatefulWidget {
 class _SingleReportWidgetState extends State<SingleReportWidget> {
   @override
   Widget build(BuildContext context) {
-    DateTime dateHere=DateTime.now();
-    String Datehere=" ";
+    DateTime dateHere = DateTime.now();
+    String Datehere = " ";
     DateTime datetime;
-    if(widget.Date!=null){
-      datetime=widget.Date.toDate();
-      var formatter =new DateFormat.yMd().add_jm();
-      Datehere=formatter.format(datetime);
-    }else{
-      var formatter =new DateFormat.yMd().add_jm();
-      Datehere=formatter.format(dateHere);
+    if (widget.Date != null) {
+      datetime = widget.Date.toDate();
+      var formatter = new DateFormat.yMd().add_jm();
+      Datehere = formatter.format(datetime);
+    } else {
+      var formatter = new DateFormat.yMd().add_jm();
+      Datehere = formatter.format(dateHere);
     }
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
       child: InkWell(
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>
-          new SingleReport(
-            StudentName: widget.StudentName,
-            Date: widget.Date,
-            ReportID: widget.ReportId,
-            ReportSenderType: widget.ReportSenderType,
-            ReportSenderID: widget.ReportSenderID,
-            ReportSenderEmail: widget.ReportSenderEmail,
-            ClassId: widget.ClassId,
-            ClassName: widget.ClassName,
-          )
-          ));
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => new SingleReport(
+                        StudentName: widget.StudentName,
+                        Date: widget.Date,
+                        ReportID: widget.ReportId,
+                        ReportSenderType: widget.ReportSenderType,
+                        ReportSenderID: widget.ReportSenderID,
+                        ReportSenderEmail: widget.ReportSenderEmail,
+                        ClassId: widget.ClassId,
+                        ClassName: widget.ClassName,
+                      )));
         },
         child: Container(
           // height: 80,
           decoration: BoxDecoration(
-              borderRadius: Tools.myBorderRadius2,
-              color: Colors.white
-          ),
+              borderRadius: Tools.myBorderRadius2, color: Colors.white),
 
           child: Center(
             child: Column(
               children: <Widget>[
                 // Container(height: 10,),
                 // Text("sender:   "+widget.ReportSenderType,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
-                Container(height: 10,),
+                Container(
+                  height: 10,
+                ),
 
-                Text("Class Name:   "+widget.ClassName,style: TextStyle(fontSize:20,color: MyColors.color1),),
-                Container(height: 10,),
-                Text("Student:   "+widget.StudentName,style: TextStyle(fontSize:20,color:MyColors.color1),),
-                Container(height: 10,),
-                Text("Date:   "+Datehere,style: TextStyle(fontSize:20,color: MyColors.color1),),
-                Container(height: 10,),
+                Text(
+                  "Class Name:   " + widget.ClassName,
+                  style: TextStyle(fontSize: 20, color: MyColors.color1),
+                ),
+                Container(
+                  height: 10,
+                ),
+                Text(
+                  "Student:   " + widget.StudentName,
+                  style: TextStyle(fontSize: 20, color: MyColors.color1),
+                ),
+                Container(
+                  height: 10,
+                ),
+                Text(
+                  "Date:   " + Datehere,
+                  style: TextStyle(fontSize: 20, color: MyColors.color1),
+                ),
+                Container(
+                  height: 10,
+                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -310,14 +319,19 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
                     // ),
                     // Container(width: 20,),
                     InkWell(
-                      onTap: (){
-                        DataBaseService database=new DataBaseService();
-                        database.DeleteStudentReport(widget.ReportId,context,widget.refresh);
+                      onTap: () {
+                        DataBaseService database = new DataBaseService();
+                        database.DeleteStudentReport(
+                            widget.ReportId, context, widget.refresh);
                       },
                       child: Container(
                           width: 35,
                           height: 35,
-                          child: Icon(Icons.delete,color: MyColors.color1,size: 30,)),
+                          child: Icon(
+                            Icons.delete,
+                            color: MyColors.color1,
+                            size: 30,
+                          )),
                     ),
                   ],
                 )
@@ -330,10 +344,7 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
   }
 }
 
-
-
-
-class SingleReportt{
+class SingleReportt {
   String ReportID;
   String ClassId;
   String StudentName;

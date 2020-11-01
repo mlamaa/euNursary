@@ -16,7 +16,7 @@ class _RecieveMessagesState extends State<RecieveMessages> {
   List<MessageClass> messagesList = new List<MessageClass>();
 
   getMessages() {
-    dataBaseService.getMessages(UserCurrentInfo.Email, context).then((value) {
+    dataBaseService.getMessages(UserCurrentInfo.email, context).then((value) {
       for (int i = 0; i < value.documents.length; i++) {
         MessageClass messageClass = new MessageClass();
         messageClass.ID = value.documents[i].documentID;
