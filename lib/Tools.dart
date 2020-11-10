@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+
 import 'Colors.dart';
 
 class Tools {
   static Color myBlue = Color(0xff01A0C7);
+
   // static Color myRed = Color(0xff01A0C7);
 
-  static TextStyle myTextStyle = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+  static TextStyle myTextStyle =
+      TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   static BorderRadius myBorderRadius = new BorderRadius.only(
     topLeft: const Radius.circular(30.0),
     topRight: const Radius.circular(5.0),
-    bottomLeft:const Radius.circular(5.0),
+    bottomLeft: const Radius.circular(5.0),
     bottomRight: const Radius.circular(30.0),
   );
   static BorderRadius myBorderRadius2 = new BorderRadius.only(

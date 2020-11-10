@@ -1,14 +1,16 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/helpers/HelperContext.dart';
 import 'package:garderieeu/widgets.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 
 class AddStudent extends StatefulWidget {
   final Function refresh;
+
   AddStudent({this.refresh});
+
   @override
   _AddStudentState createState() => _AddStudentState();
 }
@@ -34,7 +36,7 @@ class _AddStudentState extends State<AddStudent> {
     // ThisClassMap["parentEmail"]=ParentEmailController.text;
     await dataBaseService
         .addStudentTODataBase(
-            thisClassMap, currentStudentClass.ID, currentParent.Email, context)
+        thisClassMap, currentStudentClass.ID, currentParent.Email, context)
         .then((value) {
       Future.delayed(const Duration(milliseconds: 500), () {
         widget.refresh();
@@ -93,183 +95,182 @@ class _AddStudentState extends State<AddStudent> {
           builder: (BuildContext context) {
             return isAdding
                 ? Center(
-                    child: CircularProgressIndicator(),
-                  )
+              child: CircularProgressIndicator(),
+            )
                 : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
                             Text(
-                              "Student Name:",
+                              "Nom:",
                               style: myTextStyle,
                             ),
                             Container(
                               width: 10,
                             ),
-                            Tools.MyInputText(
-                                "Student Name", studentNameeController),
+                            Tools.MyInputText("Nom", studentNameeController),
                           ],
+                  ),
+                  Container(
+                    height: 15,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Parent:  ",
+                        style: myTextStyle,
+                      ),
+                      Container(
+                        width: 10,
+                      ),
+                      Container(
+                        width: 200,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: Tools.myBorderRadius2,
+                          // color: MyColors.color1
                         ),
-                        Container(
-                          height: 15,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(2, 0, 0, 0),
+                          child: DropdownSearch<Parents>(
+                              mode: Mode.DIALOG,
+                              showSearchBox: true,
+                              // showSelectedItem: true,
+                              itemAsString: (Parents p) =>
+                              (p?.name ?? '') +
+                                  " " +
+                                  (p?.Email ?? ''),
+                              onFind: (String filter) async {
+                                if (filter.length != 0) {
+                                  List<Parents> parentCurrentList =
+                                  new List<Parents>();
+                                  for (int i = 0;
+                                  i < parentsList.length;
+                                  i++) {
+                                    if (parentsList[i]
+                                        .name
+                                        .contains(filter) ||
+                                        parentsList[i]
+                                            .Email
+                                            .contains(filter)) {
+                                      parentCurrentList
+                                          .add(parentCurrentList[i]);
+                                    }
+                                  }
+                                  return parentCurrentList;
+                                } else {
+                                  return parentsList;
+                                }
+                              },
+                              label: "parent",
+                              hint: "Parent Name",
+                              // popupItemDisabled: (String s) => s.startsWith('I'),
+                              onChanged: (Parents p) => currentParent = p,
+                              selectedItem: currentParent),
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "Parent Email:  ",
-                              style: myTextStyle,
-                            ),
-                            Container(
-                              width: 10,
-                            ),
-                            Container(
-                              width: 200,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: Tools.myBorderRadius2,
-                                // color: MyColors.color1
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(2, 0, 0, 0),
-                                child: DropdownSearch<Parents>(
-                                    mode: Mode.DIALOG,
-                                    showSearchBox: true,
-                                    // showSelectedItem: true,
-                                    itemAsString: (Parents p) =>
-                                        (p?.name ?? '') +
-                                        " " +
-                                        (p?.Email ?? ''),
-                                    onFind: (String filter) async {
-                                      if (filter.length != 0) {
-                                        List<Parents> parentCurrentList =
-                                            new List<Parents>();
-                                        for (int i = 0;
-                                            i < parentsList.length;
-                                            i++) {
-                                          if (parentsList[i]
-                                                  .name
-                                                  .contains(filter) ||
-                                              parentsList[i]
-                                                  .Email
-                                                  .contains(filter)) {
-                                            parentCurrentList
-                                                .add(parentCurrentList[i]);
-                                          }
-                                        }
-                                        return parentCurrentList;
-                                      } else {
-                                        return parentsList;
-                                      }
-                                    },
-                                    label: "parent",
-                                    hint: "Parent Name",
-                                    // popupItemDisabled: (String s) => s.startsWith('I'),
-                                    onChanged: (Parents p) => currentParent = p,
-                                    selectedItem: currentParent),
-                              ),
-                            ),
-                          ],
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 15,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Class:",
+                        style: myTextStyle,
+                      ),
+                      Container(
+                        width: 10,
+                      ),
+                      Container(
+                        width: 200,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: Tools.myBorderRadius2,
+                          // color: MyColors.color1
                         ),
-                        Container(
-                          height: 15,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(2, 0, 0, 0),
+                          child: DropdownSearch<Classes>(
+                              mode: Mode.DIALOG,
+                              showSearchBox: true,
+                              // showSelectedItem: true,
+                              itemAsString: (Classes s) => s.name,
+                              onFind: (String filter) async {
+                                if (filter.length != 0) {
+                                  List<Classes> classesCurrentList =
+                                  new List<Classes>();
+                                  for (int i = 0;
+                                  i < classesList.length;
+                                  i++) {
+                                    if (classesList[i]
+                                        .name
+                                        .contains(filter)) {
+                                      classesCurrentList
+                                          .add(classesList[i]);
+                                    }
+                                  }
+                                  return classesCurrentList;
+                                } else {
+                                  return classesList;
+                                }
+                              },
+                              label: "class",
+                              hint: "Parent Name",
+                              // popupItemDisabled: (String s) => s.startsWith('I'),
+                              onChanged: (Classes s) =>
+                              currentStudentClass = s,
+                              selectedItem: currentStudentClass),
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "Student Class:",
-                              style: myTextStyle,
-                            ),
-                            Container(
-                              width: 10,
-                            ),
-                            Container(
-                              width: 200,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: Tools.myBorderRadius2,
-                                // color: MyColors.color1
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(2, 0, 0, 0),
-                                child: DropdownSearch<Classes>(
-                                    mode: Mode.DIALOG,
-                                    showSearchBox: true,
-                                    // showSelectedItem: true,
-                                    itemAsString: (Classes s) => s.name,
-                                    onFind: (String filter) async {
-                                      if (filter.length != 0) {
-                                        List<Classes> classesCurrentList =
-                                            new List<Classes>();
-                                        for (int i = 0;
-                                            i < classesList.length;
-                                            i++) {
-                                          if (classesList[i]
-                                              .name
-                                              .contains(filter)) {
-                                            classesCurrentList
-                                                .add(classesList[i]);
-                                          }
-                                        }
-                                        return classesCurrentList;
-                                      } else {
-                                        return classesList;
-                                      }
-                                    },
-                                    label: "class",
-                                    hint: "Parent Name",
-                                    // popupItemDisabled: (String s) => s.startsWith('I'),
-                                    onChanged: (Classes s) =>
-                                        currentStudentClass = s,
-                                    selectedItem: currentStudentClass),
-                              ),
-                            ),
-                          ],
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 15,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      if (studentNameeController.text.length > 2 &&
+                          currentParent.name != " " &&
+                          currentStudentClass.ID != " ") {
+                        setState(() {
+                          isAdding = true;
+                        });
+                        addStudentFunction();
+                      } else {
+                        HelperContext.showMessage(context,
+                            "Le nom d'etudiant doit contenir plus de 2 lettres, le parent et la classe doivent être vides");
+                      }
+                    },
+                    child: Container(
+                      width: 350,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          borderRadius: Tools.myBorderRadius2,
+                          color: MyColors.color1),
+                      child: Center(
+                        child: Text(
+                          "Ajouter",
+                          style: TextStyle(
+                              fontSize: 18, color: Colors.white),
                         ),
-                        Container(
-                          height: 15,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            if (studentNameeController.text.length > 2 &&
-                                currentParent.name != " " &&
-                                currentStudentClass.ID != " ") {
-                              setState(() {
-                                isAdding = true;
-                              });
-                              addStudentFunction();
-                            } else {
-                              HelperContext.showMessage(context,
-                                  "Student Name must be more than 2 letters, parent and class must be empty");
-                            }
-                          },
-                          child: Container(
-                            width: 350,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: Tools.myBorderRadius2,
-                                color: MyColors.color1),
-                            child: Center(
-                              child: Text(
-                                "Add Student",
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
+                      ),
                     ),
-                  );
+                  )
+                ],
+              ),
+            );
           },
         ));
   }
@@ -278,6 +279,7 @@ class _AddStudentState extends State<AddStudent> {
 class Parents {
   String Email;
   String name;
+
   // List<String> Childs=new List<String>();
   Parents(this.Email, this.name);
 }

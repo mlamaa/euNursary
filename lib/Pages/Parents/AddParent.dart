@@ -76,13 +76,13 @@ class _AddParentState extends State<AddParent> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "Parent Name: ",
+                              "Nom: ",
                               style: myTextStyle,
                             ),
                             Container(
                               width: 5,
                             ),
-                            Tools.MyInputText("Parent Name", nameController)
+                            Tools.MyInputText("Nom", nameController)
                           ],
                         ),
                         Container(
@@ -99,8 +99,7 @@ class _AddParentState extends State<AddParent> {
                             Container(
                               width: 5,
                             ),
-                            Tools.MyInputText(
-                                "Parent Phone Number", emailDateController)
+                            Tools.MyInputText("TelePhone", emailDateController)
                           ],
                         ),
                         Container(
@@ -111,13 +110,13 @@ class _AddParentState extends State<AddParent> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "Parent Pass:  ",
+                              "MDP:  ",
                               style: myTextStyle,
                             ),
                             Container(
                               width: 5,
                             ),
-                            Tools.MyInputText("Parent Pass", passDateController)
+                            Tools.MyInputText("MDP", passDateController)
                           ],
                         ),
                         Container(
@@ -127,7 +126,7 @@ class _AddParentState extends State<AddParent> {
                             onTap: () {
                               if (emailDateController.text.length > 4 &&
                                   nameController.text.length > 4 &&
-                                  passDateController.text.length > 5) {
+                                  passDateController.text.length > 6) {
                                 if (emailDateController.text.length == 8 &&
                                     isNumeric(emailDateController.text)) {
                                   setState(() {
@@ -136,14 +135,14 @@ class _AddParentState extends State<AddParent> {
                                   addParentFunction(context);
                                 } else {
                                   HelperContext.showMessage(context,
-                                      "Phone Number Must be 8 numbers");
+                                      "Le numéro de téléphone doit être composé de 8 chiffres");
                                 }
                               } else {
                                 HelperContext.showMessage(context,
-                                    "Parent Full Name must be more than 4 letters,Pass more than 5 letters");
+                                    "Le nom complet du parent doit contenir plus de 4 lettres, MDP plus de 6 lettres");
                               }
                             },
-                            child: Tools.MyButton("Add Parent"))
+                            child: Tools.MyButton("Ajouter Parent"))
                       ],
                     ),
                   );

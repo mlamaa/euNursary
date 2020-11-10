@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../Colors.dart';
-import '../../../../Tools.dart';
-import '../../../../db.dart';
-import '../../../../widgets.dart';
+import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
+import 'package:garderieeu/db.dart';
+import 'package:garderieeu/widgets.dart';
 
 class AddDateQuestion extends StatefulWidget {
   final Function refreshToAdd;
   final Function ChangeColor;
 
-  AddDateQuestion({this.refreshToAdd,this.ChangeColor});
+  AddDateQuestion({this.refreshToAdd, this.ChangeColor});
 
   @override
   _AddDateQuestionState createState() => _AddDateQuestionState();
@@ -30,7 +29,10 @@ class _AddDateQuestionState extends State<AddDateQuestion> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Enter The Question:",style: TextStyle(fontSize: 20,color: MyColors.color1),),
+              child: Text(
+                "Question:",
+                style: TextStyle(fontSize: 20, color: MyColors.color1),
+              ),
             ),
 
             Padding(

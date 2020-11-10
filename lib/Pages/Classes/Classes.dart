@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/widgets.dart';
+
 import 'AddClass.dart';
-import 'UpdateClass.dart';
 import 'ClassStudents.dart';
+import 'UpdateClass.dart';
 
 class Classes extends StatefulWidget {
   @override
@@ -87,7 +88,7 @@ class _ClassesState extends State<Classes> {
                 ),
                 child: Center(
                     child: Text(
-                  "Add Class",
+                      "Ajouter une classe",
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 )),
               ),

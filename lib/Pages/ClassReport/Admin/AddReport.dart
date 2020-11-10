@@ -310,7 +310,7 @@ class _AddReportState extends State<AddReport> {
                               ),
                               child: Center(
                                   child: Text(
-                                "Edit Class Report Template",
+                                "Modifier le modèle de rapport de classe",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 20),
                               )),
@@ -320,7 +320,7 @@ class _AddReportState extends State<AddReport> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                           child: Text(
-                            "Your Report",
+                            "Vos rapports",
                             style: TextStyle(
                                 fontSize: 40,
                                 color: MyColors.color1,
@@ -335,7 +335,7 @@ class _AddReportState extends State<AddReport> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "Student Class:",
+                              "Enfant:",
                               style: myTextStyle,
                             ),
                             Container(
@@ -375,7 +375,7 @@ class _AddReportState extends State<AddReport> {
                                       }
                                     },
                                     label: "class",
-                                    hint: "class Name",
+                                    hint: "Nom du class",
                                     // popupItemDisabled: (String s) => s.startsWith('I'),
                                     onChanged: (Classes s) {
                                       setState(() {
@@ -424,7 +424,7 @@ class _AddReportState extends State<AddReport> {
                                 height: 45,
                                 child: Center(
                                   child: Text(
-                                    "Submit",
+                                    "Sauvgarder",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 30),
                                   ),
@@ -477,7 +477,7 @@ class ItemView extends StatelessWidget {
  
         if (savedAnswer != null) {
           if (savedAnswer.length > 0) {
-            String text = "Answerss: ";
+            String text = "Reponses: ";
             for (int i = 0; i < savedAnswer.length; i++) {
               text = text + savedAnswer[i].toString() + ", ";
             }
@@ -520,18 +520,18 @@ class ItemView extends StatelessWidget {
                     "value": choices[i]
                   }
               ],
-              
+
               textField: 'display',
               valueField: 'value',
               okButtonLabel: 'OK',
-              cancelButtonLabel: 'CANCEL',
-              hintText: 'Please choose one or more',  
+              cancelButtonLabel: 'ANNULER',
+              hintText: 'Veuillez en choisir un ou plusieurs valeurs',
               onSaved: (value) {
                 if (value == null) return;
                 _MyAnswers = value;
 
                 QuestionAndAnswers questionsAndAnswersHere =
-                    new QuestionAndAnswers();
+                new QuestionAndAnswers();
                 questionsAndAnswersHere.question = question;
                 questionsAndAnswersHere.answers = value;
 
@@ -614,7 +614,7 @@ class ItemView extends StatelessWidget {
                   controller: textEditingDynamic.textEditingController,
                   style: TextStyle(color: MyColors.color1, fontSize: 16),
                   decoration: InputDecoration(
-                      hintText: " Answer ...",
+                      hintText: " Reponse ...",
                       hintStyle: TextStyle(
                         color: MyColors.color1,
                         fontSize: 16,
@@ -680,7 +680,7 @@ class _DateRowState extends State<DateRow> {
                 controller: widget.textEditingController,
                 style: TextStyle(color: MyColors.color1, fontSize: 16),
                 decoration: InputDecoration(
-                    hintText: "click to add time",
+                    hintText: "cliquez pour ajouter le temps",
                     hintStyle: TextStyle(
                       color: MyColors.color1,
                       fontSize: 16,
@@ -739,17 +739,21 @@ class _SingleDropState extends State<SingleDrop> {
   Widget build(BuildContext context) {
     // print(widget.savedText+"asdsadsadsadsad");
     return DropdownButton<String>(
-      hint: Text("Select item"),
+      hint: Text("Sélectionnez élément"),
       value: _answer ?? widget.CurrentChoice,
 
       onChanged: (value) {
         print(AllAnswerss);
-        if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) != null)
-        AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null)?.answer = value;
-        else 
-        AllAnswerss.add(QuestionAndAnswers()
-        ..question = widget.Question
-        ..answer = _answer);
+        if (AllAnswerss?.firstWhere((element) =>
+        element.question == widget.Question, orElse: () => null) != null)
+          AllAnswerss
+              ?.firstWhere((element) => element.question == widget.Question,
+              orElse: () => null)
+              ?.answer = value;
+        else
+          AllAnswerss.add(QuestionAndAnswers()
+            ..question = widget.Question
+            ..answer = _answer);
         setState(() { 
           _answer = value;
         });

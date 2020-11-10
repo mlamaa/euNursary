@@ -130,7 +130,7 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Text(
-          "Reports Date:",
+          "Raports de: ",
           style: TextStyle(fontSize: 18),
         ),
         Container(
@@ -147,7 +147,7 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
             padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
             child: RaisedButton(
               onPressed: () => _selectDate(context),
-              child: Text('Select date'),
+              child: Text('Sélectionner une date'),
             ),
           ),
         ),
@@ -186,7 +186,7 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
                       ),
                       child: Center(
                           child: Text(
-                        "Reports Templates",
+                            "Modèles des rapports",
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       )),
                     ),
@@ -281,7 +281,7 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
                 ),
 
                 Text(
-                  "Class Name:   " + widget.ClassName,
+                  "Nom du class:   " + widget.ClassName,
                   style: TextStyle(fontSize: 20, color: MyColors.color1),
                 ),
                 Container(

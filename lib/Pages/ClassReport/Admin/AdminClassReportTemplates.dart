@@ -95,8 +95,10 @@ class _AdminClassReportTemplatesState extends State<AdminClassReportTemplates> {
                   color: MyColors.color1,
                 ),
                 child: Center(
-                    child: Text("Edit Class Report Template",style: TextStyle(color: Colors.white,fontSize: 20),)
-                ),
+                    child: Text(
+                  "Modifier le modèle de rapport de classe",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                )),
               ),
             ),
           ),

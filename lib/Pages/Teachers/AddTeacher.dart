@@ -94,7 +94,7 @@ class _AddTeacherState extends State<AddTeacher> {
                             height: 30,
                           ),
                           Text(
-                            "Teacher Info",
+                            "Info Enseignant",
                             style: myTextStyle,
                           ),
                           SizedBox(
@@ -105,13 +105,13 @@ class _AddTeacherState extends State<AddTeacher> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "Name :",
+                                "Nom :",
                                 style: myTextStyle,
                               ),
                               Container(
                                 width: 5,
                               ),
-                              Tools.MyInputText("Name", nameController,
+                              Tools.MyInputText("Nom", nameController,
                                   width: 230)
                             ],
                           ),
@@ -142,13 +142,13 @@ class _AddTeacherState extends State<AddTeacher> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "Password :",
+                                "MDP :",
                                 style: myTextStyle,
                               ),
                               Container(
                                 width: 5,
                               ),
-                              Tools.MyInputText("Password", passDateController,
+                              Tools.MyInputText("MDP", passDateController,
                                   width: 230)
                             ],
                           ),
@@ -175,9 +175,10 @@ class _AddTeacherState extends State<AddTeacher> {
                             textField: 'display',
                             valueField: 'value',
                             okButtonLabel: 'OK',
-                            cancelButtonLabel: 'CANCEL',
+                            cancelButtonLabel: 'ANNULER',
                             // required: true,
-                            hintText: 'Please choose one or more class',
+                            hintText:
+                                'Veuillez choisir une ou plusieurs classes',
                             onSaved: (value) {
                               if (value == null) return;
                               _myAnswers = value;
@@ -199,10 +200,12 @@ class _AddTeacherState extends State<AddTeacher> {
                                 // }
                                 if (nameController.text.length <= 4)
                                   HelperContext.showMessage(
-                                      context, "To Short Name");
+                                      context,
+                                      "Le nom complet de l'enseignant doit etre plus de 4 lettres");
                                 else if (passDateController.text.length < 6)
                                   HelperContext.showMessage(
-                                      context, "To Short password");
+                                      context,
+                                      "MDP doit etre plus de 6 lettres");
                                 else {
                                   setState(() {
                                     isAdding = true;
@@ -210,7 +213,7 @@ class _AddTeacherState extends State<AddTeacher> {
                                   addTeacher();
                                 }
                               },
-                              child: Tools.MyButton("Add Teacher")),
+                              child: Tools.MyButton("Ajouter l'enseignant")),
                           Container(
                             height: 100,
                           )

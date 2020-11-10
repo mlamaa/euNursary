@@ -106,13 +106,13 @@ class _EditTeacherState extends State<EditTeacher> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "Teacher Name:",
+                              "Nom:",
                               style: myTextStyle,
                             ),
                             Container(
                               width: 5,
                             ),
-                            Tools.MyInputText("Teacher Name", nameController)
+                            Tools.MyInputText("Nom", nameController)
                           ],
                         ),
                         Container(
@@ -138,9 +138,9 @@ class _EditTeacherState extends State<EditTeacher> {
                           textField: 'display',
                           valueField: 'value',
                           okButtonLabel: 'OK',
-                          cancelButtonLabel: 'CANCEL',
+                          cancelButtonLabel: 'ANNULER',
                           // required: true,
-                          hintText: 'Please choose one or more class',
+                          hintText: 'Veuillez choisir une ou plusieurs classes',
                           onSaved: (value) {
                             if (value == null) return;
                             _MyAnswers = value;
@@ -158,10 +158,10 @@ class _EditTeacherState extends State<EditTeacher> {
                                 addClass();
                               } else {
                                 HelperContext.showMessage(context,
-                                    "Teacher Full Name must be more than 4 letters");
+                                    "Le nom complet de l'enseignant doit comporter plus de 4 lettres");
                               }
                             },
-                            child: Tools.MyButton("Edit Teacher"))
+                            child: Tools.MyButton("Sauvgarder"))
                       ],
                     ),
                   );

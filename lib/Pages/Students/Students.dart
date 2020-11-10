@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/widgets.dart';
+
 import 'AddStudent.dart';
 import 'EditStudent.dart';
 
@@ -92,8 +93,10 @@ class _StudentsState extends State<Students> {
                   color: MyColors.color1,
                 ),
                 child: Center(
-                    child: Text("Add Student",style: TextStyle(color: Colors.white,fontSize: 20),)
-                ),
+                    child: Text(
+                  "Ajouter un enfant",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                )),
               ),
             ),
           ),
@@ -145,7 +148,9 @@ class _SingleParentState extends State<SingleParent> {
               Container(height: 10,),
               Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Text("Parent Phone: "+widget.parentEmail.split("@")[0],style: TextStyle(fontSize:20,color: MyColors.color1),),
+                child: Text(
+                  "Téléphone des parents: " + widget.parentEmail.split("@")[0],
+                  style: TextStyle(fontSize: 20, color: MyColors.color1),),
               ),
               Container(height: 10,),
               // Padding(

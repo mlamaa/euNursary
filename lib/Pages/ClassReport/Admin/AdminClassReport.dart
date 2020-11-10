@@ -154,8 +154,13 @@ class _AdminClassReportState extends State<AdminClassReport> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Text("Reports Date:",style:TextStyle(fontSize: 18),),
-        Container(width: 10,),
+        Text(
+          "Raports de: ",
+          style: TextStyle(fontSize: 18),
+        ),
+        Container(
+          width: 10,
+        ),
         Container(
           width: 200,
           height: 50,
@@ -168,7 +173,7 @@ class _AdminClassReportState extends State<AdminClassReport> {
             child:
             RaisedButton(
               onPressed: () => _selectDate(context),
-              child: Text('Select date'),
+              child: Text('Sélectionner une date'),
             ),
 
           ),
@@ -202,7 +207,8 @@ class _AdminClassReportState extends State<AdminClassReport> {
                   color: MyColors.color1,
                 ),
                 child: Center(
-                    child: Text("Reports Templates",style: TextStyle(color: Colors.white,fontSize: 20),)
+                    child: Text("Modèles des rapports",
+                      style: TextStyle(color: Colors.white, fontSize: 20),)
                 ),
               ),
             ),
@@ -300,9 +306,11 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
                 // Container(height: 10,),
                 // Text("sender:   "+widget.ReportSenderType,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
                 Container(height: 10,),
-                Text("Class Name: "+widget.ClassName,style: TextStyle(fontSize:20,color:MyColors.color1),),
+                Text("Nom du class: " + widget.ClassName,
+                  style: TextStyle(fontSize: 20, color: MyColors.color1),),
                 Container(height: 10,),
-                Text("Date: "+Datehere,style: TextStyle(fontSize:20,color: MyColors.color1),),
+                Text("Date: " + Datehere,
+                  style: TextStyle(fontSize: 20, color: MyColors.color1),),
                 Container(height: 10,),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

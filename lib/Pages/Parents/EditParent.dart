@@ -81,13 +81,13 @@ class _EditParentState extends State<EditParent> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "Parent Name: ",
+                              "Nom: ",
                               style: myTextStyle,
                             ),
                             Container(
                               width: 5,
                             ),
-                            Tools.MyInputText("Parent Name", nameController)
+                            Tools.MyInputText("Nom", nameController)
                           ],
                         ),
                         Container(
@@ -102,10 +102,10 @@ class _EditParentState extends State<EditParent> {
                                 AddParentFunction();
                               } else {
                                 HelperContext.showMessage(context,
-                                    "Parent Full Name must be more than 4 letters");
+                                    "Le nom complet du parent doit contenir plus de 4 lettres");
                               }
                             },
-                            child: Tools.MyButton("Edit Parent"))
+                            child: Tools.MyButton("Sauvgarder"))
                       ],
                     ),
                   );

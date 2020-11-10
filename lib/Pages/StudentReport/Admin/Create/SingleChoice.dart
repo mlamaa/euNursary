@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../Colors.dart';
-import '../../../../Tools.dart';
-import '../../../../db.dart';
-import '../../../../widgets.dart';
+import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
+import 'package:garderieeu/db.dart';
+import 'package:garderieeu/widgets.dart';
 
 class AddSingleChoice extends StatefulWidget {
   final Function refreshToAdd;
   final Function ChangeColor;
 
-  AddSingleChoice({this.refreshToAdd,this.ChangeColor});
+  AddSingleChoice({this.refreshToAdd, this.ChangeColor});
+
   @override
   _AddSingleChoiceState createState() => _AddSingleChoiceState();
 }
@@ -93,7 +93,10 @@ class _AddSingleChoiceState extends State<AddSingleChoice> {
 
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-              child: Text("Enter The Question:",style: TextStyle(fontSize: 20,color: MyColors.color1),),
+              child: Text(
+                "Question:",
+                style: TextStyle(fontSize: 20, color: MyColors.color1),
+              ),
             ),
 
             Padding(

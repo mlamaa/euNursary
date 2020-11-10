@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../Colors.dart';
-import '../../../../Tools.dart';
-import '../../../../db.dart';
-import '../../../../widgets.dart';
+import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
+import 'package:garderieeu/db.dart';
+import 'package:garderieeu/widgets.dart';
 
 class AddTextQuestion extends StatefulWidget {
   final Function refreshToAdd;
   final Function ChangeColor;
+
   AddTextQuestion({this.refreshToAdd, this.ChangeColor});
 
   @override
@@ -30,7 +30,7 @@ class _AddTextQuestionState extends State<AddTextQuestion> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Enter The Question:",
+                "Question:",
                 style: TextStyle(fontSize: 20, color: MyColors.color1),
               ),
             ),
@@ -69,7 +69,7 @@ class _AddTextQuestionState extends State<AddTextQuestion> {
                     Navigator.pop(context);
                   }
                 },
-                child: Text("add question",
+                child: Text("Ajout question",
                     textAlign: TextAlign.center,
                     style: Tools.myTextStyle.copyWith(
                         color: Colors.white, fontWeight: FontWeight.bold)),

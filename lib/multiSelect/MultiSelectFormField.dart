@@ -21,15 +21,14 @@ class MultiSelectFormField extends FormField<dynamic> {
   final InputBorder border;
 
   MultiSelectFormField(
-      {
-        FormFieldSetter<dynamic> onSaved,
+      {FormFieldSetter<dynamic> onSaved,
       FormFieldValidator<dynamic> validator,
       dynamic initialValue,
       bool autovalidate = false,
       this.titleText = 'Title',
-      this.hintText = 'Tap to select one or more',
+      this.hintText = 'Appuyez pour sélectionner',
       this.required = false,
-      this.errorText = 'Please select one or more options',
+      this.errorText = 'Veuillez sélectionner une ou plusieurs options',
       this.leading,
       this.dataSource,
       this.textField,
@@ -38,7 +37,7 @@ class MultiSelectFormField extends FormField<dynamic> {
       this.open,
       this.close,
       this.okButtonLabel = 'OK',
-      this.cancelButtonLabel = 'CANCEL',
+      this.cancelButtonLabel = 'ANNULER',
       this.fillColor,
       this.border,
       this.trailing})

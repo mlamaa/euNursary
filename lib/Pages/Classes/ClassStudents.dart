@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/widgets.dart';
 
@@ -120,7 +120,7 @@ class _SingleParentState extends State<SingleParent> {
               Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: Text(
-                  "Parent Email: " + widget.email,
+                  "Parent: " + widget.email,
                   style: TextStyle(
                     fontSize: 20,
                     color: MyColors.color1,

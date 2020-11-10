@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
 
-class MyColors{
-  static Color color1 = HexColor("38386C");
-  static Color color2 = HexColor("FCD077");
+class MyColors {
+  static Color color1 = HexColor("1C3F94");
+  static Color color2 = HexColor("FFEF00");
   static Color color3 = HexColor("55B68D");
-  static Color  color4 = HexColor("EBE4F7");
-  static Color  color5 = HexColor("93CEB3");
-  static Color  drawer = HexColor("E1D2F4");
-
-
+  static Color color4 = HexColor("EBE4F7"); //
+  static Color color5 = HexColor("93CEB3");
+  static Color drawer = HexColor("E1D2F4");
 }
 
 class HexColor extends Color {

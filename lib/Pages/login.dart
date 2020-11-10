@@ -1,16 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/auth.dart';
 import 'package:garderieeu/helpers/HelperContext.dart';
-import 'Home.dart';
 import 'package:garderieeu/widgets.dart';
-import 'package:garderieeu/Colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:garderieeu/Tools.dart';
+
+import 'Home.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({this.auth});
+
   final BaseAuth auth;
+
 //  final Function initst;
 //  final VoidCallback onSignedIn;
   @override
@@ -78,7 +81,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomePage()));
     } catch (e) {
-      HelperContext.showMessage(context, "Error in Signing in!");
+      HelperContext.showMessage(
+          context, "Erreur de connexion! " + e.toString());
       setState(() {
         isLoading = false;
       });

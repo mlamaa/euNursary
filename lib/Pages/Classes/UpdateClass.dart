@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/helpers/HelperContext.dart';
 import 'package:garderieeu/widgets.dart';
@@ -67,13 +67,13 @@ class _UpdateClassState extends State<UpdateClass> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "Class Name:",
+                      "Nom du class:",
                       style: myTextStyle,
                     ),
                     Container(
                       width: 30,
                     ),
-                    Tools.MyInputText("Class Name", ClassNameController)
+                    Tools.MyInputText("Class", ClassNameController)
                   ],
                 ),
                 Container(
@@ -84,13 +84,13 @@ class _UpdateClassState extends State<UpdateClass> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "Class Year:  ",
+                      "Année scolaire:  ",
                       style: myTextStyle,
                     ),
                     Container(
                       width: 30,
                     ),
-                    Tools.MyInputText("Class Year", ClassDateController)
+                    Tools.MyInputText("Année scolaire", ClassDateController)
                   ],
                 ),
                 Container(
@@ -103,10 +103,10 @@ class _UpdateClassState extends State<UpdateClass> {
                         AddClass();
                       } else {
                         HelperContext.showMessage(context,
-                            "Class Name and year must be more than 2 letters");
+                            "Le nom de la classe et l'année doivent contenir plus de 2 lettres");
                       }
                     },
-                    child: Tools.MyButton("Edit Class"))
+                    child: Tools.MyButton("Sauvgarder"))
               ],
             ),
           );

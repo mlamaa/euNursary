@@ -78,7 +78,7 @@ class _EditClassReportAsAdminState extends State<EditClassReportAsAdmin> {
                 SizedBox(height: 20),
                 Center(
                   child: Text(
-                    "Question Type:",
+                    "Type de question:",
                     style: TextStyle(
                         fontSize: 24,
                         color: MyColors.color1,
@@ -247,7 +247,7 @@ class _EditClassReportAsAdminState extends State<EditClassReportAsAdmin> {
                             Navigator.pop(context);
                           } else {
                             HelperContext.showMessage(
-                                context, "Report must not be empty");
+                                context, "Le rapport ne doit pas être vide");
                           }
                         },
                         child: Container(
@@ -260,7 +260,7 @@ class _EditClassReportAsAdminState extends State<EditClassReportAsAdmin> {
                                   : MyColors.color1),
                           child: Center(
                               child: Text(
-                            "Edit Report",
+                                "Sauvgarder",
                             style: TextStyle(fontSize: 18, color: Colors.white),
                           )),
                         ),

@@ -1,12 +1,12 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/db.dart';
-import 'package:garderieeu/widgets.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:intl/intl.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
+import 'package:garderieeu/db.dart';
+import 'package:garderieeu/widgets.dart';
 
 class SendMessage extends StatefulWidget {
   @override
@@ -17,11 +17,12 @@ class _SendMessageState extends State<SendMessage> {
   DataBaseService dataBaseService = new DataBaseService();
   TextEditingController messageTextController = new TextEditingController();
   TextEditingController ttileTextController = new TextEditingController();
-  String group = "class";
+  String group = "Class";
   Widget newWidget = Container();
 
   Studetns currentStudent = new Studetns(" ", " ", " ");
   List<Studetns> studetnsList = new List<Studetns>();
+
   getStudetns() async {
     await dataBaseService.GetStudents(context).then((values) {
       for (int i = 0; i < values.documents.length; i++) {
@@ -39,6 +40,7 @@ class _SendMessageState extends State<SendMessage> {
 
   Class CurrentStudentClass = new Class(" ", " ");
   List<Class> classesList = new List<Class>();
+
   getClasses() async {
     await dataBaseService.GetClasses(context).then((values) {
       for (int i = 0; i < values.documents.length; i++) {
@@ -54,7 +56,7 @@ class _SendMessageState extends State<SendMessage> {
   }
 
   @override
-  void initState() { 
+  void initState() {
     getClasses();
     getStudetns();
     super.initState();
@@ -65,13 +67,13 @@ class _SendMessageState extends State<SendMessage> {
     TextStyle myTextStyle = TextStyle(
         fontSize: 20, color: MyColors.color1, fontWeight: FontWeight.bold);
 
-    if (group == "class") {
+    if (group == "Class") {
       newWidget = Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text(
-            "Student Class:",
+            "Class d'enfant:",
             style: myTextStyle,
           ),
           Container(
@@ -104,8 +106,8 @@ class _SendMessageState extends State<SendMessage> {
                       return classesList;
                     }
                   },
-                  label: "class",
-                  hint: "class Name",
+                  label: "Class",
+                  hint: "Nome De Class",
                   // popupItemDisabled: (String s) => s.startsWith('I'),
                   onChanged: (Class s) {
                     CurrentStudentClass = s;
@@ -115,13 +117,13 @@ class _SendMessageState extends State<SendMessage> {
           ),
         ],
       );
-    } else if (group == "student") {
+    } else if (group == "Enfant") {
       newWidget = Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text(
-            "Student Name:",
+            "Nom d'enfant:",
             style: myTextStyle,
           ),
           Container(
@@ -154,8 +156,8 @@ class _SendMessageState extends State<SendMessage> {
                       return studetnsList;
                     }
                   },
-                  label: "Student name",
-                  hint: "Student Name",
+                  label: "Nom d'enfant",
+                  hint: "Nom d'enfant",
                   // popupItemDisabled: (String s) => s.startsWith('I'),
                   onChanged: (Studetns s) {
                     currentStudent = s;
@@ -183,14 +185,14 @@ class _SendMessageState extends State<SendMessage> {
               child: Row(
                 children: [
                   Text(
-                    "class",
+                    "Class",
                     style: myTextStyle,
                   ),
                   Container(
                     width: 15,
                   ),
                   Radio(
-                    value: "class",
+                    value: "Class",
                     groupValue: group,
                     onChanged: (T) {
                       setState(() {
@@ -202,14 +204,14 @@ class _SendMessageState extends State<SendMessage> {
                     width: 5,
                   ),
                   Text(
-                    "student",
+                    "Enfant",
                     style: myTextStyle,
                   ),
                   Container(
                     width: 5,
                   ),
                   Radio(
-                    value: "student",
+                    value: "Enfant",
                     groupValue: group,
                     onChanged: (T) {
                       setState(() {
@@ -221,14 +223,14 @@ class _SendMessageState extends State<SendMessage> {
                     width: 5,
                   ),
                   Text(
-                    "all",
+                    "Tout",
                     style: myTextStyle,
                   ),
                   Container(
                     width: 5,
                   ),
                   Radio(
-                    value: "all",
+                    value: "Tout",
                     groupValue: group,
                     onChanged: (T) {
                       setState(() {
@@ -254,7 +256,7 @@ class _SendMessageState extends State<SendMessage> {
                     controller: ttileTextController,
                     style: TextStyle(color: MyColors.color1, fontSize: 16),
                     decoration: InputDecoration(
-                        hintText: " Title ...",
+                        hintText: " Titre ...",
                         hintStyle: TextStyle(
                           color: MyColors.color1,
                           fontSize: 16,
@@ -291,7 +293,7 @@ class _SendMessageState extends State<SendMessage> {
                 onTap: () {
                   if (messageTextController.text != null &&
                       ttileTextController.text != null) {
-                    if (group == "class") {
+                    if (group == "Class") {
                       if (CurrentStudentClass.name != " ") {
                         print("message: " +
                             messageTextController.text +
@@ -304,11 +306,11 @@ class _SendMessageState extends State<SendMessage> {
                             context);
                         Navigator.pop(context);
                       }
-                    } else if (group == "student") {
+                    } else if (group == "Enfant") {
                       if (currentStudent.name != " ") {
                         print("message: " +
                             messageTextController.text +
-                            " to class: " +
+                            " au class: " +
                             currentStudent.ParentEmail);
                         dataBaseService.sendStudentMessages(
                             currentStudent.ParentEmail,
@@ -325,7 +327,7 @@ class _SendMessageState extends State<SendMessage> {
                   }
                 },
                 child: Container(
-                  child: Tools.MyButton("Send"),
+                  child: Tools.MyButton("Envoyer"),
                 ),
               ),
             ),

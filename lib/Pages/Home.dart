@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void goToPage(String tag, BuildContext context) {
-    if (tag == "Logout") {
+    if (tag == "Sortie") {
       logout();
       return;
     }
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
       switch (tag) {
         case "Classes":
           return new Classes();
-        case "Change Password":
+        case "Changer MDP":
           return new ChangePass();
 
         case "Messages":
@@ -105,16 +105,16 @@ class _HomePageState extends State<HomePage> {
             return new RecieveMessages();
           }
 
-        case "Students":
+        case "Enfant":
           return new Students();
 
         case "Parents":
           return new Parents();
 
-        case "Teachers":
+        case "Enseignants":
           return new Teachers();
 
-        case "Class Report":
+        case "Rapport de classe":
           {
             if (UserCurrentInfo.currentUserType == "admin") {
               return new AdminClassReport();
@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
             return new ParentClassReport();
           }
 
-        case "Student Report":
+        case "Rapport étudiant":
           {
             if (UserCurrentInfo.currentUserType == "admin") {
               return new AdminStudentReport();
@@ -196,32 +196,32 @@ class _HomePageState extends State<HomePage> {
   setMainWidgets() {
     if (UserCurrentInfo.currentUserType == "admin") {
       mainWidgets = <Widget>[
-        makeDashboardItem(context, "Classes", Icons.account_balance),
-        makeDashboardItem(context, "Teachers", Icons.person_outline),
-        makeDashboardItem(context, "Students", Icons.account_box),
+        makeDashboardItem(
+            context, "Classes", Icons.home_repair_service_rounded),
+        makeDashboardItem(context, "Enseignants", Icons.person_outline),
+        makeDashboardItem(context, "Enfant", Icons.account_box),
         makeDashboardItem(context, "Parents", Icons.person_pin_circle),
-        makeDashboardItem(context, "Class Report", Icons.report),
-        makeDashboardItem(context, "Student Report", Icons.report_problem),
-        makeDashboardItem(context, "Messages", Icons.message),
-        // makeDashboardItem(context , "ReportStudent", Icons.alarm),
-        makeDashboardItem(context, "Change Password", Icons.build),
-        makeDashboardItem(context, "Logout", Icons.keyboard_backspace),
+        makeDashboardItem(context, "Rapport de Classe", Icons.wysiwyg),
+        makeDashboardItem(context, "Rapport Enfant", Icons.child_care),
+        makeDashboardItem(context, "Messages", Icons.email_outlined),
+        makeDashboardItem(context, "Changer MDP", Icons.security),
+        makeDashboardItem(context, "Sortie", Icons.logout),
       ];
     } else if (UserCurrentInfo.currentUserType == "teacher") {
       mainWidgets = <Widget>[
-        makeDashboardItem(context, "Class Report", Icons.report),
-        makeDashboardItem(context, "Student Report", Icons.report_problem),
-        makeDashboardItem(context, "Messages", Icons.message),
-        makeDashboardItem(context, "Change Password", Icons.build),
-        makeDashboardItem(context, "Logout", Icons.keyboard_backspace)
+        makeDashboardItem(context, "Rapport de classe", Icons.wysiwyg),
+        makeDashboardItem(context, "Rapport étudiant", Icons.child_care),
+        makeDashboardItem(context, "Messages", Icons.email_outlined),
+        makeDashboardItem(context, "Changer MDP", Icons.email_outlined),
+        makeDashboardItem(context, "Sortie", Icons.logout)
       ];
     } else {
       mainWidgets = <Widget>[
-        makeDashboardItem(context, "Class Report", Icons.report),
-        makeDashboardItem(context, "Student Report", Icons.report_problem),
-        makeDashboardItem(context, "Messages", Icons.message),
-        makeDashboardItem(context, "Change Password", Icons.build),
-        makeDashboardItem(context, "Logout", Icons.keyboard_backspace)
+        makeDashboardItem(context, "Rapport de classe", Icons.wysiwyg),
+        makeDashboardItem(context, "Rapport étudiant", Icons.child_care),
+        makeDashboardItem(context, "Messages", Icons.email_outlined),
+        makeDashboardItem(context, "Changer MDP", Icons.email_outlined),
+        makeDashboardItem(context, "Sortie", Icons.logout)
       ];
     }
   }

@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/widgets.dart';
+
 import 'AddParent.dart';
 // import 'UpdateClass.dart';
 import 'EditParent.dart';
@@ -92,8 +93,10 @@ class _ParentsState extends State<Parents> {
                   color: MyColors.color1,
                 ),
                 child: Center(
-                    child: Text("Add Parent",style: TextStyle(color: Colors.white,fontSize: 20),)
-                ),
+                    child: Text(
+                  "Ajout un Parent",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                )),
               ),
             ),
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/helpers/HelperContext.dart';
 import 'package:garderieeu/widgets.dart';
@@ -61,7 +61,7 @@ class _AddClassState extends State<AddClass> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          "Class Name:",
+                          "Nom du class:",
                           style: myTextStyle,
                         ),
                         Container(

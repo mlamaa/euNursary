@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/helpers/HelperContext.dart';
 import 'package:garderieeu/widgets.dart';
@@ -28,11 +28,11 @@ class _ChangePassState extends State<ChangePass> {
                 Container(
                   height: 30,
                 ),
-                Tools.MyInputText("Password", pass1Controller),
+                Tools.MyInputText("MDP", pass1Controller),
                 Container(
                   height: 15,
                 ),
-                Tools.MyInputText("Confirm Password", pass2Controller),
+                Tools.MyInputText("Confirm MDP", pass2Controller),
                 Container(
                   height: 20,
                 ),
@@ -46,12 +46,12 @@ class _ChangePassState extends State<ChangePass> {
                       });
                     } else {
                       HelperContext.showMessage(context,
-                          "Passwords must be the same, and longer than 5 letters");
+                          "Les mots de passe doivent être identiques et contenir plus de 5 lettres");
                     }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Tools.MyButton("Change Password"),
+                    child: Tools.MyButton("Changer le MDP"),
                   ),
                 ),
               ],

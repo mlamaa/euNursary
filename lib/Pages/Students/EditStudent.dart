@@ -114,14 +114,13 @@ class _EditStudentState extends State<EditStudent> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "Student Name:",
+                              "Nom:",
                               style: myTextStyle,
                             ),
                             Container(
                               width: 10,
                             ),
-                            Tools.MyInputText(
-                                "Student Name", StudentNameeController),
+                            Tools.MyInputText("Nom", StudentNameeController),
                           ],
                         ),
                         Container(
@@ -132,7 +131,7 @@ class _EditStudentState extends State<EditStudent> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "Student Class:",
+                              "Class:",
                               style: myTextStyle,
                             ),
                             Container(
@@ -196,7 +195,7 @@ class _EditStudentState extends State<EditStudent> {
                               EditStudentFunction();
                             } else {
                               HelperContext.showMessage(context,
-                                  "Student Name must be more than 2 letters, parent and class must be empty");
+                                  "Le nom de l'élève doit contenir plus de 4 lettres, le parent et la classe doivent être vides");
                             }
                           },
                           child: Container(
@@ -207,7 +206,7 @@ class _EditStudentState extends State<EditStudent> {
                                 color: MyColors.color1),
                             child: Center(
                               child: Text(
-                                "Edit Student",
+                                "Sauvgarder",
                                 style: TextStyle(
                                     fontSize: 18, color: Colors.white),
                               ),

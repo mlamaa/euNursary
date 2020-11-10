@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../Colors.dart';
-import '../../../../Tools.dart';
-import '../../../../db.dart';
-import '../../../../widgets.dart';
+import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
+import 'package:garderieeu/db.dart';
+import 'package:garderieeu/widgets.dart';
 
 class AddMultiChoice extends StatefulWidget {
   final Function refreshToAdd;
@@ -84,7 +83,7 @@ class _AddMultiChoiceState extends State<AddMultiChoice> {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
               child: Text(
-                "Enter The Question:",
+                "Question:",
                 style: TextStyle(fontSize: 20, color: MyColors.color1),
               ),
             ),
@@ -115,7 +114,7 @@ class _AddMultiChoiceState extends State<AddMultiChoice> {
             TextField(
               controller: myController,
               decoration: InputDecoration(
-                hintText: "Choice Value",
+                hintText: "Options",
                 suffixIcon: IconButton(
                   onPressed: () {
                     // This is not working. Exception - invalid text selection: TextSelection(baseOffset: 2, extentOffset: 2, affinity: TextAffinity.upstream, isDirectional: false)
@@ -157,7 +156,7 @@ class _AddMultiChoiceState extends State<AddMultiChoice> {
                     Navigator.pop(context);
                   }
                 },
-                child: Text("add question",
+                child: Text("Ajout question",
                     textAlign: TextAlign.center,
                     style: Tools.myTextStyle.copyWith(
                         color: Colors.white, fontWeight: FontWeight.bold)),

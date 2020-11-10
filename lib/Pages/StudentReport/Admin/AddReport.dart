@@ -1,22 +1,25 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/multiSelect/MultiSelectFormField.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
 //import 'package:progress_dialog/progress_dialog.dart';
 import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/db.dart';
 import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/widgets.dart';
 import 'package:garderieeu/UserInfo.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+import 'package:garderieeu/db.dart';
+import 'package:garderieeu/multiSelect/MultiSelectFormField.dart';
+import 'package:garderieeu/widgets.dart';
 import 'package:intl/intl.dart';
+
 import 'EditStudentReport.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
 // Map<String,dynamic> AllAnswers=new Map<String,dynamic>();
-Map<String,dynamic> ReportData=new Map<String,dynamic>();
-List<QuestionAndAnswers> AllAnswerss=new List<QuestionAndAnswers>();
+Map<String, dynamic> ReportData = new Map<String, dynamic>();
+List<QuestionAndAnswers> AllAnswerss = new List<QuestionAndAnswers>();
 
 class AddReport extends StatefulWidget {
   final Function refresh;
@@ -585,12 +588,11 @@ class ItemView extends StatelessWidget {
 //                  "display": "Climbing",
 //                  "value": "Climbing",
 //                },
-
               ],
               textField: 'display',
               valueField: 'value',
               okButtonLabel: 'OK',
-              cancelButtonLabel: 'CANCEL',
+              cancelButtonLabel: 'ANNULER',
               // required: true,
               hintText: 'Please choose one or more',
 
@@ -600,7 +602,8 @@ class ItemView extends StatelessWidget {
 //        setState(() {
                 _MyAnswers = value;
 
-                QuestionAndAnswers questionsAndAnswersHere=new QuestionAndAnswers();
+                QuestionAndAnswers questionsAndAnswersHere =
+                    new QuestionAndAnswers();
                 questionsAndAnswersHere.question=question;
                 questionsAndAnswersHere.answers=value;
 
