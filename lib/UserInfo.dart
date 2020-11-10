@@ -1,8 +1,5 @@
-
-
 class UserCurrentInfo{
-  static String Email;
-  static String UID;
-  static String Type;
-
+  static String email;
+  static String currentUserId;
+  static String currentUserType;
 }

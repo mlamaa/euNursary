@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/Colors.dart';
 import 'package:garderieeu/db.dart';
+import 'package:garderieeu/helpers/HelperContext.dart';
 import 'package:garderieeu/widgets.dart';
 
 class UpdateClass extends StatefulWidget {
@@ -38,7 +39,7 @@ class _UpdateClassState extends State<UpdateClass> {
   }
 
   @override
-  void initState() { 
+  void initState() {
     ClassDateController.text = widget.date;
     ClassNameController.text = widget.name;
     super.initState();
@@ -101,10 +102,8 @@ class _UpdateClassState extends State<UpdateClass> {
                           ClassNameController.text.length > 2) {
                         AddClass();
                       } else {
-                        final snackBar = SnackBar(
-                            content: Text(
-                                "Class Name and year must be more than 2 letters"));
-                        Scaffold.of(context).showSnackBar(snackBar);
+                        HelperContext.showMessage(context,
+                            "Class Name and year must be more than 2 letters");
                       }
                     },
                     child: Tools.MyButton("Edit Class"))

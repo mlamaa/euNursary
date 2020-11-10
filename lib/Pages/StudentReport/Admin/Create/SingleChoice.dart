@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/widgets.dart';
-import 'package:garderieeu/Pages/ClassReport/Admin/EditClassReport.dart';
-import 'package:garderieeu/db.dart';
+
+import '../../../../Colors.dart';
+import '../../../../Tools.dart';
+import '../../../../db.dart';
+import '../../../../widgets.dart';
 
 class AddSingleChoice extends StatefulWidget {
   final Function refreshToAdd;

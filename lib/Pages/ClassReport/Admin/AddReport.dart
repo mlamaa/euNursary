@@ -22,11 +22,11 @@ List<QuestionAndAnswers> AllAnswerss = new List<QuestionAndAnswers>();
 
 class AddReport extends StatefulWidget {
   final Function refresh;
-  final String ReportTemplateId;
+  final String reportTemplateId;
   // final String UserID;
   // final String AdminEmail;
 
-  AddReport({this.ReportTemplateId, this.refresh});
+  AddReport({this.reportTemplateId, this.refresh});
 
   @override
   _AddReportState createState() => _AddReportState();
@@ -35,9 +35,9 @@ class AddReport extends StatefulWidget {
 
 class _AddReportState extends State<AddReport> {
   List<Items> items = new List<Items>();
-  List<TextEditingDynamic> ForTextQuestion = new List<TextEditingDynamic>();
+  List<TextEditingDynamic> forTextQuestion = new List<TextEditingDynamic>();
 
-  GetInfo() async {
+  getInfo() async {
     List<Items> items2 = new List<Items>();
 
     await widget.dataBaseService
@@ -65,7 +65,7 @@ class _AddReportState extends State<AddReport> {
           textEditingDynamic.textEditingController =
               new TextEditingController();
           textEditingDynamic.Question = value.documents[i].data["Question"];
-          ForTextQuestion.add(textEditingDynamic);
+          forTextQuestion.add(textEditingDynamic);
           item.textEditingDynamic = textEditingDynamic;
           items2.insert(0, item);
         }
@@ -76,10 +76,10 @@ class _AddReportState extends State<AddReport> {
     });
   }
 
-  GetAnswers() async {
-    if (CurrentStudentClass.ID != " ") {
+  getAnswers() async {
+    if (currentStudentClass.ID != " ") {
       widget.dataBaseService
-          .GetQuestionsOfReport(CurrentStudentClass.ID, getDateNow(), context)
+          .GetQuestionsOfReport(currentStudentClass.ID, getDateNow(), context)
           .then((value) {
         if (value.documents.length > 0) {
           print("found dataaaa");
@@ -132,7 +132,7 @@ class _AddReportState extends State<AddReport> {
     }
   }
 
-  Widget ItemsHere() {
+  Widget itemsHere() {
     return Container(
         height: 400,
         child: Padding(
@@ -140,8 +140,6 @@ class _AddReportState extends State<AddReport> {
           child: ListView.builder(
               itemCount: items.length,
               itemBuilder: (context, index) {
-//            print("---------------------"+items["text"]);
-
                 if (items[index].type == "choices") {
                   if (items[index].choicesHere.MultiChoice) {
                     print(items[index].Answers.toString() + "oooooooooooooooo");
@@ -192,7 +190,7 @@ class _AddReportState extends State<AddReport> {
         ));
   }
 
-  Classes CurrentStudentClass = new Classes(" ", " ");
+  Classes currentStudentClass = new Classes(" ", " ");
   List<Classes> classesList = new List<Classes>();
   getClasses() async {
     await widget.dataBaseService.GetClasses(context).then((values) {
@@ -210,31 +208,25 @@ class _AddReportState extends State<AddReport> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    GetInfo();
+    getInfo();
     getClasses();
     super.initState();
     // AllAnswers[" "]=" ";
     ReportData[" "] = " ";
     ReportData["ReportSenderType"] = "admin";
-    ReportData["ReportSenderID"] = UserCurrentInfo.UID;
-    ReportData["ReportSenderEmail"] = UserCurrentInfo.Email;
+    ReportData["ReportSenderID"] = UserCurrentInfo.currentUserId;
+    ReportData["ReportSenderEmail"] = UserCurrentInfo.email;
     ReportData["Date"] = FieldValue.serverTimestamp();
   }
 
   Future<bool> getTextAnswers() async {
     print("i am at get text answer ");
-    for (int i = 0; i < ForTextQuestion.length; i++) {
-      print("i am at First for loop" + ForTextQuestion.length.toString());
-
-//                          QuestionAndAnswers item=new QuestionAndAnswers();
-//                          item.question=ForTextQuestion[i].Question;
-//                          item.answer=ForTextQuestion[i].textEditingController.text;
-//                      print("question: "+ForTextQuestion[i].Question+" answ:"+ForTextQuestion[i].textEditingController.text);
+    for (int i = 0; i < forTextQuestion.length; i++) {
+      print("i am at First for loop" + forTextQuestion.length.toString());
       QuestionAndAnswers questionsAndAnswersHere = new QuestionAndAnswers();
-      questionsAndAnswersHere.question = ForTextQuestion[i].Question;
+      questionsAndAnswersHere.question = forTextQuestion[i].Question;
       questionsAndAnswersHere.answer =
-          ForTextQuestion[i].textEditingController.text;
+          forTextQuestion[i].textEditingController.text;
 
       print("i am at First for loop");
 
@@ -266,7 +258,7 @@ class _AddReportState extends State<AddReport> {
     await getTextAnswers().then((value) {
       if (value == true) {
         widget.dataBaseService.sendClassReport(ReportData, AllAnswerss,
-            CurrentStudentClass.ID, getDateNow(), context);
+            currentStudentClass.ID, getDateNow(), context);
         Future.delayed(const Duration(milliseconds: 500), () {
           widget.refresh(getDateNow());
           print("refresh");
@@ -387,11 +379,11 @@ class _AddReportState extends State<AddReport> {
                                     // popupItemDisabled: (String s) => s.startsWith('I'),
                                     onChanged: (Classes s) {
                                       setState(() {
-                                        CurrentStudentClass = s;
-                                        GetAnswers();
+                                        currentStudentClass = s;
+                                        getAnswers();
                                       });
                                     },
-                                    selectedItem: CurrentStudentClass),
+                                    selectedItem: currentStudentClass),
                               ),
                             ),
                           ],
@@ -399,21 +391,21 @@ class _AddReportState extends State<AddReport> {
                         Container(
                           height: 10, 
                         ),
-                        if((CurrentStudentClass.ID.trim() ?? '') != '') ItemsHere(),
+                        if((currentStudentClass.ID.trim() ?? '') != '') itemsHere(),
                         Container(
                           height: 20,
                         ),
-                        if((CurrentStudentClass.ID.trim() ?? '') != '') Row(
+                        if((currentStudentClass.ID.trim() ?? '') != '') Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             InkWell(
                               onTap: () {
-                                if (CurrentStudentClass.ID != " ") {
+                                if (currentStudentClass.ID != " ") {
                                   ReportData["ClassName"] =
-                                      CurrentStudentClass.name;
+                                      currentStudentClass.name;
                                   ReportData["ClassId"] =
-                                      CurrentStudentClass.ID;
+                                      currentStudentClass.ID;
                                   submit();
                                 }
 //                        List<QuestionAndAnswers> questionAndanswers=new List<QuestionAndAnswers>();
@@ -731,37 +723,34 @@ class SingleDrop extends StatefulWidget {
 }
 
 class _SingleDropState extends State<SingleDrop> {
-  bool _disposed = false;
-  Timer t;
   dynamic _answer;
-
-  
   @override
-  void dispose() {
-    _disposed = true;
-    super.dispose();
+  void initState() { 
+    if ((widget.savedText?.trim() ?? '') != '') {
+      print("single drop is not null");
+      widget.CurrentChoice = widget.savedText;
+    }
+    if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) == null)
+
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.savedText != null &&
-        widget.savedText != "" &&
-        widget.savedText != " ") {
-      print("single drop is not null");
-      widget.CurrentChoice = widget.savedText;
-    } else {
-      print("this single is null");
-      // widget.CurrentChoice= widget.choices[0];
-
-    }
     // print(widget.savedText+"asdsadsadsadsad");
     return DropdownButton<String>(
       hint: Text("Select item"),
       value: _answer ?? widget.CurrentChoice,
-      onChanged: (String value) {
-          AllAnswerss.firstWhere((element) => element.question == widget.Question).answer = value;
-          
-        setState(() {
+
+      onChanged: (value) {
+        print(AllAnswerss);
+        if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) != null)
+        AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null)?.answer = value;
+        else 
+        AllAnswerss.add(QuestionAndAnswers()
+        ..question = widget.Question
+        ..answer = _answer);
+        setState(() { 
           _answer = value;
         });
       },

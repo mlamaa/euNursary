@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/db.dart';
-import 'package:garderieeu/widgets.dart';
-import 'EditStudentReport.dart';
-import 'AddReport.dart';
-import 'AdminStudentReportTemplates.dart';
-import 'SingleReport.dart';
 import 'package:intl/intl.dart';
+
+import '../../../Colors.dart';
+import '../../../Tools.dart';
+import '../../../db.dart';
+import '../../../widgets.dart';
+import 'AddReport.dart';
+import 'EditStudentReport.dart';
 
 class AdminClassReportTemplates extends StatefulWidget {
   final Function refresh;

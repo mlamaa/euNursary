@@ -1,5 +1,4 @@
 import "package:firebase_auth/firebase_auth.dart";
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import '../Colors.dart';
@@ -7,7 +6,6 @@ import "../Tools.dart";
 import '../UserInfo.dart';
 import '../auth.dart';
 import '../db.dart';
-import '../services/FirebaseMessageService.dart';
 import '../widgets.dart';
 import 'ChangePass.dart';
 import 'ClassReport/Admin/AdminClassReport.dart';
@@ -42,10 +40,10 @@ class _HomePageState extends State<HomePage> {
 
   getUserType(String email) async {
     await dataBaseService.getUserType(email, context).then((value) async {
-      UserCurrentInfo.Type = value.data["type"];
-      if (UserCurrentInfo.Email != null && UserCurrentInfo.Type != null)
+      UserCurrentInfo.currentUserType = value.data["type"];
+      if (UserCurrentInfo.email != null && UserCurrentInfo.currentUserType != null)
         await dataBaseService.saveTooken(
-            UserCurrentInfo.Email, UserCurrentInfo.Type, context);
+            UserCurrentInfo.email, UserCurrentInfo.currentUserType, context);
       // print(UserCurrentInfo.Type+"a");
       setState(() {
         setMainWidgets();
@@ -64,8 +62,8 @@ class _HomePageState extends State<HomePage> {
                     )));
       } else {
         getUserType(value.email);
-        UserCurrentInfo.Email = value.email;
-        UserCurrentInfo.UID = value.uid;
+        UserCurrentInfo.email = value.email;
+        UserCurrentInfo.currentUserId = value.uid;
         setState(() {
           isAuthenticated = true;
         });
@@ -99,9 +97,9 @@ class _HomePageState extends State<HomePage> {
 
         case "Messages":
           {
-            if (UserCurrentInfo.Type == "admin") {
+            if (UserCurrentInfo.currentUserType == "admin") {
               return new SendMessage();
-            } else if (UserCurrentInfo.Type == "teacher") {
+            } else if (UserCurrentInfo.currentUserType == "teacher") {
               return new SendMessage();
             }
             return new RecieveMessages();
@@ -118,9 +116,9 @@ class _HomePageState extends State<HomePage> {
 
         case "Class Report":
           {
-            if (UserCurrentInfo.Type == "admin") {
+            if (UserCurrentInfo.currentUserType == "admin") {
               return new AdminClassReport();
-            } else if (UserCurrentInfo.Type == "teacher") {
+            } else if (UserCurrentInfo.currentUserType == "teacher") {
               return new TeacherClassReport();
             }
             return new ParentClassReport();
@@ -128,9 +126,9 @@ class _HomePageState extends State<HomePage> {
 
         case "Student Report":
           {
-            if (UserCurrentInfo.Type == "admin") {
+            if (UserCurrentInfo.currentUserType == "admin") {
               return new AdminStudentReport();
-            } else if (UserCurrentInfo.Type == "teacher") {
+            } else if (UserCurrentInfo.currentUserType == "teacher") {
               return new TeacherStudentReport();
             }
             return new ParentClassReport();
@@ -196,7 +194,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   setMainWidgets() {
-    if (UserCurrentInfo.Type == "admin") {
+    if (UserCurrentInfo.currentUserType == "admin") {
       mainWidgets = <Widget>[
         makeDashboardItem(context, "Classes", Icons.account_balance),
         makeDashboardItem(context, "Teachers", Icons.person_outline),
@@ -209,7 +207,7 @@ class _HomePageState extends State<HomePage> {
         makeDashboardItem(context, "Change Password", Icons.build),
         makeDashboardItem(context, "Logout", Icons.keyboard_backspace),
       ];
-    } else if (UserCurrentInfo.Type == "teacher") {
+    } else if (UserCurrentInfo.currentUserType == "teacher") {
       mainWidgets = <Widget>[
         makeDashboardItem(context, "Class Report", Icons.report),
         makeDashboardItem(context, "Student Report", Icons.report_problem),

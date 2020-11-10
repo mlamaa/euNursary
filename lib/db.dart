@@ -3,12 +3,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:garderieeu/UserInfo.dart';
-import 'package:garderieeu/services/FirebaseFunctions.dart';
 import 'auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:intl/intl.dart';
 
+import 'helpers/HelperContext.dart';
 import 'services/FirebaseMessageService.dart';
 
 class DataBaseService {
@@ -41,9 +41,7 @@ class DataBaseService {
     try {
       return await firestore.collection("UserTypes").document(email).get();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -54,9 +52,7 @@ class DataBaseService {
           .orderBy("Date", descending: true)
           .getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
       return null;
     }
   }
@@ -68,9 +64,7 @@ class DataBaseService {
           .orderBy("Date", descending: true)
           .getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -78,8 +72,7 @@ class DataBaseService {
     try {
       await firestore.collection("UserTypes").document(email).setData(map);
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -87,8 +80,7 @@ class DataBaseService {
     try {
       await firestore.collection("classes").add(ClassMap);
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -97,8 +89,7 @@ class DataBaseService {
     try {
       await firestore.collection("classes").document(ID).updateData(ClassMap);
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -106,8 +97,7 @@ class DataBaseService {
     try {
       return firestore.collection("classes").getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -119,8 +109,7 @@ class DataBaseService {
           .collection("students")
           .getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -129,8 +118,7 @@ class DataBaseService {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString("UserId");
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -139,29 +127,21 @@ class DataBaseService {
     try {
       await Auth.register(email, pass);
       await addTeacherToDataBase(classMap, email, context);
-      // await auth.createUser(email, pass).then((value1) {
-      //   if(value1!=null&&value1!=UserCurrentInfo.Email)
-      //   {
-      //     print("creatingg");
-      //     GetUserPassword(context).then((value) {
-      //       auth.signIn(UserCurrentInfo.Email, value).then((value) {
-      //         AddTeacherToDataBase(classMap,email,context);
-      //       });
-
-      //     });
-      //   }
-      //   else{
-      //     print("whyyyy");
-      //   }
-      // });
+     
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
-
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
       Future.delayed(const Duration(milliseconds: 2000), () {
         Navigator.pop(context);
       });
     }
+  }
+
+  Future<List<String>> getTeacherClasses(String email)async{
+    var data = await firestore
+          .collection("Teachers")
+          .document(email)
+          .get();
+    return (data.data['Classes'] as List).map((e) => e.toString()).toList();
   }
 
   Future<void> addTeacherToDataBase(
@@ -177,8 +157,7 @@ class DataBaseService {
         setUserType(email, map, context);
       });
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -187,8 +166,7 @@ class DataBaseService {
     try {
       return await firestore.collection("Teachers").document(email).get();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
       return null;
     }
   }
@@ -198,8 +176,7 @@ class DataBaseService {
     try {
       return await firestore.collection("classes").document(ClassID).get();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -208,8 +185,7 @@ class DataBaseService {
     try {
       return await firestore.collection("students").document(ID).get();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -218,8 +194,7 @@ class DataBaseService {
     try {
       return await firestore.collection("parents").document(ParentEmail).get();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -244,8 +219,7 @@ class DataBaseService {
     try {
       return firestore.collection("Teachers").getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -253,8 +227,7 @@ class DataBaseService {
     try {
       return firestore.collection("parents").getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -263,8 +236,7 @@ class DataBaseService {
     try {
       return firestore.collection("parents").document(Email).get();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -290,8 +262,7 @@ class DataBaseService {
       //   }
       // });
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
       Future.delayed(const Duration(milliseconds: 2000), () {
         Navigator.pop(context);
       });
@@ -311,8 +282,7 @@ class DataBaseService {
         setUserType(Email, map, context);
       });
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -329,8 +299,7 @@ class DataBaseService {
         setUserType(Email, map, context);
       });
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -338,8 +307,7 @@ class DataBaseService {
     try {
       return firestore.collection("students").getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -389,16 +357,15 @@ class DataBaseService {
           });
         });
       });
-      firestore
-          .collection('notification')
-          .document('tokens').get().then((tokens) => (tokens?.data?.containsKey(parentEmail) ?? false) ? 
-          firestore
-          .collection('notification')
-          .document(classID)
-          .setData({parentEmail: tokens.data[parentEmail]}, merge: true):false);
+      firestore.collection('notification').document('tokens').get().then(
+          (tokens) => (tokens?.data?.containsKey(parentEmail) ?? false)
+              ? firestore
+                  .collection('notification')
+                  .document(classID)
+                  .setData({parentEmail: tokens.data[parentEmail]}, merge: true)
+              : false);
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -453,9 +420,7 @@ class DataBaseService {
         });
       });
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -463,19 +428,17 @@ class DataBaseService {
 
   //
   Future<QuerySnapshot> GetClassReports(
-      String DateOfReprt, BuildContext context) {
+      String reportDate, BuildContext context) {
     try {
-      print("from db" + DateOfReprt);
+      print("from db" + reportDate);
       return firestore
           .collection("ClassReports")
-          .document(DateOfReprt)
+          .document(reportDate)
           .collection("Reports")
           .orderBy("Date", descending: true)
           .getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -491,9 +454,7 @@ class DataBaseService {
           .collection("Questions")
           .getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -561,9 +522,7 @@ class DataBaseService {
       FirebaseMessageService.sendMessageToGroup(
           classID, 'A new Report been added', '', {});
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -571,9 +530,7 @@ class DataBaseService {
     try {
       return firestore.collection("ReportTemplates").document("Class").get();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -585,9 +542,7 @@ class DataBaseService {
           .collection("Questions")
           .getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -596,7 +551,7 @@ class DataBaseService {
     try {
       Map<String, dynamic> DataMap = new Map<String, dynamic>();
       DataMap["Date"] = FieldValue.serverTimestamp();
-      DataMap["ReportTemplateMaker"] = UserCurrentInfo.UID;
+      DataMap["ReportTemplateMaker"] = UserCurrentInfo.currentUserId;
       // DataMap["ReportName"]=ReportName;
       await firestore
           .collection("ReportTemplates")
@@ -638,9 +593,7 @@ class DataBaseService {
         });
       });
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -656,9 +609,7 @@ class DataBaseService {
           .orderBy("Date", descending: true)
           .getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -673,9 +624,7 @@ class DataBaseService {
           .collection("Questions")
           .getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -739,9 +688,7 @@ class DataBaseService {
         }
       });
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -749,9 +696,7 @@ class DataBaseService {
     try {
       return firestore.collection("ReportTemplates").document("Student").get();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -764,9 +709,7 @@ class DataBaseService {
           .collection("Questions")
           .getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -775,7 +718,7 @@ class DataBaseService {
     try {
       Map<String, dynamic> DataMap = new Map<String, dynamic>();
       DataMap["Date"] = FieldValue.serverTimestamp();
-      DataMap["ReportTemplateMaker"] = UserCurrentInfo.UID;
+      DataMap["ReportTemplateMaker"] = UserCurrentInfo.currentUserId;
       // DataMap["ReportName"]=ReportName;
       await firestore
           .collection("ReportTemplates")
@@ -818,9 +761,7 @@ class DataBaseService {
         });
       });
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -851,11 +792,8 @@ class DataBaseService {
         }
       });
       FirebaseMessageService.sendMessageToGroup(ClassID, Title, Message, {});
-
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -879,11 +817,8 @@ class DataBaseService {
         }
       });
       FirebaseMessageService.sendMessageToGroup('tokens', Title, Message, {});
-
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -898,12 +833,10 @@ class DataBaseService {
           .document(ParentEmail)
           .collection("notifications")
           .add(NotifMap);
-      FirebaseMessageService.sendMessageToGroup(ParentEmail, Title, Message, {},singleMessage: true);
-
+      FirebaseMessageService.sendMessageToGroup(ParentEmail, Title, Message, {},
+          singleMessage: true);
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -916,9 +849,7 @@ class DataBaseService {
           .collection("notifications")
           .getDocuments();
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -974,9 +905,7 @@ class DataBaseService {
         },
       );
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -1021,15 +950,12 @@ class DataBaseService {
         },
       );
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
-  deleteStudent(
-    String parentEmail,String classID,
-      String studentId, BuildContext context, Function refresh) async {
+  deleteStudent(String parentEmail, String classID, String studentId,
+      BuildContext context, Function refresh) async {
     try {
       showDialog(
         context: context,
@@ -1052,10 +978,9 @@ class DataBaseService {
                     Navigator.pop(context);
                   });
                   firestore
-                        .collection('notification')
-                        .document(classID)
-                        .setData({parentEmail: FieldValue.delete()},
-                            merge: true);
+                      .collection('notification')
+                      .document(classID)
+                      .setData({parentEmail: FieldValue.delete()}, merge: true);
                 },
               ),
               FlatButton(
@@ -1071,9 +996,7 @@ class DataBaseService {
         },
       );
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -1090,7 +1013,6 @@ class DataBaseService {
               FlatButton(
                 child: Text("yes"),
                 onPressed: () {
-                    
                   //yes
                   print("yesssss");
                   firestore
@@ -1118,9 +1040,7 @@ class DataBaseService {
         },
       );
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
     // print(ClassID+"   ");
   }
@@ -1164,9 +1084,7 @@ class DataBaseService {
         },
       );
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -1192,7 +1110,6 @@ class DataBaseService {
                     refresh();
                     Navigator.pop(context);
                   });
-                  
                 },
               ),
               FlatButton(
@@ -1208,9 +1125,7 @@ class DataBaseService {
         },
       );
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 
@@ -1248,9 +1163,7 @@ class DataBaseService {
         },
       );
     } catch (error) {
-      final snackBar = SnackBar(content: Text('Error: ' + error.toString()));
-
-      Scaffold.of(context).showSnackBar(snackBar);
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
 }

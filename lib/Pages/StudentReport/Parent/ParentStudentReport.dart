@@ -56,7 +56,7 @@ class _ParentStudentReportState extends State<ParentStudentReport> {
 
         setState(() {
           // print(singleReport.Date.toDate().toIso8601String()+singleReport.ClassName+singleReport.ReportSenderEmail+singleReport.ReportSenderID+singleReport.ReportSenderType+singleReport.ReportID);
-          if(singleReport.StudentParentEmaiil==UserCurrentInfo.Email){
+          if(singleReport.StudentParentEmaiil==UserCurrentInfo.email){
             ListOfReports.add(singleReport);
           }
 

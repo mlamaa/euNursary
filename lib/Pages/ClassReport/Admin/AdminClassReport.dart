@@ -1,17 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/db.dart';
-import 'package:garderieeu/widgets.dart';
-// import 'CreateReport.dart';
-// import 'AddReport.dart';
-import 'AdminClassReportTemplates.dart';
-import 'SingleReport.dart';
 import 'package:intl/intl.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+
+import '../../../Colors.dart';
+import '../../../Tools.dart';
+import '../../../db.dart';
+import '../../../widgets.dart';
 import 'AddReport.dart';
+import 'SingleReport.dart';
 
 class AdminClassReport extends StatefulWidget {
   @override
@@ -193,7 +190,7 @@ class _AdminClassReportState extends State<AdminClassReport> {
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>
                 new AddReport(
                   refresh: GetReports,
-                  ReportTemplateId: "Class",
+                  reportTemplateId: "Class",
                 )
                 ));
 

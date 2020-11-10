@@ -36,7 +36,7 @@ class _ParentClassReportState extends State<ParentClassReport> {
   Widget DatesList;
 
   GetAdminChildsClasses(String datee) async {
-    await dataBaseService.GetSingleParents(UserCurrentInfo.Email, context)
+    await dataBaseService.GetSingleParents(UserCurrentInfo.email, context)
         .then((value) {
       GetReports(value.data["ChildsClassesId"], datee);
     });

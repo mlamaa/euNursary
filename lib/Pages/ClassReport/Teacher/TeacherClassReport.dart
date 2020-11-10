@@ -1,21 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
-import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/UserInfo.dart';
-import 'package:garderieeu/db.dart';
-import 'package:garderieeu/widgets.dart';
-// import 'CreateReport.dart';
-// import 'AddReport.dart';
-import 'TeacherClassReportTemplates.dart';
-import 'SingleReport.dart';
 import 'package:intl/intl.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+
+import '../../../Colors.dart';
+import '../../../Tools.dart';
+import '../../../UserInfo.dart';
+import '../../../db.dart';
+import '../../../widgets.dart';
 import 'AddReport.dart';
+import 'SingleReport.dart';
 
 
 class TeacherClassReport extends StatefulWidget {
+
+
   @override
   _TeacherClassReportState createState() => _TeacherClassReportState();
 }
@@ -72,7 +71,7 @@ class _TeacherClassReportState extends State<TeacherClassReport> {
 
 
   GetClasses(String dateee) async{
-    await dataBaseService.getSingleTeacher(UserCurrentInfo.Email,context).then((value) {
+    await dataBaseService.getSingleTeacher(UserCurrentInfo.email,context).then((value) {
       GetReports(value.data["Classes"],dateee);
     });
   }
@@ -142,14 +141,12 @@ class _TeacherClassReportState extends State<TeacherClassReport> {
 
   @override
   void initState() {
-    // TODO: implement initState
+   
     super.initState();
-    // getDates();
-
-    setState(() {
+    
       CurrentDate=dataBaseService.getDateNow();
 
-    });
+   
     GetClasses(dataBaseService.getDateNow());
 
   }
@@ -184,64 +181,55 @@ class _TeacherClassReportState extends State<TeacherClassReport> {
         ),
       ],
     );
-    return Scaffold(
-      backgroundColor: MyColors.color4,
-      appBar: myAppBar(),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InkWell(
-              onTap: (){
+   return Scaffold(
+          backgroundColor: MyColors.color4,
+          appBar: myAppBar(),
+          body:  
+              FutureBuilder<List<String>>(
+      future: DataBaseService().getTeacherClasses(UserCurrentInfo.email),
+      builder: (context, snapshot) {
+        if(snapshot.connectionState != ConnectionState.done)
+          return  Center(child:CircularProgressIndicator());
+              return Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                        new AddReport(
+                          true,
+                          snapshot?.data ?? [],
+                          refresh: GetClasses,
+                          ReportTemplateId: "Class",
+                        )
+                        ));
 
+                        },
+                      child: Container(
+                        height: 30,
+                        decoration: BoxDecoration(
+                          borderRadius: Tools.myBorderRadius2,
+                          color: MyColors.color1,
+                        ),
+                        child: Center(
+                            child: Text("Reports Templates",style: TextStyle(color: Colors.white,fontSize: 20),)
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DatesList,
+                  ),
+                  ItemsHere(),
 
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                new AddReport(
-                  refresh: GetClasses,
-                  ReportTemplateId: "Class",
-                )
-                ));
-
-                },
-              child: Container(
-                height: 30,
-                decoration: BoxDecoration(
-                  borderRadius: Tools.myBorderRadius2,
-                  color: MyColors.color1,
-                ),
-                child: Center(
-                    child: Text("Reports Templates",style: TextStyle(color: Colors.white,fontSize: 20),)
-                ),
-              ),
-            ),
+                ],
+              );
+            }
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: InkWell(
-          //     onTap: (){
-          //       // Navigator.push(context, MaterialPageRoute(builder: (context)=>new AddParent()));
-          //     },
-          //     child: Container(
-          //       height: 30,
-          //       decoration: BoxDecoration(
-          //         borderRadius: Tools.myBorderRadius2,
-          //         color: MyColors.color1,
-          //       ),
-          //       child: Center(
-          //           child: Text("Add Class Report",style: TextStyle(color: Colors.white,fontSize: 20),)
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DatesList,
-          ),
-          ItemsHere(),
-
-        ],
-      ),
-    );
+        );
+     
   }
 }
 

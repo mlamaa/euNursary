@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garderieeu/helpers/HelperContext.dart';
 
 import '../../Colors.dart';
 import '../../Tools.dart';
@@ -134,16 +135,12 @@ class _AddParentState extends State<AddParent> {
                                   });
                                   addParentFunction(context);
                                 } else {
-                                  final snackBar = SnackBar(
-                                      content: Text(
-                                          "Phone Number Must be 8 numbers"));
-                                  Scaffold.of(context).showSnackBar(snackBar);
+                                  HelperContext.showMessage(context,
+                                      "Phone Number Must be 8 numbers");
                                 }
                               } else {
-                                final snackBar = SnackBar(
-                                    content: Text(
-                                        "Parent Full Name must be more than 4 letters,Pass more than 5 letters"));
-                                Scaffold.of(context).showSnackBar(snackBar);
+                                HelperContext.showMessage(context,
+                                    "Parent Full Name must be more than 4 letters,Pass more than 5 letters");
                               }
                             },
                             child: Tools.MyButton("Add Parent"))
