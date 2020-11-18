@@ -21,6 +21,16 @@ import 'Students/Students.dart';
 import 'Teachers/TeachersClass.dart';
 import "login.dart";
 
+const classes = "Classes";
+const Enseignants = "Enseignants";
+const Enfant = "Enfant";
+const parents = "Parents";
+const Rapport_classe = "Rapport de classe";
+const Rapport_etudiant = "Rapport étudiant";
+const Messages = "Messages";
+const Changer_MDP = "Changer MDP";
+const Sortie = "Sortie";
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -29,6 +39,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   DataBaseService dataBaseService = new DataBaseService();
+
   // FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
 
   bool isAuthenticated = false;
@@ -83,19 +94,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   void goToPage(String tag, BuildContext context) {
-    if (tag == "Sortie") {
+    if (tag == Sortie) {
       logout();
       return;
     }
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
+      print(tag);
       switch (tag) {
-        case "Classes":
+        case classes:
           return new Classes();
-        case "Changer MDP":
+        case Changer_MDP:
           return new ChangePass();
 
-        case "Messages":
+        case Messages:
           {
             if (UserCurrentInfo.currentUserType == "admin") {
               return new SendMessage();
@@ -105,17 +117,18 @@ class _HomePageState extends State<HomePage> {
             return new RecieveMessages();
           }
 
-        case "Enfant":
+        case Enfant:
           return new Students();
 
-        case "Parents":
+        case parents:
           return new Parents();
 
-        case "Enseignants":
+        case Enseignants:
           return new Teachers();
 
-        case "Rapport de classe":
+        case Rapport_classe:
           {
+            print('UserCurrentInfo.currentUserType ');
             if (UserCurrentInfo.currentUserType == "admin") {
               return new AdminClassReport();
             } else if (UserCurrentInfo.currentUserType == "teacher") {
@@ -124,7 +137,7 @@ class _HomePageState extends State<HomePage> {
             return new ParentClassReport();
           }
 
-        case "Rapport étudiant":
+        case Rapport_etudiant:
           {
             if (UserCurrentInfo.currentUserType == "admin") {
               return new AdminStudentReport();
@@ -196,32 +209,31 @@ class _HomePageState extends State<HomePage> {
   setMainWidgets() {
     if (UserCurrentInfo.currentUserType == "admin") {
       mainWidgets = <Widget>[
-        makeDashboardItem(
-            context, "Classes", Icons.home_repair_service_rounded),
-        makeDashboardItem(context, "Enseignants", Icons.person_outline),
-        makeDashboardItem(context, "Enfant", Icons.account_box),
-        makeDashboardItem(context, "Parents", Icons.person_pin_circle),
-        makeDashboardItem(context, "Rapport de Classe", Icons.wysiwyg),
-        makeDashboardItem(context, "Rapport Enfant", Icons.child_care),
-        makeDashboardItem(context, "Messages", Icons.email_outlined),
-        makeDashboardItem(context, "Changer MDP", Icons.security),
-        makeDashboardItem(context, "Sortie", Icons.logout),
+        makeDashboardItem(context, classes, Icons.home_repair_service_rounded),
+        makeDashboardItem(context, Enseignants, Icons.person_outline),
+        makeDashboardItem(context, Enfant, Icons.account_box),
+        makeDashboardItem(context, parents, Icons.person_pin_circle),
+        makeDashboardItem(context, Rapport_classe, Icons.wysiwyg),
+        makeDashboardItem(context, Rapport_etudiant, Icons.child_care),
+        makeDashboardItem(context, Messages, Icons.email_outlined),
+        makeDashboardItem(context, Changer_MDP, Icons.security),
+        makeDashboardItem(context, Sortie, Icons.logout),
       ];
     } else if (UserCurrentInfo.currentUserType == "teacher") {
       mainWidgets = <Widget>[
-        makeDashboardItem(context, "Rapport de classe", Icons.wysiwyg),
-        makeDashboardItem(context, "Rapport étudiant", Icons.child_care),
-        makeDashboardItem(context, "Messages", Icons.email_outlined),
-        makeDashboardItem(context, "Changer MDP", Icons.email_outlined),
-        makeDashboardItem(context, "Sortie", Icons.logout)
+        makeDashboardItem(context, Rapport_classe, Icons.wysiwyg),
+        makeDashboardItem(context, Rapport_etudiant, Icons.child_care),
+        makeDashboardItem(context, Messages, Icons.email_outlined),
+        makeDashboardItem(context, Changer_MDP, Icons.email_outlined),
+        makeDashboardItem(context, Sortie, Icons.logout)
       ];
     } else {
       mainWidgets = <Widget>[
-        makeDashboardItem(context, "Rapport de classe", Icons.wysiwyg),
-        makeDashboardItem(context, "Rapport étudiant", Icons.child_care),
-        makeDashboardItem(context, "Messages", Icons.email_outlined),
-        makeDashboardItem(context, "Changer MDP", Icons.email_outlined),
-        makeDashboardItem(context, "Sortie", Icons.logout)
+        makeDashboardItem(context, Rapport_classe, Icons.wysiwyg),
+        makeDashboardItem(context, Rapport_etudiant, Icons.child_care),
+        makeDashboardItem(context, Messages, Icons.email_outlined),
+        makeDashboardItem(context, Changer_MDP, Icons.email_outlined),
+        makeDashboardItem(context, Sortie, Icons.logout)
       ];
     }
   }

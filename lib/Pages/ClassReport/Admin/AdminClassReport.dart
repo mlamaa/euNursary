@@ -18,31 +18,10 @@ class AdminClassReport extends StatefulWidget {
 class _AdminClassReportState extends State<AdminClassReport> {
   List<SingleReportt> ListOfReports = new List<SingleReportt>();
   DataBaseService dataBaseService = new DataBaseService();
-
-
   String CurrentClass;
   String CurrentDate;
-
-
-
-
-
-  //
-  // List<String> ListOfDates=new List<String>();
-  // getDates(){
-  //   dataBaseService.getDatesOfData(context).then((value) {
-  //     for(int i=0;i<value.documents.length;i++){
-  //       setState(() {
-  //         ListOfDates.add(value.documents[i].documentID);
-  //       });
-  //     }
-  //   });
-  // }
   Widget DatesList;
-
-
   DateTime selectedDate = DateTime.now();
-
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
@@ -67,9 +46,6 @@ class _AdminClassReportState extends State<AdminClassReport> {
         GetReports(year+"."+month+"."+day);
       });
   }
-
-
-
   String getDateNow(){
     String Datehere=" ";
     DateTime datetime=DateTime.now();
@@ -78,8 +54,6 @@ class _AdminClassReportState extends State<AdminClassReport> {
     print("from date getter"+Datehere);
     return Datehere;
   }
-
-
   GetReports(String Date) async{
     print("getting class reports for admin");
     setState(() {
@@ -105,7 +79,6 @@ class _AdminClassReportState extends State<AdminClassReport> {
 
     });
   }
-
   Widget ItemsHere(){
     return Flexible(
       child: Padding(
@@ -134,22 +107,16 @@ class _AdminClassReportState extends State<AdminClassReport> {
 
     );
   }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    print('AdminClassReport initState');
     GetReports(getDateNow());
     // getDates();
-
   }
-
-
-
-
   @override
   Widget build(BuildContext context) {
-
     DatesList=Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -180,7 +147,6 @@ class _AdminClassReportState extends State<AdminClassReport> {
         ),
       ],
     );
-
     return Scaffold(
       backgroundColor: MyColors.color4,
       appBar: myAppBar(),
@@ -191,7 +157,6 @@ class _AdminClassReportState extends State<AdminClassReport> {
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: (){
-
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>
                 new AddReport(
                   refresh: GetReports,
@@ -242,7 +207,6 @@ class _AdminClassReportState extends State<AdminClassReport> {
     );
   }
 }
-
 
 class SingleReportWidget extends StatefulWidget {
  final    String ClassId;
@@ -350,8 +314,6 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
   }
 }
 
-
-
 class SingleReportt{
   String ReportID;
   String ClassId;
@@ -361,7 +323,3 @@ class SingleReportt{
   String ReportSenderEmail;
   String ReportSenderType;
 }
-// class SingleQuestion{
-//   String Question;
-//   List<String> Answer=new List<String>();
-// }

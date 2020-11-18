@@ -78,7 +78,7 @@ class _AddClassState extends State<AddClass> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          "Class Year:  ",
+                          "Année:  ",
                           style: myTextStyle,
                         ),
                         Container(
@@ -103,7 +103,7 @@ class _AddClassState extends State<AddClass> {
                               "Class Name and year must be more than 2 letters");
                         }
                       },
-                      child: Tools.MyButton("Add Class"),
+                      child: Tools.MyButton("Ajouter Class"),
                     )
                   ],
                 ),

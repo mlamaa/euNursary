@@ -1,13 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:garderieeu/UserInfo.dart';
-import 'auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'auth.dart';
 import 'helpers/HelperContext.dart';
 import 'services/FirebaseMessageService.dart';
 
@@ -36,8 +36,7 @@ class DataBaseService {
           .document('tokens')
           .setData({email: token}, merge: true));
 
-  Future<DocumentSnapshot> getUserType(
-      String email, BuildContext context) async {
+  Future<DocumentSnapshot> getUserType(String email, BuildContext context) async {
     try {
       return await firestore.collection("UserTypes").document(email).get();
     } catch (error) {
@@ -84,8 +83,7 @@ class DataBaseService {
     }
   }
 
-  Future<void> EditClassToDataBase(
-      Map ClassMap, String ID, BuildContext context) async {
+  Future<void> EditClassToDataBase(Map ClassMap, String ID, BuildContext context) async {
     try {
       await firestore.collection("classes").document(ID).updateData(ClassMap);
     } catch (error) {
@@ -122,12 +120,10 @@ class DataBaseService {
     }
   }
 
-  Future<void> authenticateTeacher(
-      Map classMap, String email, String pass, BuildContext context) async {
+  Future<void> authenticateTeacher(Map classMap, String email, String pass, BuildContext context) async {
     try {
       await Auth.register(email, pass);
       await addTeacherToDataBase(classMap, email, context);
-     
     } catch (error) {
       HelperContext.showMessage(context, 'Error: ' + error.toString());
       Future.delayed(const Duration(milliseconds: 2000), () {
@@ -138,14 +134,13 @@ class DataBaseService {
 
   Future<List<String>> getTeacherClasses(String email)async{
     var data = await firestore
-          .collection("Teachers")
-          .document(email)
-          .get();
+        .collection("Teachers")
+        .document(email)
+        .get();
     return (data.data['Classes'] as List).map((e) => e.toString()).toList();
   }
 
-  Future<void> addTeacherToDataBase(
-      Map classMap, String email, BuildContext context) async {
+  Future<void> addTeacherToDataBase(Map classMap, String email, BuildContext context) async {
     try {
       Map<String, String> map = new Map<String, String>();
       map["type"] = "teacher";
@@ -161,8 +156,7 @@ class DataBaseService {
     }
   }
 
-  Future<DocumentSnapshot> getSingleTeacher(
-      String email, BuildContext context) async {
+  Future<DocumentSnapshot> getSingleTeacher(String email, BuildContext context) async {
     try {
       return await firestore.collection("Teachers").document(email).get();
     } catch (error) {
@@ -171,8 +165,7 @@ class DataBaseService {
     }
   }
 
-  Future<DocumentSnapshot> GetSingleClass(
-      String ClassID, BuildContext context) async {
+  Future<DocumentSnapshot> GetSingleClass(String ClassID, BuildContext context) async {
     try {
       return await firestore.collection("classes").document(ClassID).get();
     } catch (error) {
@@ -180,8 +173,7 @@ class DataBaseService {
     }
   }
 
-  Future<DocumentSnapshot> GetSingleStudent(
-      String ID, BuildContext context) async {
+  Future<DocumentSnapshot> GetSingleStudent(String ID, BuildContext context) async {
     try {
       return await firestore.collection("students").document(ID).get();
     } catch (error) {
@@ -189,8 +181,7 @@ class DataBaseService {
     }
   }
 
-  Future<DocumentSnapshot> GetSingleParent(
-      String ParentEmail, BuildContext context) async {
+  Future<DocumentSnapshot> GetSingleParent(String ParentEmail, BuildContext context) async {
     try {
       return await firestore.collection("parents").document(ParentEmail).get();
     } catch (error) {
@@ -198,8 +189,7 @@ class DataBaseService {
     }
   }
 
-  Future<void> editTeacherToDataBase(
-      Map classMap, String email, BuildContext context) async {
+  Future<void> editTeacherToDataBase(Map classMap, String email, BuildContext context) async {
     Map<String, String> map = new Map<String, String>();
     map["type"] = "teacher";
     await firestore
@@ -231,8 +221,7 @@ class DataBaseService {
     }
   }
 
-  Future<DocumentSnapshot> GetSingleParents(
-      String Email, BuildContext context) {
+  Future<DocumentSnapshot> GetSingleParents(String Email, BuildContext context) {
     try {
       return firestore.collection("parents").document(Email).get();
     } catch (error) {
@@ -240,8 +229,7 @@ class DataBaseService {
     }
   }
 
-  Future<void> AuthenticateParent(
-      Map classMap, String email, String pass, BuildContext context) async {
+  Future<void> AuthenticateParent(Map classMap, String email, String pass, BuildContext context) async {
     try {
       await Auth.register(email, pass);
       AddParentToDataBase(classMap, email, pass, context);
@@ -269,8 +257,7 @@ class DataBaseService {
     }
   }
 
-  Future<void> AddParentToDataBase(
-      Map ClassMap, String Email, String pass, BuildContext context) async {
+  Future<void> AddParentToDataBase(Map ClassMap, String Email, String pass, BuildContext context) async {
     try {
       Map<String, String> map = new Map<String, String>();
       map["type"] = "parent";
@@ -286,8 +273,7 @@ class DataBaseService {
     }
   }
 
-  Future<void> EditParentToDataBase(
-      Map ClassMap, String Email, BuildContext context) async {
+  Future<void> EditParentToDataBase(Map ClassMap, String Email, BuildContext context) async {
     try {
       Map<String, String> map = new Map<String, String>();
       map["type"] = "parent";
@@ -358,11 +344,11 @@ class DataBaseService {
         });
       });
       firestore.collection('notification').document('tokens').get().then(
-          (tokens) => (tokens?.data?.containsKey(parentEmail) ?? false)
+              (tokens) => (tokens?.data?.containsKey(parentEmail) ?? false)
               ? firestore
-                  .collection('notification')
-                  .document(classID)
-                  .setData({parentEmail: tokens.data[parentEmail]}, merge: true)
+              .collection('notification')
+              .document(classID)
+              .setData({parentEmail: tokens.data[parentEmail]}, merge: true)
               : false);
     } catch (error) {
       HelperContext.showMessage(context, 'Error: ' + error.toString());
@@ -427,8 +413,7 @@ class DataBaseService {
   // reports
 
   //
-  Future<QuerySnapshot> GetClassReports(
-      String reportDate, BuildContext context) {
+  Future<QuerySnapshot> GetClassReports(String reportDate, BuildContext context) {
     try {
       print("from db" + reportDate);
       return firestore
@@ -442,8 +427,7 @@ class DataBaseService {
     }
   }
 
-  Future<QuerySnapshot> GetQuestionsOfReport(
-      String ReportID, String DateOfReprt, BuildContext context) {
+  Future<QuerySnapshot> GetQuestionsOfReport(String ReportID, String DateOfReprt, BuildContext context) {
     try {
       print(DateOfReprt + "from database" + ReportID);
       return firestore
@@ -499,14 +483,17 @@ class DataBaseService {
         for (int i = 0; i < questionsMap.length; i++) {
           print(questionsMap[i].question);
           Map<String, dynamic> questionsAndAnswersMapp =
-              new Map<String, dynamic>();
+          new Map<String, dynamic>();
           questionsAndAnswersMapp["Question"] = questionsMap[i].question;
           questionsAndAnswersMapp["index"] = i;
-          if (questionsMap[i].answer != null) {
+          if (questionsMap[i].answer != null &&
+              questionsMap[i].answer.isNotEmpty) {
             questionsAndAnswersMapp["Answer"] = questionsMap[i].answer;
-          } else {
+          } else if (questionsMap[i].answers != null &&
+              questionsMap[i].answers.isNotEmpty) {
             questionsAndAnswersMapp["Answer"] = questionsMap[i].answers;
-          }
+          } else
+            continue;
 
           firestore
               .collection("ClassReports")
@@ -552,7 +539,7 @@ class DataBaseService {
       Map<String, dynamic> DataMap = new Map<String, dynamic>();
       DataMap["Date"] = FieldValue.serverTimestamp();
       DataMap["ReportTemplateMaker"] = UserCurrentInfo.currentUserId;
-      // DataMap["ReportName"]=ReportName;
+
       await firestore
           .collection("ReportTemplates")
           .document("Class")
@@ -567,31 +554,35 @@ class DataBaseService {
               .document(value1.documents[o].documentID)
               .delete();
         }
+      });
+      for (int i = 0; i < classReportItems.length; i++) {
+        if (classReportItems[i].Question.isEmpty) continue;
+        Map<String, dynamic> QuestionsAndAnswersMapp =
+            new Map<String, dynamic>();
+        QuestionsAndAnswersMapp["MultipleChoice"] =
+            classReportItems[i].MultipleChoice;
+        QuestionsAndAnswersMapp["Question"] = classReportItems[i].Question;
+        QuestionsAndAnswersMapp["TheChoices"] = classReportItems[i].TheChoices;
+        QuestionsAndAnswersMapp["Type"] = classReportItems[i].Type;
+        QuestionsAndAnswersMapp["choicesCount"] =
+            classReportItems[i].choicesCount;
+        String prefix = '';
+        int divresult = (i / 10).toInt();
+        if (divresult == 0)
+          prefix = 'A';
+        else if (divresult == 1)
+          prefix = 'B';
+        else if (divresult == 2)
+          prefix = 'C';
+        else if (divresult == 3) prefix = 'D';
+
         firestore
             .collection("ReportTemplates")
             .document("Class")
-            .setData(DataMap)
-            .then((value) {
-          for (int i = 0; i < classReportItems.length; i++) {
-            Map<String, dynamic> QuestionsAndAnswersMapp =
-                new Map<String, dynamic>();
-            QuestionsAndAnswersMapp["MultipleChoice"] =
-                classReportItems[i].MultipleChoice;
-            QuestionsAndAnswersMapp["Question"] = classReportItems[i].Question;
-            QuestionsAndAnswersMapp["TheChoices"] =
-                classReportItems[i].TheChoices;
-            QuestionsAndAnswersMapp["Type"] = classReportItems[i].Type;
-            QuestionsAndAnswersMapp["choicesCount"] =
-                classReportItems[i].choicesCount;
-
-            firestore
-                .collection("ReportTemplates")
-                .document("Class")
-                .collection("Questions")
-                .add(QuestionsAndAnswersMapp);
-          }
-        });
-      });
+            .collection("Questions")
+            .document(prefix + ((i % 10) * 1000).toString())
+            .setData(QuestionsAndAnswersMapp);
+      }
     } catch (error) {
       HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
@@ -613,8 +604,7 @@ class DataBaseService {
     }
   }
 
-  Future<QuerySnapshot> GetQuestionsOfStudentReport(
-      String ReportID, BuildContext context) {
+  Future<QuerySnapshot> GetQuestionsOfStudentReport(String ReportID, BuildContext context) {
     try {
       return firestore
           .collection("StudentsReports")
@@ -670,7 +660,7 @@ class DataBaseService {
         for (int i = 0; i < QuestionsMap.length; i++) {
           print(QuestionsMap[i].question);
           Map<String, dynamic> QuestionsAndAnswersMapp =
-              new Map<String, dynamic>();
+          new Map<String, dynamic>();
           QuestionsAndAnswersMapp["Question"] = QuestionsMap[i].question;
           if (QuestionsMap[i].answer != null) {
             QuestionsAndAnswersMapp["Answer"] = QuestionsMap[i].answer;
@@ -700,8 +690,7 @@ class DataBaseService {
     }
   }
 
-  Future<QuerySnapshot> GetStudentReportTemplateQuestions(
-      BuildContext context) {
+  Future<QuerySnapshot> GetStudentReportTemplateQuestions(BuildContext context) {
     try {
       return firestore
           .collection("ReportTemplates")
@@ -713,8 +702,7 @@ class DataBaseService {
     }
   }
 
-  SendNewStudentReportTempplate(
-      List<StudentReportItems> studentReportItems, BuildContext context) async {
+  SendNewStudentReportTempplate(List<StudentReportItems> studentReportItems, BuildContext context) async {
     try {
       Map<String, dynamic> DataMap = new Map<String, dynamic>();
       DataMap["Date"] = FieldValue.serverTimestamp();
@@ -734,32 +722,39 @@ class DataBaseService {
               .document(value1.documents[o].documentID)
               .delete();
         }
+      });
+
+      for (int i = 0; i < studentReportItems.length; i++) {
+        if (studentReportItems[i].Question.isEmpty)
+          continue;
+        Map<String, dynamic> QuestionsAndAnswersMapp =
+        new Map<String, dynamic>();
+        QuestionsAndAnswersMapp["MultipleChoice"] =
+            studentReportItems[i].MultipleChoice;
+        QuestionsAndAnswersMapp["Question"] =
+            studentReportItems[i].Question;
+        QuestionsAndAnswersMapp["TheChoices"] =
+            studentReportItems[i].TheChoices;
+        QuestionsAndAnswersMapp["Type"] = studentReportItems[i].Type;
+        QuestionsAndAnswersMapp["choicesCount"] =
+            studentReportItems[i].choicesCount;
+        String prefix = '';
+        int divresult = (i / 10).toInt();
+        if (divresult == 0)
+          prefix = 'A';
+        else if (divresult == 1)
+          prefix = 'B';
+        else if (divresult == 2)
+          prefix = 'C';
+        else if (divresult == 3) prefix = 'D';
+
         firestore
             .collection("ReportTemplates")
             .document("Student")
-            .setData(DataMap)
-            .then((value) {
-          for (int i = 0; i < studentReportItems.length; i++) {
-            Map<String, dynamic> QuestionsAndAnswersMapp =
-                new Map<String, dynamic>();
-            QuestionsAndAnswersMapp["MultipleChoice"] =
-                studentReportItems[i].MultipleChoice;
-            QuestionsAndAnswersMapp["Question"] =
-                studentReportItems[i].Question;
-            QuestionsAndAnswersMapp["TheChoices"] =
-                studentReportItems[i].TheChoices;
-            QuestionsAndAnswersMapp["Type"] = studentReportItems[i].Type;
-            QuestionsAndAnswersMapp["choicesCount"] =
-                studentReportItems[i].choicesCount;
-
-            firestore
-                .collection("ReportTemplates")
-                .document("Student")
-                .collection("Questions")
-                .add(QuestionsAndAnswersMapp);
-          }
-        });
-      });
+            .collection("Questions")
+            .document(prefix + ((i % 10) * 1000).toString())
+            .setData(QuestionsAndAnswersMapp);
+      }
     } catch (error) {
       HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
@@ -772,8 +767,8 @@ class DataBaseService {
       firestore.collection("parents").getDocuments().then((value2) {
         for (int i = 0; i < value2.documents.length; i++) {
           for (int j = 0;
-              j < value2.documents[i].data["ChildsClassesId"].length;
-              j++) {
+          j < value2.documents[i].data["ChildsClassesId"].length;
+          j++) {
             if (value2.documents[i].data["ChildsClassesId"][j] == ClassID) {
               parentsToSendNotifications.add(value2.documents[i].documentID);
             }
@@ -840,8 +835,7 @@ class DataBaseService {
     }
   }
 
-  Future<QuerySnapshot> getMessages(
-      String ParentEmail, BuildContext context) async {
+  Future<QuerySnapshot> getMessages(String ParentEmail, BuildContext context) async {
     try {
       return await firestore
           .collection("Notification")
@@ -909,8 +903,7 @@ class DataBaseService {
     }
   }
 
-  DeleteStudentReport(
-      String StudentReportID, BuildContext context, Function refresh) async {
+  DeleteStudentReport(String StudentReportID, BuildContext context, Function refresh) async {
     try {
       showDialog(
         context: context,
@@ -918,7 +911,7 @@ class DataBaseService {
           return AlertDialog(
             title: Text(" "),
             content:
-                Text("Are you sure you want to delete this Student Report"),
+            Text("Are you sure you want to delete this Student Report"),
             actions: [
               FlatButton(
                 child: Text("yes"),
@@ -1193,10 +1186,10 @@ class StudentReportItems {
 
 class CreatingStudentReportSomeInfo {
   static List<StudentReportItems> CreatingStudentsReportItems =
-      new List<StudentReportItems>();
+  new List<StudentReportItems>();
 }
 
 class CreatingReportSomeInfo {
   static List<ClassReportItems> CreatingReportItems =
-      new List<ClassReportItems>();
+  new List<ClassReportItems>();
 }

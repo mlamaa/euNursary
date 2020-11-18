@@ -238,7 +238,6 @@ class _EditClassReportAsAdminState extends State<EditClassReportAsAdmin> {
                           if (CreatingReportSomeInfo
                                   .CreatingReportItems.length >
                               0) {
-                            print("will add");
                             dataBaseService.SendNewClassReportTempplate(
                                 CreatingReportSomeInfo.CreatingReportItems,
                                 context);

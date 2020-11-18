@@ -21,21 +21,6 @@ class _AdminStudentReportState extends State<AdminStudentReport> {
 
   String CurrentClass;
   String CurrentDate;
-
-
-
-  // List<String> ListOfDates=new List<String>();
-  // getDates(){
-  //   dataBaseService.getDatesOfStudentData(context).then((value) {
-  //     for(int i=0;i<value.documents.length;i++){
-  //       setState(() {
-  //         ListOfDates.add(value.documents[i].documentID);
-  //       });
-  //     }
-  //   });
-  // }
-
-
   Widget DatesList;
 
   DateTime selectedDate = DateTime.now();
