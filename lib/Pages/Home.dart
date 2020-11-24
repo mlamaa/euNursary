@@ -17,9 +17,11 @@ import 'Messages/SendMessage.dart';
 import 'Parents/Parents.dart';
 import 'StudentReport//Admin/AdminStudentReport.dart';
 import 'StudentReport/Teacher/TeacherStudentReport.dart';
+import 'StudentReport/Parent/ParentStudentReport.dart';
 import 'Students/Students.dart';
 import 'Teachers/TeachersClass.dart';
 import "login.dart";
+import 'ClassReport/ClassReportMainPage.dart';
 
 const classes = "Classes";
 const Enseignants = "Enseignants";
@@ -128,7 +130,7 @@ class _HomePageState extends State<HomePage> {
 
         case Rapport_classe:
           {
-            print('UserCurrentInfo.currentUserType ');
+            //print('UserCurrentInfo.currentUserType ');
             if (UserCurrentInfo.currentUserType == "admin") {
               return new AdminClassReport();
             } else if (UserCurrentInfo.currentUserType == "teacher") {
@@ -144,7 +146,7 @@ class _HomePageState extends State<HomePage> {
             } else if (UserCurrentInfo.currentUserType == "teacher") {
               return new TeacherStudentReport();
             }
-            return new ParentClassReport();
+            return new ParentStudentReport();
           }
       }
 

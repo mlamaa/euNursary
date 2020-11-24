@@ -77,59 +77,55 @@ class _AddReportState extends State<AddReport> {
     });
   }
 
-  GetAnswers() async {
+
+  getAnswers() async {
     if (CurrentStudentClass.ID != " ") {
-      widget.dataBaseService
-          .GetQuestionsOfReport(CurrentStudentClass.ID, getDateNow(), context)
-          .then((value) {
-        if (value.documents.length > 0) {
-          print("found dataaaa");
-          for (int i = 0; i < value.documents.length; i++) {
-            for (int j = 0; j < items.length; j++) {
-              if (items[j].question == value.documents[i].data["Question"]) {
-                if (items[j].type == "text" || items[j].type == "date") {
-                  setState(() {
-                    items[j].AnswersText = value.documents[i].data["Answer"];
-                    print(value.documents[i].data["Answer"]);
-                  });
-                } else if (items[j].type != "text" &&
-                    items[j].type != "date" &&
-                    items[j].choicesHere.MultiChoice) {
-                  setState(() {
-                    items[j].Answers = value.documents[i].data["Answer"];
-                    print(value.documents[i].data["Answer"]);
-                  });
-                } else if (items[j].type != "text" &&
-                    items[j].type != "date" &&
-                    !items[j].choicesHere.MultiChoice) {
-                  setState(() {
-                    items[j].AnswersText = value.documents[i].data["Answer"];
-                    print(value.documents[i].data["Answer"]);
-                  });
-                }
+      for (var item in items) {
+        if (item.type == "text") {
+          setState(() {
+            item.AnswersText = null;
+          });
+        } else if (item.type != "text" &&
+            item.choicesHere.MultiChoice) {
+          setState(() {
+            item.Answers = new List<dynamic>();
+          });
+        } else {
+          setState(() {
+            item.AnswersText = null;
+          });
+        }
+      }
+      var list = await widget.dataBaseService
+          .GetQuestionsOfReport(CurrentStudentClass.ID, getDateNow(), context);
+      if (list.length > 0) {
+        for (var listItem in list) {
+          for (var item in items) {
+            if (item.question == listItem.data["Question"]) {
+              if (item.type == "text" || item.type == "date") {
+                setState(() {
+                  item.AnswersText = listItem.data["Answer"];
+                  print(listItem.data["Answer"]);
+                });
+              } else if (item.type != "text" &&
+                  item.type != "date" &&
+                  item.choicesHere.MultiChoice) {
+                setState(() {
+                  item.Answers = listItem.data["Answer"];
+                  print(listItem.data["Answer"]);
+                });
+              } else if (item.type != "text" &&
+                  item.type != "date" &&
+                  !item.choicesHere.MultiChoice) {
+                setState(() {
+                  item.AnswersText = listItem.data["Answer"];
+                  print(listItem.data["Answer"]);
+                });
               }
             }
           }
-        } else {
-          print("no dataaaa");
-          for (int j = 0; j < items.length; j++) {
-            if (items[j].type == "text") {
-              setState(() {
-                items[j].AnswersText = "";
-              });
-            } else if (items[j].type != "text" &&
-                items[j].choicesHere.MultiChoice) {
-              setState(() {
-                items[j].Answers = new List<dynamic>();
-              });
-            } else {
-              setState(() {
-                items[j].AnswersText = "";
-              });
-            }
-          }
         }
-      });
+      }
     }
   }
 
@@ -340,7 +336,7 @@ class _AddReportState extends State<AddReport> {
                                     onChanged: (Classes s) {
                                       setState(() {
                                         CurrentStudentClass = s;
-                                        GetAnswers();
+                                        getAnswers();
                                       });
                                     },
                                     selectedItem: CurrentStudentClass),
@@ -418,6 +414,8 @@ class ItemView extends StatelessWidget {
   final TextEditingDynamic textEditingDynamic;
   final List<String> choices;
   final List<dynamic> SavedAnswer;
+
+  TextEditingDynamic controller = new TextEditingDynamic();
 
   ItemView(
       {this.textEditingDynamic,
@@ -521,7 +519,7 @@ class ItemView extends StatelessWidget {
       }
     } else {
       if (SavedAnswerText != null) {
-        textEditingDynamic.textEditingController.text = SavedAnswerText;
+        controller.textEditingController.text = SavedAnswerText;
       }
       if (type == "date") {
         return Column(
@@ -558,7 +556,7 @@ class ItemView extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                 child: TextField(
                   maxLines: 3,
-                  controller: textEditingDynamic.textEditingController,
+                  controller: controller.textEditingController,
                   style: TextStyle(color: MyColors.color1, fontSize: 16),
                   decoration: InputDecoration(
                       hintText: " Answer ...",
@@ -567,6 +565,9 @@ class ItemView extends StatelessWidget {
                         fontSize: 16,
                       ),
                       border: InputBorder.none),
+                  onChanged: (value){
+                      textEditingDynamic.textEditingController.text = value;
+                  },
                 ),
               ),
             ),
@@ -678,6 +679,18 @@ class _SingleDropState extends State<SingleDrop> {
             orElse: () => null)?.answer = widget.CurrentChoice;
         
         super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant SingleDrop oldWidget) {
+    if(oldWidget.savedText != widget.savedText){
+      setState(() {
+        widget.CurrentChoice = widget.savedText;
+      });
+    }
+    // if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) == null)
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
   }
 
   @override

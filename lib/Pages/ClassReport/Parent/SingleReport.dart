@@ -30,22 +30,24 @@ class _SingleReportState extends State<SingleReport> {
 
 
 
+
   GetSingleQuestions() async{
     print(widget.ReportID+dataBaseService.getDateNow());
-    await dataBaseService.GetQuestionsOfReport(widget.ReportID,dataBaseService.getDateNow(),context).then((value) {
-      print(value.documents.length.toString()+"aa");
+    var list = await dataBaseService.GetQuestionsOfReport(widget.ReportID,dataBaseService.getDateNow(),context);
 
-      for(int i=0;i<value.documents.length;i++){
-        SingleQuestion singleQuestion=new SingleQuestion();
-        singleQuestion.Question=value.documents[i].data["Question"];
-        singleQuestion.Answer=value.documents[i].data["Answer"].toString();
+    //print(list.length.toString()+"aa");
+    list.sort((a,b) => a["index"]>b["index"]?1:-1);
+    for(var listItem in list){
+      SingleQuestion singleQuestion=new SingleQuestion();
+      singleQuestion.Question=listItem.data["Question"];
+      singleQuestion.Answer=listItem.data["Answer"].toString();
 
-        setState(() {
-          ListOfQuestions.add(singleQuestion);
-        });
-      }
+      setState(() {
+        ListOfQuestions.add(singleQuestion);
+      });
+    }
 
-    });
+
   }
 
   Widget ItemsHere(){

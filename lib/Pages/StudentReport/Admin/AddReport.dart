@@ -85,6 +85,25 @@ class _AddReportState extends State<AddReport> {
 
   GetAnswers()async{
     if(CurrentStudent.ID!=" "){
+      for(int j=0;j<items.length;j++){
+        if(items[j].type=="text"){
+          setState(() {
+            items[j].AnswersText=null;
+
+          });
+        }else if(items[j].type!="text"&&items[j].choicesHere.MultiChoice){
+          setState(() {
+            items[j].Answers=new List<dynamic>();
+
+          });
+        }else{
+          setState(() {
+            items[j].AnswersText=null;
+          });
+        }
+
+      }
+
       widget.dataBaseService.GetQuestionsOfStudentReport(CurrentStudent.ID,context).then((value) {
         print(CurrentStudent.ID+"    this is the id of student");
         if(value.documents.length>0){
@@ -111,27 +130,6 @@ class _AddReportState extends State<AddReport> {
               }
             }
           }
-        }else{
-          print("no dataaaa");
-            for(int j=0;j<items.length;j++){
-                if(items[j].type=="text"){
-                  setState(() {
-                    items[j].AnswersText="";
-
-                  });
-                }else if(items[j].type!="text"&&items[j].choicesHere.MultiChoice){
-                  setState(() {
-                    items[j].Answers=new List<dynamic>();
-
-                  });
-                }else{
-                  setState(() {
-                    items[j].AnswersText="";
-                  });
-                }
-
-            }
-
         }
 
       });
@@ -326,24 +324,7 @@ class _AddReportState extends State<AddReport> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: (){
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>new EditStudentReportAsAdmin()));
-                      },
-                      child: Container(
-                        height: 30,
-                        decoration: BoxDecoration(
-                          borderRadius: Tools.myBorderRadius2,
-                          color: MyColors.color1,
-                        ),
-                        child: Center(
-                            child: Text("Edit Student Report Template",style: TextStyle(color: Colors.white,fontSize: 20),)
-                        ),
-                      ),
-                    ),
-                  ),
+
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Text("Your Report",style: TextStyle(fontSize: 40,color: MyColors.color1,fontWeight: FontWeight.bold),),
@@ -390,6 +371,7 @@ class _AddReportState extends State<AddReport> {
                               // popupItemDisabled: (String s) => s.startsWith('I'),
                               onChanged: (Classes s){
                                 CurrentStudentClass=s;
+                                GetAnswers();
                               } ,
                               selectedItem: CurrentStudentClass),
 
@@ -534,6 +516,8 @@ class ItemView extends StatelessWidget {
   final List<String> choices;
   final List<dynamic> SavedAnswer;
 
+  TextEditingDynamic controller = new TextEditingDynamic();
+
   ItemView({this.textEditingDynamic,this.MultipleChoice,this.choices,this.type,this.question,this.SavedAnswer,this.SavedAnswerText});
 
   @override
@@ -564,7 +548,7 @@ class ItemView extends StatelessWidget {
             ),
             Container(height: 5,),
             MultiChoiceOld,
-            Container(height: 5,),            
+            Container(height: 5,),
             MultiSelectFormField(
 //          autovalidate: false,
               titleText: ' ',
@@ -603,7 +587,7 @@ class ItemView extends StatelessWidget {
                 _MyAnswers = value;
 
                 QuestionAndAnswers questionsAndAnswersHere =
-                    new QuestionAndAnswers();
+                new QuestionAndAnswers();
                 questionsAndAnswersHere.question=question;
                 questionsAndAnswersHere.answers=value;
 
@@ -650,10 +634,10 @@ class ItemView extends StatelessWidget {
 
 
     }else{
-      if(SavedAnswerText!=null){
-        textEditingDynamic.textEditingController.text=SavedAnswerText;
-      }
-      if(type=="date"){
+      print('in texttt : ' + SavedAnswerText.toString());
+      controller.textEditingController.text = SavedAnswerText;
+      print('controller in texttt: ' + controller.textEditingController.text);
+      if (type == "date") {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -685,7 +669,7 @@ class ItemView extends StatelessWidget {
                 child: TextField(
                   maxLines: 3,
 
-                  controller: textEditingDynamic.textEditingController,
+                  controller: controller.textEditingController,
                   style: TextStyle(color: MyColors.color1, fontSize: 16),
                   decoration: InputDecoration(
 
@@ -696,6 +680,9 @@ class ItemView extends StatelessWidget {
                       ),
                       border: InputBorder.none
                   ),
+                  onChanged: (value){
+                    textEditingDynamic.textEditingController.text = value;
+                  },
                 ),
               ),
             ),
@@ -776,13 +763,13 @@ class _DateRowState extends State<DateRow> {
           onTap: (){
             setState(() {
 
-             _addDate(context);
+              _addDate(context);
             });
 
           },
           child: Container(width: 40,height: 100,
 
-                child: Icon(Icons.access_time,size: 60,color: MyColors.color1,)
+              child: Icon(Icons.access_time,size: 60,color: MyColors.color1,)
           ),
         )
       ],
@@ -796,7 +783,7 @@ class _DateRowState extends State<DateRow> {
 class SingleDrop extends StatefulWidget {
   String CurrentChoice;
   final String Question;
-   String savedText;
+  String savedText;
   final List<String> choices;
 
   SingleDrop({this.choices,this.Question,this.savedText});
@@ -809,14 +796,26 @@ class SingleDrop extends StatefulWidget {
 class _SingleDropState extends State<SingleDrop> {
   dynamic _answer;
   @override
-  void initState() { 
+  void initState() {
     if ((widget.savedText?.trim() ?? '') != '') {
       print("single drop is not null");
       widget.CurrentChoice = widget.savedText;
     }
     if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) == null)
 
-    super.initState();
+      super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant SingleDrop oldWidget) {
+    if(oldWidget.savedText != widget.savedText){
+      setState(() {
+        widget.CurrentChoice = widget.savedText;
+      });
+    }
+    // if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) == null)
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -829,12 +828,12 @@ class _SingleDropState extends State<SingleDrop> {
       onChanged: (value) {
         print(AllAnswerss);
         if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) != null)
-        AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null)?.answer = value;
-        else 
-        AllAnswerss.add(QuestionAndAnswers()
-        ..question = widget.Question
-        ..answer = _answer);
-        setState(() { 
+          AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null)?.answer = value;
+        else
+          AllAnswerss.add(QuestionAndAnswers()
+            ..question = widget.Question
+            ..answer = _answer);
+        setState(() {
           _answer = value;
         });
       },

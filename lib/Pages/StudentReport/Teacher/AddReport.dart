@@ -81,6 +81,23 @@ class _AddReportState extends State<AddReport> {
 
   GetAnswers() async {
     if (CurrentStudent.ID != " ") {
+      print("no dataaaa");
+      for (int j = 0; j < items.length; j++) {
+        if (items[j].type == "text") {
+          setState(() {
+            items[j].AnswersText = null;
+          });
+        } else if (items[j].type != "text" &&
+            (items[j]?.choicesHere?.MultiChoice ?? false)) {
+          setState(() {
+            items[j].Answers = new List<dynamic>();
+          });
+        } else {
+          setState(() {
+            items[j].AnswersText = null;
+          });
+        }
+      }
       widget.dataBaseService
           .GetQuestionsOfStudentReport(CurrentStudent.ID, context)
           .then((value) {
@@ -111,24 +128,6 @@ class _AddReportState extends State<AddReport> {
                   });
                 }
               }
-            }
-          }
-        } else {
-          print("no dataaaa");
-          for (int j = 0; j < items.length; j++) {
-            if (items[j].type == "text") {
-              setState(() {
-                items[j].AnswersText = "";
-              });
-            } else if (items[j].type != "text" &&
-                (items[j]?.choicesHere?.MultiChoice ?? false)) {
-              setState(() {
-                items[j].Answers = new List<dynamic>();
-              });
-            } else {
-              setState(() {
-                items[j].AnswersText = "";
-              });
             }
           }
         }
@@ -346,6 +345,7 @@ class _AddReportState extends State<AddReport> {
                                     // popupItemDisabled: (String s) => s.startsWith('I'),
                                     onChanged: (Classes s) {
                                       selectedClass = s;
+                                      GetAnswers();
                                     },
                                     selectedItem: selectedClass),
                               ),
@@ -483,6 +483,8 @@ class ItemView extends StatelessWidget {
   final List<String> choices;
   final List<dynamic> savedAnswer;
 
+  TextEditingDynamic controller = new TextEditingDynamic();
+
   ItemView(
       {this.textEditingDynamic,
       this.multipleChoice,
@@ -588,7 +590,7 @@ class ItemView extends StatelessWidget {
       }
     } else {
       if (savedAnswerText != null) {
-        textEditingDynamic.textEditingController.text = savedAnswerText;
+        controller.textEditingController.text = savedAnswerText;
       }
       if (type == "date") {
         return Column(
@@ -614,7 +616,7 @@ class ItemView extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
             child: TextField(
               maxLines: 3,
-              controller: textEditingDynamic.textEditingController,
+              controller: controller.textEditingController,
               style: TextStyle(color: MyColors.color1, fontSize: 16),
               decoration: InputDecoration(
                   hintText: " Answer ...",
@@ -623,6 +625,9 @@ class ItemView extends StatelessWidget {
                     fontSize: 16,
                   ),
                   border: InputBorder.none),
+              onChanged: (value){
+                textEditingDynamic.textEditingController.text = value;
+              },
             ),
           ),
         );
@@ -735,6 +740,18 @@ class _SingleDropState extends State<SingleDrop> {
             orElse: () => null) ==
         null) super.initState();
   }
+  @override
+  void didUpdateWidget(covariant SingleDrop oldWidget) {
+    if(oldWidget.savedText != widget.savedText){
+      setState(() {
+        widget.CurrentChoice = widget.savedText;
+      });
+    }
+    // if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) == null)
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+  }
+
 
   @override
   Widget build(BuildContext context) {

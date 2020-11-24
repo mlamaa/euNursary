@@ -427,16 +427,17 @@ class DataBaseService {
     }
   }
 
-  Future<QuerySnapshot> GetQuestionsOfReport(String ReportID, String DateOfReprt, BuildContext context) {
+  Future<List<dynamic>> GetQuestionsOfReport(String ReportID, String DateOfReprt, BuildContext context) async{
     try {
       print(DateOfReprt + "from database" + ReportID);
-      return firestore
+      List<dynamic> list = (await firestore
           .collection("ClassReports")
           .document(DateOfReprt)
           .collection("Reports")
           .document(ReportID)
           .collection("Questions")
-          .getDocuments();
+          .getDocuments()).documents;
+      return list;
     } catch (error) {
       HelperContext.showMessage(context, 'Error: ' + error.toString());
     }

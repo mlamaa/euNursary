@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 
 import 'AddReport.dart';
 import 'SingleReport.dart';
-
+import 'EditStudentReport.dart';
 class AdminStudentReport extends StatefulWidget {
   @override
   _AdminStudentReportState createState() => _AdminStudentReportState();
@@ -180,6 +180,24 @@ class _AdminStudentReportState extends State<AdminStudentReport> {
                 child: Center(
                     child: Text("Modèles des rapports",
                       style: TextStyle(color: Colors.white, fontSize: 20),)
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InkWell(
+              onTap: (){
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>new EditStudentReportAsAdmin()));
+              },
+              child: Container(
+                height: 30,
+                decoration: BoxDecoration(
+                  borderRadius: Tools.myBorderRadius2,
+                  color: MyColors.color1,
+                ),
+                child: Center(
+                    child: Text("Edit Student Report Template",style: TextStyle(color: Colors.white,fontSize: 20),)
                 ),
               ),
             ),

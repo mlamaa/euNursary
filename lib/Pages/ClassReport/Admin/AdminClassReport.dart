@@ -5,10 +5,12 @@ import 'package:intl/intl.dart';
 
 import '../../../Colors.dart';
 import '../../../Tools.dart';
+import '../../../UserInfo.dart';
 import '../../../db.dart';
 import '../../../widgets.dart';
 import 'AddReport.dart';
 import 'SingleReport.dart';
+import 'EditClassReport.dart';
 
 class AdminClassReport extends StatefulWidget {
   @override
@@ -58,7 +60,6 @@ class _AdminClassReportState extends State<AdminClassReport> {
     print("getting class reports for admin");
     setState(() {
       ListOfReports = new List<SingleReportt>();
-
     });
     await dataBaseService.GetClassReports(Date,context).then((value) {
     
@@ -175,6 +176,31 @@ class _AdminClassReportState extends State<AdminClassReport> {
                     child: Text("Modèles des rapports",
                       style: TextStyle(color: Colors.white, fontSize: 20),)
                 ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                        new EditClassReportAsAdmin()));
+              },
+              child: Container(
+                height: 30,
+                decoration: BoxDecoration(
+                  borderRadius: Tools.myBorderRadius2,
+                  color: MyColors.color1,
+                ),
+                child: Center(
+                    child: Text(
+                      "Modifier le modèle de rapport de classe",
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 20),
+                    )),
               ),
             ),
           ),
