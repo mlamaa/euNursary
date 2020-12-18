@@ -443,42 +443,42 @@ class DataBaseService {
     }
   }
 
-  sendClassReport(Map dataMap, List<QuestionAndAnswers> questionsMap,
+  Future<void> sendClassReport(Map dataMap, List<QuestionAndAnswers> questionsMap,
       String classID, String dateOfReprt, BuildContext context) async {
     try {
       Map<String, dynamic> thisDateMap = new Map<String, dynamic>();
       thisDateMap["Date"] = dateOfReprt;
-      firestore
+      await firestore
           .collection("ClassReports")
           .document(dateOfReprt)
           .setData(thisDateMap);
-      await firestore
+      var documents = (await firestore
           .collection("ClassReports")
           .document(dateOfReprt)
           .collection("Reports")
           .document(classID)
           .collection("Questions")
-          .getDocuments()
-          .then((value1) {
-        for (int o = 0; o < value1.documents.length; o++) {
-          firestore
+          .getDocuments()).documents;
+
+        for (var doc in documents) {
+          await firestore
               .collection("ClassReports")
               .document(dateOfReprt)
               .collection("Reports")
               .document(classID)
               .collection("Questions")
-              .document(value1.documents[o].documentID)
+              .document(doc.documentID)
               .delete();
         }
-      });
+
 
       await firestore
           .collection("ClassReports")
           .document(dateOfReprt)
           .collection("Reports")
           .document(classID)
-          .setData(dataMap)
-          .then((value) {
+          .setData(dataMap);
+
         // print(value.documentID);
         print(questionsMap.length.toString());
         for (int i = 0; i < questionsMap.length; i++) {
@@ -496,7 +496,7 @@ class DataBaseService {
           } else
             continue;
 
-          firestore
+          await firestore
               .collection("ClassReports")
               .document(dateOfReprt)
               .collection("Reports")
@@ -504,7 +504,7 @@ class DataBaseService {
               .collection("Questions")
               .add(questionsAndAnswersMapp);
         }
-      });
+
 
       //FirebaseFuncitons.notifyParents();
       FirebaseMessageService.sendMessageToGroup(

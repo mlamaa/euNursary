@@ -22,10 +22,12 @@ List<QuestionAndAnswers> AllAnswerss = new List<QuestionAndAnswers>();
 class AddReport extends StatefulWidget {
   final Function refresh;
   final String ReportTemplateId;
+
   // final String UserID;
   // final String AdminEmail;
   final List<String> teacherClasses;
   final bool fromTeacher;
+
   AddReport(this.fromTeacher, this.teacherClasses,
       {this.ReportTemplateId, this.refresh});
 
@@ -38,45 +40,41 @@ class _AddReportState extends State<AddReport> {
   List<Items> items = new List<Items>();
   List<TextEditingDynamic> ForTextQuestion = new List<TextEditingDynamic>();
 
-  GetInfo() async {
+  Future<void> GetInfo() async {
     List<Items> items2 = new List<Items>();
 
-    await widget.dataBaseService
-        .GetClassReportTemplateQuestions(context)
-        .then((value) {
+    var value =
+        await widget.dataBaseService.GetClassReportTemplateQuestions(context);
 //      print("--------------------lenght="+value.documents.length.toString());
-      for (int i = 0; i < value.documents.length; i++) {
+    for (int i = 0; i < value.documents.length; i++) {
 //        print("--------------------text="+value.documents[i].data["text"]);
-        Items item = new Items();
-        item.question = value.documents[i].data["Question"];
-        item.type = value.documents[i].data["Type"];
-        if (item.type == "choices") {
-          ChoicesHere choicesHere = new ChoicesHere();
-          choicesHere.questionAndAnswers = new QuestionAndAnswers();
-          choicesHere.MultiChoice = value.documents[i].data["MultipleChoice"];
-          for (int j = 0; j < value.documents[i].data["choicesCount"]; j++) {
+      Items item = new Items();
+      item.question = value.documents[i].data["Question"];
+      item.type = value.documents[i].data["Type"];
+      if (item.type == "choices") {
+        ChoicesHere choicesHere = new ChoicesHere();
+        choicesHere.questionAndAnswers = new QuestionAndAnswers();
+        choicesHere.MultiChoice = value.documents[i].data["MultipleChoice"];
+        for (int j = 0; j < value.documents[i].data["choicesCount"]; j++) {
 //            choicesHere.ChoicesMap.
-            choicesHere.choices.add(value.documents[i].data["TheChoices"][j]);
-          }
-          item.choicesHere = choicesHere;
-          items2.add(item);
-        } else {
-          TextEditingDynamic textEditingDynamic = new TextEditingDynamic();
-          textEditingDynamic.questionAndAnswers = new QuestionAndAnswers();
-          textEditingDynamic.textEditingController =
-              new TextEditingController();
-          textEditingDynamic.Question = value.documents[i].data["Question"];
-          ForTextQuestion.add(textEditingDynamic);
-          item.textEditingDynamic = textEditingDynamic;
-          items2.insert(0, item);
+          choicesHere.choices.add(value.documents[i].data["TheChoices"][j]);
         }
+        item.choicesHere = choicesHere;
+        items2.add(item);
+      } else {
+        TextEditingDynamic textEditingDynamic = new TextEditingDynamic();
+        textEditingDynamic.questionAndAnswers = new QuestionAndAnswers();
+        textEditingDynamic.textEditingController = new TextEditingController();
+        textEditingDynamic.Question = value.documents[i].data["Question"];
+        ForTextQuestion.add(textEditingDynamic);
+        item.textEditingDynamic = textEditingDynamic;
+        items2.insert(0, item);
       }
-      setState(() {
-        items = items2;
-      });
+    }
+    setState(() {
+      items = items2;
     });
   }
-
 
   getAnswers() async {
     if (CurrentStudentClass.ID != " ") {
@@ -85,8 +83,7 @@ class _AddReportState extends State<AddReport> {
           setState(() {
             item.AnswersText = null;
           });
-        } else if (item.type != "text" &&
-            item.choicesHere.MultiChoice) {
+        } else if (item.type != "text" && item.choicesHere.MultiChoice) {
           setState(() {
             item.Answers = new List<dynamic>();
           });
@@ -191,6 +188,7 @@ class _AddReportState extends State<AddReport> {
 
   Classes CurrentStudentClass = new Classes(" ", " ");
   List<Classes> classesList = new List<Classes>();
+
   getClasses() async {
     await widget.dataBaseService.GetClasses(context).then((values) {
       for (int i = 0; i < values.documents.length; i++) {
@@ -206,10 +204,10 @@ class _AddReportState extends State<AddReport> {
   }
 
   @override
-  void initState() { 
+  void initState() {
     GetInfo();
     getClasses();
-    super.initState(); 
+    super.initState();
     ReportData[" "] = " ";
     ReportData["ReportSenderType"] = "admin";
     ReportData["ReportSenderID"] = UserCurrentInfo.currentUserId;
@@ -565,8 +563,8 @@ class ItemView extends StatelessWidget {
                         fontSize: 16,
                       ),
                       border: InputBorder.none),
-                  onChanged: (value){
-                      textEditingDynamic.textEditingController.text = value;
+                  onChanged: (value) {
+                    textEditingDynamic.textEditingController.text = value;
                   },
                 ),
               ),
@@ -580,6 +578,7 @@ class ItemView extends StatelessWidget {
 
 class DateRow extends StatefulWidget {
   final TextEditingController textEditingController;
+
   DateRow({this.textEditingController});
 
   @override
@@ -588,6 +587,7 @@ class DateRow extends StatefulWidget {
 
 class _DateRowState extends State<DateRow> {
   DateTime selectedDate = DateTime.now();
+
   Future<void> _addDate(BuildContext context) async {
     DatePicker.showTimePicker(context, showTitleActions: true,
         onChanged: (date) {
@@ -668,22 +668,22 @@ class SingleDrop extends StatefulWidget {
 
 class _SingleDropState extends State<SingleDrop> {
   dynamic _answer;
+
   @override
   void initState() {
     if ((widget.savedText?.trim() ?? '') != '') {
       print("single drop is not null");
-      _answer = widget.savedText;
+      widget.CurrentChoice = widget.savedText;
     }
-     AllAnswerss?.firstWhere(
-            (element) => element.question == widget.Question,
-            orElse: () => null)?.answer = widget.CurrentChoice;
-        
-        super.initState();
+    AllAnswerss?.firstWhere((element) => element.question == widget.Question,
+        orElse: () => null)?.answer = widget.CurrentChoice;
+
+    super.initState();
   }
 
   @override
   void didUpdateWidget(covariant SingleDrop oldWidget) {
-    if(oldWidget.savedText != widget.savedText){
+    if (oldWidget.savedText != widget.savedText) {
       setState(() {
         widget.CurrentChoice = widget.savedText;
       });
@@ -743,6 +743,7 @@ class TextEditingDynamic {
 
 class ChoicesHere {
   List<String> choices = new List<String>();
+
 //  String Answers="";
 //  String Question;
   bool MultiChoice;

@@ -272,21 +272,21 @@ setState(() {
   }
 
   submit() async {
-    await getTextAnswers().then((value) {
-      if (value == true) {
-        widget.dataBaseService.sendClassReport(ReportData, AllAnswerss,
+    var answers = await getTextAnswers();
+      if (answers == true) {
+        await widget.dataBaseService.sendClassReport(ReportData, AllAnswerss,
             currentStudentClass.ID, getDateNow(), context);
-        Future.delayed(const Duration(milliseconds: 500), () {
+
           widget.refresh(getDateNow());
           print("refresh");
           Navigator.pop(context);
-        });
+
         // Future.delayed(const Duration(seconds: 2), () {
         //
         // });
 
       }
-    });
+
   }
 
   @override
@@ -583,7 +583,7 @@ class _ItemViewState extends State<ItemView> {
                     choices: widget.choices,
                     Question: widget.question,
                     savedText:
-                        widget.savedAnswerText == null ? widget.choices[0] : widget.savedAnswerText))
+                        widget.savedAnswerText == null ? null: widget.savedAnswerText))
           ],
         );
       }
@@ -604,8 +604,13 @@ class _ItemViewState extends State<ItemView> {
               height: 10,
             ),
             DateRow(
+              onChanged: (value){
+                widget.textEditingDynamic.textEditingController.text =
+                    value;
+              },
                 textEditingController:
-                    widget.textEditingDynamic.textEditingController),
+                    widget.controller.textEditingController),
+
           ],
         );
       } else {
@@ -626,7 +631,7 @@ class _ItemViewState extends State<ItemView> {
                 padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                 child: TextField(
                   maxLines: 3,
-                  controller: widget.controller.textEditingController..text,
+                  controller: widget.controller.textEditingController,
                   style: TextStyle(color: MyColors.color1, fontSize: 16),
                   decoration: InputDecoration(
                       hintText: " Reponse ...",
@@ -652,8 +657,9 @@ class _ItemViewState extends State<ItemView> {
 }
 
 class DateRow extends StatefulWidget {
-  final TextEditingController textEditingController;
-  DateRow({this.textEditingController});
+   TextEditingController textEditingController;
+   Function onChanged;
+  DateRow({this.textEditingController, this.onChanged});
 
   @override
   _DateRowState createState() => _DateRowState();
@@ -685,6 +691,12 @@ class _DateRowState extends State<DateRow> {
   }
 
   @override
+  void initState() {
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       children: [
@@ -705,6 +717,7 @@ class _DateRowState extends State<DateRow> {
                       fontSize: 16,
                     ),
                     border: InputBorder.none),
+                onChanged: widget.onChanged,
               ),
             ),
           ),
@@ -730,9 +743,9 @@ class _DateRowState extends State<DateRow> {
 }
 
 class SingleDrop extends StatefulWidget {
-
+  String CurrentChoice;
   final String Question;
-  String savedText;
+  final String savedText;
   final List<String> choices;
 
   SingleDrop({this.choices, this.Question, this.savedText});
@@ -742,27 +755,33 @@ class SingleDrop extends StatefulWidget {
 }
 
 class _SingleDropState extends State<SingleDrop> {
-  String CurrentChoice;
+
   dynamic _answer;
   @override
 
 
   void initState() {
     if ((widget.savedText?.trim() ?? '') != '') {
-      print("single drop is not null");
-      CurrentChoice = widget.savedText;
+      print("single drop is not null -----------------------------------");
+      setState(() {
+        widget.CurrentChoice = widget.savedText;
+      });
+
     }
-    if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) == null)
+    //if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) == null)
 
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant SingleDrop oldWidget) {
+
     if(oldWidget.savedText != widget.savedText){
-      setState(() {
-        CurrentChoice = widget.savedText;
-      });
+setState(() {
+  widget.CurrentChoice = widget.savedText;
+});
+
+
     }
     // if(AllAnswerss?.firstWhere((element) => element.question == widget.Question,orElse: ()=>null) == null)
     // TODO: implement didUpdateWidget
@@ -771,11 +790,13 @@ class _SingleDropState extends State<SingleDrop> {
 
   @override
   Widget build(BuildContext context) {
-    print('this the current choice :' + CurrentChoice.toString() + 'here');
-    return DropdownButton<String>(
-      hint: Text("Sélectionnez élément"),
-      value: _answer ?? CurrentChoice,
-
+    print('this the current choice :' + widget.CurrentChoice.toString() + ' here');
+    return DropdownSearch<String>(
+      //hint: Text("Sélectionnez élément"),
+      // value: _answer ?? CurrentChoice,
+      label:"Sélectionnez élément" ,
+      selectedItem: _answer ?? widget.CurrentChoice,
+      showClearButton: true,
       onChanged: (value) {
         print(AllAnswerss);
         if (AllAnswerss?.firstWhere((element) =>
@@ -792,12 +813,8 @@ class _SingleDropState extends State<SingleDrop> {
           _answer = value;
         });
       },
-      items: widget.choices.map((String textt) {
-        return DropdownMenuItem<String>(
-          value: textt,
-          child: Text(textt),
-        );
-      }).toList(),
+
+      items: widget.choices,
     );
   }
 }
