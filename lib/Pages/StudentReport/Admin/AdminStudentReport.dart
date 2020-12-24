@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Pages/ClassReport/AddReport.dart';
 import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/widgets.dart';
@@ -163,9 +164,9 @@ class _AdminStudentReportState extends State<AdminStudentReport> {
               onTap: (){
 
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                new AddReport(
+                new AddReportForAll(
                   refresh: GetReports,
-                  ReportTemplateId: "Student",
+                  reportType: "Student",
                 )
                 ));
 

@@ -44,7 +44,7 @@ class _AddReportState extends State<AddReport> {
     List<Items> items2 = new List<Items>();
 
     var value =
-        await widget.dataBaseService.GetClassReportTemplateQuestions(context);
+        await widget.dataBaseService.GetReportTemplateQuestions(context,'Class');
 //      print("--------------------lenght="+value.documents.length.toString());
     for (int i = 0; i < value.documents.length; i++) {
 //        print("--------------------text="+value.documents[i].data["text"]);
@@ -94,7 +94,7 @@ class _AddReportState extends State<AddReport> {
         }
       }
       var list = await widget.dataBaseService
-          .GetQuestionsOfReport(CurrentStudentClass.ID, getDateNow(), context);
+          .GetQuestionsOfReport(CurrentStudentClass.ID, getDateNow(), context,'Class');
       if (list.length > 0) {
         for (var listItem in list) {
           for (var item in items) {
@@ -242,8 +242,8 @@ class _AddReportState extends State<AddReport> {
   submit() async {
     await getTextAnswers().then((value) {
       if (value == true) {
-        widget.dataBaseService.sendClassReport(ReportData, AllAnswerss,
-            CurrentStudentClass.ID, getDateNow(), context);
+        widget.dataBaseService.sendReport(ReportData, AllAnswerss,
+            CurrentStudentClass.ID, getDateNow(), context, 'Class');
         Future.delayed(const Duration(milliseconds: 500), () {
           widget.refresh(getDateNow());
           print("refresh");

@@ -427,11 +427,11 @@ class DataBaseService {
     }
   }
 
-  Future<List<dynamic>> GetQuestionsOfReport(String ReportID, String DateOfReprt, BuildContext context) async{
+  Future<List<dynamic>> GetQuestionsOfReport(String ReportID, String DateOfReprt, BuildContext context, String reportType) async{
     try {
       print(DateOfReprt + "from database" + ReportID);
       List<dynamic> list = (await firestore
-          .collection("ClassReports")
+          .collection(reportType == 'Class' ? "ClassReports" : "StudentsReports")
           .document(DateOfReprt)
           .collection("Reports")
           .document(ReportID)
@@ -443,17 +443,18 @@ class DataBaseService {
     }
   }
 
-  Future<void> sendClassReport(Map dataMap, List<QuestionAndAnswers> questionsMap,
-      String classID, String dateOfReprt, BuildContext context) async {
+  Future<void> sendReport(Map dataMap, var questionsMap,
+      String classID, String dateOfReprt, BuildContext context,String reportType) async {
     try {
+      print('to saveee ------> : ' + questionsMap['A9000'].controller.text);
       Map<String, dynamic> thisDateMap = new Map<String, dynamic>();
       thisDateMap["Date"] = dateOfReprt;
       await firestore
-          .collection("ClassReports")
+          .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
           .document(dateOfReprt)
           .setData(thisDateMap);
       var documents = (await firestore
-          .collection("ClassReports")
+          .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
           .document(dateOfReprt)
           .collection("Reports")
           .document(classID)
@@ -462,7 +463,7 @@ class DataBaseService {
 
         for (var doc in documents) {
           await firestore
-              .collection("ClassReports")
+              .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
               .document(dateOfReprt)
               .collection("Reports")
               .document(classID)
@@ -473,7 +474,7 @@ class DataBaseService {
 
 
       await firestore
-          .collection("ClassReports")
+          .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
           .document(dateOfReprt)
           .collection("Reports")
           .document(classID)
@@ -481,23 +482,41 @@ class DataBaseService {
 
         // print(value.documentID);
         print(questionsMap.length.toString());
-        for (int i = 0; i < questionsMap.length; i++) {
-          print(questionsMap[i].question);
+        int i = 0;
+        for (var item in questionsMap.entries) {
+          //print(questionsMap[i].question);
           Map<String, dynamic> questionsAndAnswersMapp =
           new Map<String, dynamic>();
-          questionsAndAnswersMapp["Question"] = questionsMap[i].question;
-          questionsAndAnswersMapp["index"] = i;
-          if (questionsMap[i].answer != null &&
-              questionsMap[i].answer.isNotEmpty) {
-            questionsAndAnswersMapp["Answer"] = questionsMap[i].answer;
-          } else if (questionsMap[i].answers != null &&
-              questionsMap[i].answers.isNotEmpty) {
-            questionsAndAnswersMapp["Answer"] = questionsMap[i].answers;
-          } else
-            continue;
+          questionsAndAnswersMapp["Question"] = item.value.Question;
+          questionsAndAnswersMapp["index"] = i++;
+          if(item.value.Type == 'choices'){
+            if(item.value.MultipleChoice){
+              if(item.value.answersList != null && item.value.answersList.isNotEmpty){
+                questionsAndAnswersMapp["Answer"] = item.value.answersList;
+              }else
+                continue;
+            }else{
+              if (item.value.controller.text != null &&
+                  item.value.controller.text.isNotEmpty) {
+                if(item.value.Type == 'text')
+                  print('textttttttt : ' +item.value.controller.text);
+                questionsAndAnswersMapp["Answer"] = item.value.controller.text;
+              } else
+                continue;
+            }
+          }else{
+            if (item.value.controller.text != null &&
+                item.value.controller.text.isNotEmpty) {
+              if(item.value.Type == 'text')
+              print('textttttttt : ' +item.value.controller.text);
+              questionsAndAnswersMapp["Answer"] = item.value.controller.text;
+            } else
+              continue;
+          }
+
 
           await firestore
-              .collection("ClassReports")
+              .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
               .document(dateOfReprt)
               .collection("Reports")
               .document(classID)
@@ -522,11 +541,23 @@ class DataBaseService {
     }
   }
 
-  Future<QuerySnapshot> GetClassReportTemplateQuestions(BuildContext context) {
+  // Future<List<dynamic>> GetClassReportTemplateQuestions(BuildContext context) async{
+  //   try {
+  //     var fb = (await firestore
+  //         .collection("ReportTemplates")
+  //         .document("Class")
+  //         .collection("Questions")
+  //         .getDocuments()).documents;
+  //   } catch (error) {
+  //     HelperContext.showMessage(context, 'Error: ' + error.toString());
+  //   }
+  // }
+
+  Future<QuerySnapshot> GetReportTemplateQuestions(BuildContext context,String reportType) {
     try {
       return firestore
           .collection("ReportTemplates")
-          .document("Class")
+          .document(reportType)
           .collection("Questions")
           .getDocuments();
     } catch (error) {

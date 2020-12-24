@@ -160,7 +160,7 @@ class _EditClassReportAsAdminState extends State<EditClassReportAsAdmin> {
   }
 
   getOldItems() async {
-    await dataBaseService.GetClassReportTemplateQuestions(context)
+    await dataBaseService.GetReportTemplateQuestions(context,'Class')
         .then((value) {
       for (int i = 0; i < value.documents.length; i++) {
         ClassReportItems classReportItems = new ClassReportItems();

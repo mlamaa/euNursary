@@ -32,7 +32,10 @@ class _SingleReportState extends State<SingleReport> {
 
   GetSingleQuestions() async{
     print(widget.ReportID+dataBaseService.getDateNow());
-    var list = await dataBaseService.GetQuestionsOfReport(widget.ReportID,dataBaseService.getDateNow(),context);
+    var date=widget.Date.toDate();
+    var formatter = new DateFormat("yyyy.MM.dd");
+    var Datehere=formatter.format(date);
+    var list = await dataBaseService.GetQuestionsOfReport(widget.ReportID,Datehere,context, 'Class');
 
       //print(list.length.toString()+"aa");
       list.sort((a,b) => a["index"]>b["index"]?1:-1);

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:garderieeu/Pages/ClassReport/AddReport.dart';
 import 'package:intl/intl.dart';
 
 import '../../../Colors.dart';
@@ -171,11 +172,11 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => new AddReport(
+                              builder: (context) => new AddReportForAll(
                                     fromTeacher: true,
                                     teacherClasses: snapshot?.data ?? [],
                                     refresh: getReports,
-                                    ReportTemplateId: "Student",
+                                    reportType: "Student",
                                   )));
                     },
                     child: Container(

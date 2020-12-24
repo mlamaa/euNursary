@@ -43,7 +43,7 @@ List<dynamic> list = new List();
     List<Items> items2 = new List<Items>();
 
     await widget.dataBaseService
-        .GetClassReportTemplateQuestions(context)
+        .GetReportTemplateQuestions(context,'Class')
         .then((value) {
       print("--------------------lenght=" + value.documents.length.toString());
       //print("--------------------documents="+value.documents[0].documentID);
@@ -113,7 +113,7 @@ List<dynamic> list = new List();
     print('building answerss.....');
     if (currentStudentClass.ID != " ") {
       var db = await DataBaseService()
-          .GetQuestionsOfReport(currentStudentClass.ID, getDateNow(), context);
+          .GetQuestionsOfReport(currentStudentClass.ID, getDateNow(), context,'Class');
 setState(() {
   list = db;
 });
@@ -274,8 +274,8 @@ setState(() {
   submit() async {
     var answers = await getTextAnswers();
       if (answers == true) {
-        await widget.dataBaseService.sendClassReport(ReportData, AllAnswerss,
-            currentStudentClass.ID, getDateNow(), context);
+        await widget.dataBaseService.sendReport(ReportData, AllAnswerss,
+            currentStudentClass.ID, getDateNow(), context,'Class');
 
           widget.refresh(getDateNow());
           print("refresh");

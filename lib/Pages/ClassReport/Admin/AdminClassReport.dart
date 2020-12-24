@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:garderieeu/Pages/ClassReport/AddReport.dart';
 import 'package:intl/intl.dart';
 
 import '../../../Colors.dart';
@@ -159,10 +160,10 @@ class _AdminClassReportState extends State<AdminClassReport> {
             child: InkWell(
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                new AddReport(
+                new AddReportForAll(refresh: GetReports, reportType: 'Class',) /*AddReport(
                   refresh: GetReports,
                   reportTemplateId: "Class",
-                )
+                )*/
                 ));
 
               },

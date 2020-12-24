@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:garderieeu/Pages/ClassReport/AddReport.dart';
 import 'package:intl/intl.dart';
 
 import '../../../Colors.dart';
@@ -202,11 +203,11 @@ class _TeacherClassReportState extends State<TeacherClassReport> {
                     child: InkWell(
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                        new AddReport(
-                          true,
-                          snapshot?.data ?? [],
+                        new AddReportForAll(
+                          fromTeacher: true,
+                          teacherClasses: snapshot?.data ?? [],
                           refresh: GetClasses,
-                          ReportTemplateId: "Class",
+                          reportType: "Class",
                         )
                         ));
 
