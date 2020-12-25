@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:garderieeu/multiSelect/MultiSelectFormField.dart';
 import 'package:intl/intl.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 import '../../Colors.dart';
 import '../../Tools.dart';
@@ -35,11 +36,15 @@ class _AddReportForAllState extends State<AddReportForAll> {
 
   List<dynamic> answersList = new List();
   bool loadingAnswers = true;
-
+bool classesLoading;
+bool studentsLoading;
   Studetns CurrentStudent = new Studetns(" ", " ", " ");
   List<Studetns> studetnsList = new List<Studetns>();
 
   getStudetns() async {
+    setState(() {
+      studentsLoading =true;
+    });
     await widget.dataBaseService.GetStudents(context).then((values) {
       for (int i = 0; i < values.documents.length; i++) {
         Studetns studetns = new Studetns(" ", " ", " ");
@@ -52,12 +57,18 @@ class _AddReportForAllState extends State<AddReportForAll> {
         });
       }
     });
+    setState(() {
+      studentsLoading =false;
+    });
   }
 
   Classes currentStudentClass = new Classes(" ", " ");
   List<Classes> classesList = new List<Classes>();
 
   getClasses() async {
+    setState(() {
+      classesLoading =true;
+    });
     await widget.dataBaseService.GetClasses(context).then((values) {
       for (int i = 0; i < values.documents.length; i++) {
         setState(() {
@@ -65,6 +76,9 @@ class _AddReportForAllState extends State<AddReportForAll> {
               values.documents[i].data["ClassName"]));
         });
       }
+    });
+    setState(() {
+      classesLoading =false;
     });
   }
 
@@ -93,14 +107,14 @@ class _AddReportForAllState extends State<AddReportForAll> {
     setState(() {
       loadingAnswers = true;
     });
-    for(var item in propertiesList){
+    for (var item in propertiesList) {
       setState(() {
         item.controller.text = '';
       });
     }
     if (classID != " ") {
       var db = await DataBaseService().GetQuestionsOfReport(
-         classID, getDateNow(), context, widget.reportType);
+          classID, getDateNow(), context, widget.reportType);
       setState(() {
         answersList = db;
       });
@@ -109,7 +123,8 @@ class _AddReportForAllState extends State<AddReportForAll> {
     for (var answer in answersList) {
       for (var item in propertiesList) {
         if (answer['Question'] == item.Question) {
-          if (item.MultipleChoice) {
+          if (item.MultipleChoice != null && item.MultipleChoice) {
+            item.answersList.clear();
             item.answersList.addAll(answer['Answer']);
           } else {
             setState(() {
@@ -126,6 +141,7 @@ class _AddReportForAllState extends State<AddReportForAll> {
   }
 
   submit() async {
+    print('submit');
     showLoadingDialog(context);
     await widget.dataBaseService.sendReport(ReportData, reportGlobalList,
         currentStudentClass.ID, getDateNow(), context, widget.reportType);
@@ -149,13 +165,12 @@ class _AddReportForAllState extends State<AddReportForAll> {
     });
   }
 
-
-
   @override
   void initState() {
     getClasses();
     if (widget.reportType == 'Student') getStudetns();
     getWidgetsInfo();
+    reportGlobalList.clear();
     super.initState();
     ReportData[" "] = " ";
     ReportData["ReportSenderType"] = "admin";
@@ -211,7 +226,8 @@ class _AddReportForAllState extends State<AddReportForAll> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      child: DropdownSearch<Classes>(
+                      child: classesLoading ? Container(child: Center(child: CircularProgressIndicator(backgroundColor: MyColors.color1,))) : DropdownSearch<Classes>(
+
                           mode: Mode.DIALOG,
                           showSearchBox: true,
                           // showSelectedItem: true,
@@ -250,13 +266,11 @@ class _AddReportForAllState extends State<AddReportForAll> {
                           hint: "Nom du class",
                           // popupItemDisabled: (String s) => s.startsWith('I'),
                           onChanged: (Classes s) async {
-
                             setState(() {
                               currentStudentClass = s;
                               print('class ID: ' + currentStudentClass.ID);
                               getAnswers(currentStudentClass.ID);
                             });
-
                           },
                           selectedItem: currentStudentClass),
                     ),
@@ -290,7 +304,7 @@ class _AddReportForAllState extends State<AddReportForAll> {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                            child: DropdownSearch<Studetns>(
+                            child:studentsLoading ? Container(child: Center(child: CircularProgressIndicator(backgroundColor: MyColors.color1,))) : DropdownSearch<Studetns>(
                                 mode: Mode.DIALOG,
                                 showSearchBox: true,
                                 // showSelectedItem: true,
@@ -322,8 +336,6 @@ class _AddReportForAllState extends State<AddReportForAll> {
                                     CurrentStudent = s;
                                     getAnswers(CurrentStudent.ID);
                                   });
-
-
                                 },
                                 selectedItem: CurrentStudent),
                           ),
@@ -496,7 +508,7 @@ class _MultiSelectComponentState extends State<MultiSelectComponent> {
           padding: const EdgeInsets.all(8.0),
           child: MultiSelectFormField(
 //          autovalidate: false,
-
+            trailing: Text('hi'),
             initialValue: _answer,
             titleText: ' ',
             validator: (value) {
@@ -597,42 +609,19 @@ class _SingleSelectComponentState extends State<SingleSelectComponent> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
               child: DropdownSearch<String>(
-                //
-                // clearButton:
-                //     Container(
-                //       child: InkWell(onTap: (){
-                //         //print('saved1 ${widget.properties.title}: ' + widget.properties.controller.text);
-                //         setState(() {
-                //           _answer = '';
-                //           print('answerrrrrrrr' + _answer);
-                //           widget.properties.controller.text = '';
-                //         });
-                //         //print('saved2 ${widget.properties.title}: ' + widget.properties.controller.text);
-                //       },child: Icon(Icons.cancel_outlined),),
-                //     ),
-
                 items: widget.properties.TheChoices,
+                mode: Mode.MENU,
                 label: "Sélectionnez élément",
                 selectedItem: _answer,
-                showClearButton: true,
                 showSelectedItem: true,
+                showClearButton: true,
                 onChanged: (value) {
-                  // if (AllAnswerss?.firstWhere(
-                  //         (element) =>
-                  //             element.question == widget.properties.Question,
-                  //         orElse: () => null) !=
-                  //     null)
-                  //   AllAnswerss?.firstWhere(
-                  //       (element) =>
-                  //           element.question == widget.properties.Question,
-                  //       orElse: () => null)?.answer = value;
-                  // else
-                  //   AllAnswerss.add(QuestionAndAnswers()
-                  //     ..question = widget.properties.Question
-                  //     ..answer = _answer);
                   setState(() {
                     _answer = value;
-                    widget.properties.controller.text = value;
+                    if (value == null || value == '')
+                      widget.properties.controller.text = '';
+                    else
+                      widget.properties.controller.text = value;
                   });
                 },
               ),
@@ -654,7 +643,6 @@ class TextFieldComponent extends StatefulWidget {
 }
 
 class _TextFieldComponentState extends State<TextFieldComponent> {
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -670,7 +658,6 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextFormField(
-
             controller: widget.properties.controller,
             //initialValue: currentText,
             decoration: InputDecoration(
@@ -788,7 +775,7 @@ class Properties {
   List<String> TheChoices;
   String Type;
   int choicesCount;
-  List<dynamic> answersList;
+  List<dynamic> answersList =  new List();
   TextEditingController controller = new TextEditingController();
 
   Properties(var properties, String widgetID,

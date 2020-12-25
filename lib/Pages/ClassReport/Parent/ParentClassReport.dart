@@ -54,7 +54,7 @@ class _ParentClassReportState extends State<ParentClassReport> {
   GetReports(List<dynamic> ChildsClassesId, String datee) async {
     ListOfReports = new List<SingleReportt>();
 
-    await dataBaseService.GetClassReports(CurrentDate, context).then((value) {
+    await dataBaseService.GetClassReports(datee, context).then((value) {
       for (int i = 0; i < value.documents.length; i++) {
         SingleReportt singleReport = new SingleReportt();
         singleReport.ReportID = value.documents[i].documentID;
@@ -82,6 +82,7 @@ class _ParentClassReportState extends State<ParentClassReport> {
         });
       }
     });
+    print('list of reportss  : '  +  ListOfReports.toString());
   }
 
   Widget ItemsHere() {
@@ -92,7 +93,6 @@ class _ParentClassReportState extends State<ParentClassReport> {
             // crossAxisCount: 1,
             // crossAxisSpacing: 30,
             // mainAxisSpacing:20,
-
             children: List.generate(ListOfReports.length, (index) {
           return SingleReportWidget(
             ReportId: ListOfReports[index].ReportID,

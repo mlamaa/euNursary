@@ -28,8 +28,11 @@ class SingleReport extends StatefulWidget {
 class _SingleReportState extends State<SingleReport> {
   List<SingleQuestion> ListOfQuestions = new List<SingleQuestion>();
   DataBaseService dataBaseService = new DataBaseService();
-
+bool loading;
   GetSingleQuestions() async{
+    setState(() {
+      loading = true;
+    });
     await dataBaseService.GetQuestionsOfStudentReport(widget.ReportID,context).then((value) {
       for(int i=0;i<value.documents.length;i++){
         SingleQuestion singleQuestion=new SingleQuestion();
@@ -41,6 +44,9 @@ class _SingleReportState extends State<SingleReport> {
         });
       }
 
+    });
+    setState(() {
+      loading = false;
     });
   }
 
@@ -144,7 +150,7 @@ class _SingleReportState extends State<SingleReport> {
             ),
           ),
 
-          ItemsHere(),
+          loading? Container(height:MediaQuery.of(context).size.height*0.6,child: Center(child:CircularProgressIndicator(backgroundColor: MyColors.color1,)),) : ItemsHere(),
 
         ],
       ),

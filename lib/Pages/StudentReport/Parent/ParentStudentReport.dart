@@ -42,6 +42,7 @@ class _ParentStudentReportState extends State<ParentStudentReport> {
 
 
   GetReports(String Datee) async{
+    ListOfReports = [];
     await dataBaseService.GetStudentReports(Datee,context).then((value) {
       for(int i=0;i<value.documents.length;i++){
         SingleReportt singleReport=new SingleReportt();

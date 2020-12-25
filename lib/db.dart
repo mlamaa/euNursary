@@ -446,41 +446,58 @@ class DataBaseService {
   Future<void> sendReport(Map dataMap, var questionsMap,
       String classID, String dateOfReprt, BuildContext context,String reportType) async {
     try {
-      print('to saveee ------> : ' + questionsMap['A9000'].controller.text);
+      //print('to saveee ------> : ' + questionsMap['A9000'].controller.text);
       Map<String, dynamic> thisDateMap = new Map<String, dynamic>();
       thisDateMap["Date"] = dateOfReprt;
       await firestore
           .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
           .document(dateOfReprt)
-          .setData(thisDateMap);
-      var documents = (await firestore
-          .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
-          .document(dateOfReprt)
-          .collection("Reports")
-          .document(classID)
-          .collection("Questions")
-          .getDocuments()).documents;
-
-        for (var doc in documents) {
+          .setData(thisDateMap).then((value){
+        firestore
+            .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
+            .document(dateOfReprt)
+            .collection("Reports")
+            .document(classID)
+            .collection("Questions")
+            .getDocuments().then((value)async {
+          for (var doc in value.documents) {
           await firestore
-              .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
-              .document(dateOfReprt)
-              .collection("Reports")
-              .document(classID)
-              .collection("Questions")
-              .document(doc.documentID)
-              .delete();
-        }
-
+                .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
+                .document(dateOfReprt)
+                .collection("Reports")
+                .document(classID)
+                .collection("Questions")
+                .document(doc.documentID)
+                .delete();
+          }
+        });
+      });
+      // var documents = (await firestore
+      //     .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
+      //     .document(dateOfReprt)
+      //     .collection("Reports")
+      //     .document(classID)
+      //     .collection("Questions")
+      //     .getDocuments()).documents;
+      //
+      //   for (var doc in documents) {
+      //     await firestore
+      //         .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
+      //         .document(dateOfReprt)
+      //         .collection("Reports")
+      //         .document(classID)
+      //         .collection("Questions")
+      //         .document(doc.documentID)
+      //         .delete();
+      //   }
+      //
 
       await firestore
           .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
           .document(dateOfReprt)
           .collection("Reports")
           .document(classID)
-          .setData(dataMap);
-
-        // print(value.documentID);
+          .setData(dataMap).then((value) async{
         print(questionsMap.length.toString());
         int i = 0;
         for (var item in questionsMap.entries) {
@@ -489,12 +506,22 @@ class DataBaseService {
           new Map<String, dynamic>();
           questionsAndAnswersMapp["Question"] = item.value.Question;
           questionsAndAnswersMapp["index"] = i++;
-          if(item.value.Type == 'choices'){
-            if(item.value.MultipleChoice){
-              if(item.value.answersList != null && item.value.answersList.isNotEmpty){
-                questionsAndAnswersMapp["Answer"] = item.value.answersList;
-              }else
-                continue;
+          if(item.value != null){
+            if(item.value.Type == 'choices'){
+              if(item.value.MultipleChoice != null && item.value.MultipleChoice == true){
+                if(item.value.answersList != null){
+                  questionsAndAnswersMapp["Answer"] = item.value.answersList;
+                }else
+                  continue;
+              }else{
+                if (item.value.controller.text != null &&
+                    item.value.controller.text.isNotEmpty) {
+                  if(item.value.Type == 'text')
+                    print('textttttttt : ' +item.value.controller.text);
+                  questionsAndAnswersMapp["Answer"] = item.value.controller.text;
+                } else
+                  continue;
+              }
             }else{
               if (item.value.controller.text != null &&
                   item.value.controller.text.isNotEmpty) {
@@ -504,15 +531,9 @@ class DataBaseService {
               } else
                 continue;
             }
-          }else{
-            if (item.value.controller.text != null &&
-                item.value.controller.text.isNotEmpty) {
-              if(item.value.Type == 'text')
-              print('textttttttt : ' +item.value.controller.text);
-              questionsAndAnswersMapp["Answer"] = item.value.controller.text;
-            } else
-              continue;
-          }
+          }else
+            continue;
+
 
 
           await firestore
@@ -524,11 +545,58 @@ class DataBaseService {
               .add(questionsAndAnswersMapp);
         }
 
+      });
+
+        // // print(value.documentID);
+        // print(questionsMap.length.toString());
+        // int i = 0;
+        // for (var item in questionsMap.entries) {
+        //   //print(questionsMap[i].question);
+        //   Map<String, dynamic> questionsAndAnswersMapp =
+        //   new Map<String, dynamic>();
+        //   questionsAndAnswersMapp["Question"] = item.value.Question;
+        //   questionsAndAnswersMapp["index"] = i++;
+        //   if(item.value.Type == 'choices'){
+        //     if(item.value.MultipleChoice){
+        //       if(item.value.answersList != null){
+        //         questionsAndAnswersMapp["Answer"] = item.value.answersList;
+        //       }else
+        //         continue;
+        //     }else{
+        //       if (item.value.controller.text != null &&
+        //           item.value.controller.text.isNotEmpty) {
+        //         if(item.value.Type == 'text')
+        //           print('textttttttt : ' +item.value.controller.text);
+        //         questionsAndAnswersMapp["Answer"] = item.value.controller.text;
+        //       } else
+        //         continue;
+        //     }
+        //   }else{
+        //     if (item.value.controller.text != null &&
+        //         item.value.controller.text.isNotEmpty) {
+        //       if(item.value.Type == 'text')
+        //       print('textttttttt : ' +item.value.controller.text);
+        //       questionsAndAnswersMapp["Answer"] = item.value.controller.text;
+        //     } else
+        //       continue;
+        //   }
+        //
+        //
+        //   await firestore
+        //       .collection(reportType == 'Class'? "ClassReports" : "StudentsReports")
+        //       .document(dateOfReprt)
+        //       .collection("Reports")
+        //       .document(classID)
+        //       .collection("Questions")
+        //       .add(questionsAndAnswersMapp);
+        // }
+
 
       //FirebaseFuncitons.notifyParents();
       FirebaseMessageService.sendMessageToGroup(
           classID, 'A new Report been added', '', {});
     } catch (error) {
+      print('error: ' + error.toString());
       HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
