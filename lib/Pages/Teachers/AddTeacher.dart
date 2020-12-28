@@ -198,13 +198,11 @@ class _AddTeacherState extends State<AddTeacher> {
                                 //   HelperContext.showMessage(
                                 //       context, "Email must be valid");
                                 // }
-                                if (nameController.text.length <= 4)
-                                  HelperContext.showMessage(
-                                      context,
-                                      "Le nom complet de l'enseignant doit etre plus de 4 lettres");
+                                if (nameController.text.length <= 2)
+                                  HelperContext.showMessage(context,
+                                      "Le nom complet de l'enseignant doit etre plus de 2 lettres");
                                 else if (passDateController.text.length < 6)
-                                  HelperContext.showMessage(
-                                      context,
+                                  HelperContext.showMessage(context,
                                       "MDP doit etre plus de 6 lettres");
                                 else {
                                   setState(() {

@@ -1,23 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/widgets.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class SingleReport extends StatefulWidget {
- final String ReportID;
- final String ClassId;
- final Timestamp Date;
- final String ClassName;
- final String ReportSenderID;
- final String ReportSenderEmail;
- final String ReportSenderType;
+  final String ReportID;
+  final String ClassId;
+  final Timestamp Date;
+  final String ClassName;
+  final String StudentName;
+  final String ReportSenderID;
+  final String ReportSenderEmail;
+  final String ReportSenderType;
 
- SingleReport({
- this.Date,this.ReportID,this.ClassName,this.ReportSenderType,this.ReportSenderID,this.ClassId,this.ReportSenderEmail
+  SingleReport({
+    this.Date,this.ReportID,this.ClassName,this.ReportSenderType,this.ReportSenderID,this.ClassId,this.ReportSenderEmail,this.StudentName
 });
 
   @override
@@ -29,34 +30,26 @@ class _SingleReportState extends State<SingleReport> {
   DataBaseService dataBaseService = new DataBaseService();
 bool loading;
 
-
-
   GetSingleQuestions() async{
     setState(() {
       loading = true;
     });
-    print(widget.ReportID+dataBaseService.getDateNow());
-    var date=widget.Date.toDate();
-    var formatter = new DateFormat("yyyy.MM.dd");
-    var Datehere=formatter.format(date);
-    var list = await dataBaseService.GetQuestionsOfReport(widget.ReportID,Datehere,context, 'Class');
+    await dataBaseService.GetQuestionsOfStudentReport(widget.ReportID,context).then((value) {
+      for(int i=0;i<value.documents.length;i++){
+        SingleQuestion singleQuestion=new SingleQuestion();
+        singleQuestion.Question=value.documents[i].data["Question"];
+        singleQuestion.Answer=value.documents[i].data["Answer"].toString();
 
-    //print(list.length.toString()+"aa");
-    list.sort((a,b) => a["index"]>b["index"]?1:-1);
-    for(var listItem in list){
-      SingleQuestion singleQuestion=new SingleQuestion();
-      singleQuestion.Question=listItem.data["Question"];
-      singleQuestion.Answer=listItem.data["Answer"].toString();
-
-      setState(() {
-        ListOfQuestions.add(singleQuestion);
-      });
-    }
+        setState(() {
+          ListOfQuestions.add(singleQuestion);
+        });
+      }
+    });
     setState(() {
       loading = false;
     });
-
   }
+
   Widget ItemsHere(){
     return Flexible(
       child: Padding(
@@ -80,7 +73,7 @@ bool loading;
   }
 
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -126,25 +119,41 @@ bool loading;
               width: 350,
               height: 40,
               color: MyColors.color1,
-              child: Center(child: Text("Class:   "+widget.ClassName,style: TextStyle(fontSize: 20,color: Colors.white),)),
+              child: Center(
+                  child: Text(
+                "Enfant:   " + widget.StudentName,
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              )),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Container(
-          //     width: 350,
-          //     height: 40,
-          //     color: MyColors.color1,
-          //     child: Center(child: Text("sender:   "+widget.ReportSenderEmail,style: TextStyle(fontSize: 20,color: Colors.white),)),
-          //   ),
-          // ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
               width: 350,
               height: 40,
               color: MyColors.color1,
-              child: Center(child: Text("date:   "+Datehere,style: TextStyle(fontSize: 20,color: Colors.white),)),
+              child: Center(child: Text("Class:   "+widget.ClassName,style: TextStyle(fontSize: 20,color: Colors.white),)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: 350,
+              height: 40,
+              color: MyColors.color1,
+              child: Center(child: Text(
+                "Enseignant:   " + widget.ReportSenderEmail,
+                style: TextStyle(fontSize: 20, color: Colors.white),)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: 350,
+              height: 40,
+              color: MyColors.color1,
+              child: Center(child: Text("Date:   " + Datehere,
+                style: TextStyle(fontSize: 20, color: Colors.white),)),
             ),
           ),
 
@@ -241,8 +250,7 @@ class _SingleQuestionWidgetState extends State<SingleQuestionWidget> {
 }
 
 
-
 class SingleQuestion{
-   String Question;
-   String Answer;
+  String Question;
+  String Answer;
 }

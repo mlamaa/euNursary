@@ -8,16 +8,16 @@ import '../auth.dart';
 import '../db.dart';
 import '../widgets.dart';
 import 'ChangePass.dart';
-import 'ClassReport/Admin/AdminClassReport.dart';
-import 'ClassReport/Parent/ParentClassReport.dart';
-import 'ClassReport/Teacher/TeacherClassReport.dart';
 import 'Classes/Classes.dart';
 import 'Messages/RecieveMessages.dart';
 import 'Messages/SendMessage.dart';
 import 'Parents/Parents.dart';
-import 'StudentReport//Admin/AdminStudentReport.dart';
-import 'StudentReport/Teacher/TeacherStudentReport.dart';
-import 'StudentReport/Parent/ParentStudentReport.dart';
+import 'Reports/Class/Admin/AdminClassReport.dart';
+import 'Reports/Class/Parent/ParentClassReport.dart';
+import 'Reports/Class/Teacher/TeacherClassReport.dart';
+import 'Reports/Student/Admin/AdminStudentReport.dart';
+import 'Reports/Student/Parent/ParentStudentReport.dart';
+import 'Reports/Student/Teacher/TeacherStudentReport.dart';
 import 'Students/Students.dart';
 import 'Teachers/TeachersClass.dart';
 import "login.dart";
@@ -129,7 +129,6 @@ class _HomePageState extends State<HomePage> {
 
         case Rapport_classe:
           {
-            //print('UserCurrentInfo.currentUserType ');
             if (UserCurrentInfo.currentUserType == "admin") {
               return new AdminClassReport();
             } else if (UserCurrentInfo.currentUserType == "teacher") {

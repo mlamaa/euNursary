@@ -1,21 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Pages/ClassReport/AddReport.dart';
+import 'package:garderieeu/Pages/Reports/AddReport.dart';
+import 'package:garderieeu/Pages/Reports/Class/SingleReport.dart';
 import 'package:intl/intl.dart';
 
-import '../../../Colors.dart';
-import '../../../Tools.dart';
-import '../../../UserInfo.dart';
-import '../../../db.dart';
-import '../../../widgets.dart';
-import 'AddReport.dart';
-import 'SingleReport.dart';
-
+import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
+import 'package:garderieeu/UserInfo.dart';
+import 'package:garderieeu/db.dart';
+import 'package:garderieeu/widgets.dart';
 
 class TeacherClassReport extends StatefulWidget {
-
-
   @override
   _TeacherClassReportState createState() => _TeacherClassReportState();
 }
@@ -28,17 +24,6 @@ class _TeacherClassReportState extends State<TeacherClassReport> {
   String CurrentDate;
 
 
-
-  // List<String> ListOfDates=new List<String>();
-  // getDates(){
-  //   dataBaseService.getDatesOfData(context).then((value) {
-  //     for(int i=0;i<value.documents.length;i++){
-  //       setState(() {
-  //         ListOfDates.add(value.documents[i].documentID);
-  //       });
-  //     }
-  //   });
-  // }
   Widget DatesList;
 
   DateTime selectedDate = DateTime.now();
@@ -47,17 +32,17 @@ class _TeacherClassReportState extends State<TeacherClassReport> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
+        firstDate: DateTime(2020, 8),
+        lastDate: DateTime.now());
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
-        String year=picked.year.toString();
-        String month=picked.month.toString();
-        String day=picked.day.toString();
+        String year = picked.year.toString();
+        String month = picked.month.toString();
+        String day = picked.day.toString();
 
-        if(month.length==1){
-          month="0"+month;
+        if (month.length == 1) {
+          month = "0" + month;
         }
 
         if(day.length==1){
@@ -180,7 +165,7 @@ class _TeacherClassReportState extends State<TeacherClassReport> {
             child:
             RaisedButton(
               onPressed: () => _selectDate(context),
-              child: Text('Sélectionner une date'),
+              child: Text(dataBaseService.formatDate(selectedDate)),
             ),
 
           ),
@@ -237,7 +222,6 @@ class _TeacherClassReportState extends State<TeacherClassReport> {
             }
           ),
         );
-     
   }
 }
 
@@ -301,7 +285,7 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
             child: Column(
               children: <Widget>[
                 // Container(height: 10,),
-                // Text("sender:   "+widget.ReportSenderType,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
+                // Text("Enseignant:   "+widget.ReportSenderType,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
                 Container(height: 10,),
                 Text("Nom du class:   " + widget.ClassName,
                   style: TextStyle(fontSize: 20, color: MyColors.color1),),

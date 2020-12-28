@@ -1,15 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:garderieeu/Pages/ClassReport/AddReport.dart';
+import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Pages/Reports/AddReport.dart';
+import 'package:garderieeu/Pages/Reports/Student/SingleReport.dart';
+import 'package:garderieeu/Tools.dart';
+import 'package:garderieeu/UserInfo.dart';
+import 'package:garderieeu/db.dart';
+import 'package:garderieeu/widgets.dart';
 import 'package:intl/intl.dart';
-
-import '../../../Colors.dart';
-import '../../../Tools.dart';
-import '../../../UserInfo.dart';
-import '../../../db.dart';
-import '../../../widgets.dart';
-import 'AddReport.dart';
-import 'SingleReport.dart';
 
 class TeacherStudentReport extends StatefulWidget {
   const TeacherStudentReport({Key key}) : super(key: key);
@@ -32,8 +30,8 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
+        firstDate: DateTime(2020, 8),
+        lastDate: DateTime.now());
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
@@ -148,7 +146,7 @@ class _TeacherStudentReportState extends State<TeacherStudentReport> {
             padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
             child: RaisedButton(
               onPressed: () => _selectDate(context),
-              child: Text('Sélectionner une date'),
+              child: Text(dataBaseService.formatDate(selectedDate)),
             ),
           ),
         ),
@@ -276,7 +274,7 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
             child: Column(
               children: <Widget>[
                 // Container(height: 10,),
-                // Text("sender:   "+widget.ReportSenderType,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
+                // Text("Enseignant:   "+widget.ReportSenderType,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
                 Container(
                   height: 10,
                 ),
@@ -289,7 +287,7 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
                   height: 10,
                 ),
                 Text(
-                  "Student:   " + widget.StudentName,
+                  "Enfant:   " + widget.StudentName,
                   style: TextStyle(fontSize: 20, color: MyColors.color1),
                 ),
                 Container(

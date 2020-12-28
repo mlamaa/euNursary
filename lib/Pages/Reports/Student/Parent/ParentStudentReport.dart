@@ -1,64 +1,35 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:garderieeu/Colors.dart';
-import 'package:garderieeu/Pages/ClassReport/AddReport.dart';
 import 'package:garderieeu/Tools.dart';
+import 'package:garderieeu/UserInfo.dart';
 import 'package:garderieeu/db.dart';
 import 'package:garderieeu/widgets.dart';
 import 'package:intl/intl.dart';
 
-import 'AddReport.dart';
-import 'SingleReport.dart';
-import 'EditStudentReport.dart';
-class AdminStudentReport extends StatefulWidget {
+import '../SingleReport.dart';
+
+class ParentStudentReport extends StatefulWidget {
   @override
-  _AdminStudentReportState createState() => _AdminStudentReportState();
+  _ParentStudentReportState createState() => _ParentStudentReportState();
 }
 
-class _AdminStudentReportState extends State<AdminStudentReport> {
+class _ParentStudentReportState extends State<ParentStudentReport> {
   List<SingleReportt> ListOfReports = new List<SingleReportt>();
   DataBaseService dataBaseService = new DataBaseService();
+
 
   String CurrentClass;
   String CurrentDate;
   Widget DatesList;
 
-  DateTime selectedDate = DateTime.now();
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate)
-      setState(() {
-        selectedDate = picked;
-        String year=picked.year.toString();
-        String month=picked.month.toString();
-        String day=picked.day.toString();
-
-        if(month.length==1){
-          month="0"+month;
-        }
-
-        if(day.length==1){
-          day="0"+day;
-        }
-        print(year+"."+month+"."+day+"          ..................");
-        GetReports(year+"."+month+"."+day);
-      });
-  }
 
 
-
-  GetReports(String datee) async{
-    setState(() {
-      ListOfReports = new List<SingleReportt>();
-
-    });
-    await dataBaseService.GetStudentReports(datee,context).then((value) {
+  GetReports(String Datee) async{
+    ListOfReports = [];
+    await dataBaseService.GetStudentReports(Datee,context).then((value) {
       for(int i=0;i<value.documents.length;i++){
         SingleReportt singleReport=new SingleReportt();
         singleReport.ReportID=value.documents[i].documentID;
@@ -68,10 +39,15 @@ class _AdminStudentReportState extends State<AdminStudentReport> {
         singleReport.ReportSenderID=value.documents[i].data["ReportSenderID"];
         singleReport.ReportSenderEmail=value.documents[i].data["ReportSenderEmail"];
         singleReport.ReportSenderType=value.documents[i].data["ReportSenderType"];
+        singleReport.StudentParentEmaiil=value.documents[i].data["StudentParentEmail"];
         singleReport.StudentName=value.documents[i].data["StudentName"];
+
         setState(() {
           // print(singleReport.Date.toDate().toIso8601String()+singleReport.ClassName+singleReport.ReportSenderEmail+singleReport.ReportSenderID+singleReport.ReportSenderType+singleReport.ReportID);
-          ListOfReports.add(singleReport);
+          if(singleReport.StudentParentEmaiil==UserCurrentInfo.email){
+            ListOfReports.add(singleReport);
+          }
+
         });
       }
 
@@ -89,40 +65,56 @@ class _AdminStudentReportState extends State<AdminStudentReport> {
 
             children: List.generate(ListOfReports.length, (index) {
               return SingleReportWidget(
-                refresh: GetReports,
-                context: context,
                 StudentName: ListOfReports[index].StudentName,
                 ReportId: ListOfReports[index].ReportID,
                 Date: ListOfReports[index].Date,
                 ClassId: ListOfReports[index].ClassId,
                 ClassName: ListOfReports[index].ClassName,
                 ReportSenderID: ListOfReports[index].ReportSenderID,
-                ReportSenderType: ListOfReports[index].ReportSenderType,
-                ReportSenderEmail: ListOfReports[index].ReportSenderEmail,
-              );
-            })
-
-        ),
+            ReportSenderType: ListOfReports[index].ReportSenderType,
+            ReportSenderEmail: ListOfReports[index].ReportSenderEmail,
+          );
+        })),
       ),
-
     );
   }
 
+  DateTime selectedDate = DateTime.now();
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     GetReports(dataBaseService.getDateNow());
-    // getDates();
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2020, 8),
+        lastDate: DateTime.now());
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+        String year = picked.year.toString();
+        String month = picked.month.toString();
+        String day = picked.day.toString();
 
+        if (month.length == 1) {
+          month = "0" + month;
+        }
 
+        if (day.length == 1) {
+          day = "0" + day;
+        }
+        GetReports(year + "." + month + "." + day);
+        // GetClasses(year + "." + month + "." + day);
+      });
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    DatesList=Row(
+    DatesList = Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -142,85 +134,19 @@ class _AdminStudentReportState extends State<AdminStudentReport> {
           ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-            child:
-            RaisedButton(
+            child: RaisedButton(
               onPressed: () => _selectDate(context),
-              child: Text('Sélectionner une date'),
+              child: Text(dataBaseService.formatDate(selectedDate)),
             ),
-
           ),
         ),
       ],
     );
-
     return Scaffold(
       backgroundColor: MyColors.color4,
       appBar: myAppBar(),
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InkWell(
-              onTap: (){
-
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                new AddReportForAll(
-                  refresh: GetReports,
-                  reportType: "Student",
-                )
-                ));
-
-                },
-
-              child: Container(
-                height: 30,
-                decoration: BoxDecoration(
-                  borderRadius: Tools.myBorderRadius2,
-                  color: MyColors.color1,
-                ),
-                child: Center(
-                    child: Text("Modèles des rapports",
-                      style: TextStyle(color: Colors.white, fontSize: 20),)
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InkWell(
-              onTap: (){
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>new EditStudentReportAsAdmin()));
-              },
-              child: Container(
-                height: 30,
-                decoration: BoxDecoration(
-                  borderRadius: Tools.myBorderRadius2,
-                  color: MyColors.color1,
-                ),
-                child: Center(
-                    child: Text("Edit Student Report Template",style: TextStyle(color: Colors.white,fontSize: 20),)
-                ),
-              ),
-            ),
-          ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: InkWell(
-          //     onTap: (){
-          //       // Navigator.push(context, MaterialPageRoute(builder: (context)=>new AddParent()));
-          //     },
-          //     child: Container(
-          //       height: 30,
-          //       decoration: BoxDecoration(
-          //         borderRadius: Tools.myBorderRadius2,
-          //         color: MyColors.color1,
-          //       ),
-          //       child: Center(
-          //           child: Text("Add Class Report",style: TextStyle(color: Colors.white,fontSize: 20),)
-          //       ),
-          //     ),
-          //   ),
-          // ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DatesList,
@@ -239,13 +165,13 @@ class SingleReportWidget extends StatefulWidget {
   final    String ReportId;
   final    String ClassName;
   final    String StudentName;
+
   final    String ReportSenderID;
   final    String ReportSenderEmail;
   final    String ReportSenderType;
   final    Timestamp Date;
-  final BuildContext context;
-  final Function refresh;
-  SingleReportWidget({this.refresh,this.context,this.StudentName,this.ReportSenderType,this.ReportSenderID,this.ReportId,this.ClassName,this.ClassId,this.Date,this.ReportSenderEmail });
+
+  SingleReportWidget({this.StudentName,this.ReportSenderType,this.ReportSenderID,this.ReportId,this.ClassName,this.ClassId,this.Date,this.ReportSenderEmail });
 
   @override
   _SingleReportWidgetState createState() => _SingleReportWidgetState();
@@ -265,6 +191,7 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
       var formatter =new DateFormat.yMd().add_jm();
       Datehere=formatter.format(dateHere);
     }
+
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -294,15 +221,15 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
             child: Column(
               children: <Widget>[
                 // Container(height: 10,),
-                // Text("sender:   "+widget.ReportSenderType,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
+                // Text("Enseignant:   "+widget.ReportSenderType,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
                 Container(height: 10,),
-
                 Text("Nom du class:   " + widget.ClassName,
                   style: TextStyle(fontSize: 20, color: MyColors.color1),),
                 Container(height: 10,),
-                Text("Student:   " + widget.StudentName,
+                Text("Enfant:   " + widget.StudentName,
                   style: TextStyle(fontSize: 20, color: MyColors.color1),),
                 Container(height: 10,),
+
                 Text("Date:   " + Datehere,
                   style: TextStyle(fontSize: 20, color: MyColors.color1),),
                 Container(height: 10,),
@@ -323,16 +250,15 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
                     //       child: Icon(Icons.edit,color: MyColors.color1,size: 30,)),
                     // ),
                     // Container(width: 20,),
-                    InkWell(
-                      onTap: (){
-                        DataBaseService database=new DataBaseService();
-                        database.DeleteStudentReport(widget.ReportId,context,widget.refresh);
-                      },
-                      child: Container(
-                          width: 35,
-                          height: 35,
-                          child: Icon(Icons.delete,color: MyColors.color1,size: 30,)),
-                    ),
+                    // InkWell(
+                    //   onTap: (){
+                    //
+                    //   },
+                    //   child: Container(
+                    //       width: 35,
+                    //       height: 35,
+                    //       child: Icon(Icons.delete,color: MyColors.color1,size: 30,)),
+                    // ),
                   ],
                 )
               ],
@@ -346,10 +272,12 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
 
 
 
+
 class SingleReportt{
+  String StudentName;
+  String StudentParentEmaiil;
   String ReportID;
   String ClassId;
-  String StudentName;
   Timestamp Date;
   String ClassName;
   String ReportSenderID;

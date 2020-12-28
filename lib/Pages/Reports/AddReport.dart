@@ -2,15 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:garderieeu/Colors.dart';
+import 'package:garderieeu/Tools.dart';
+import 'package:garderieeu/UserInfo.dart';
+import 'package:garderieeu/db.dart';
 import 'package:garderieeu/multiSelect/MultiSelectFormField.dart';
+import 'package:garderieeu/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:searchable_dropdown/searchable_dropdown.dart';
-
-import '../../Colors.dart';
-import '../../Tools.dart';
-import '../../UserInfo.dart';
-import '../../db.dart';
-import '../../widgets.dart';
 
 Map<String, dynamic> ReportData = new Map<String, dynamic>();
 Map<String, Properties> reportGlobalList = new Map();
@@ -191,16 +189,17 @@ bool studentsLoading;
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                child: Text(
-                  "Vos rapports",
-                  style: TextStyle(
-                      fontSize: 40,
-                      color: MyColors.color1,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+              //   child: Text(
+              //     "Vos rapports",
+              //     "Vos rapports",
+              //     style: TextStyle(
+              //         fontSize: 40,
+              //         color: MyColors.color1,
+              //         fontWeight: FontWeight.bold),
+              //   ),
+              // ),
               SizedBox(
                 height: 10,
               ),
@@ -209,7 +208,7 @@ bool studentsLoading;
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Selectionnez:",
+                    "Classe:",
                     style: TextStyle(
                         fontSize: 20,
                         color: MyColors.color1,
@@ -290,7 +289,7 @@ bool studentsLoading;
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          "Student Name:",
+                          "Etudiant:",
                           style: TextStyle(
                               fontSize: 20,
                               color: MyColors.color1,
@@ -322,27 +321,26 @@ bool studentsLoading;
                                         i++) {
                                       if (studetnsList[i]
                                           .name
-                                          .contains(filter)) {
-                                        studentsCurrentList
-                                            .add(studetnsList[i]);
+                                              .contains(filter)) {
+                                            studentsCurrentList
+                                                .add(studetnsList[i]);
+                                          }
+                                        }
+                                        return studentsCurrentList;
+                                      } else {
+                                        return studetnsList;
                                       }
-                                    }
-                                    return studentsCurrentList;
-                                  } else {
-                                    return studetnsList;
-                                  }
-                                },
-                                label: "Student name",
-                                hint: "Student Name",
-                                // popupItemDisabled: (String s) => s.startsWith('I'),
-                                onChanged: (Studetns s) async {
-                                  setState(() {
-                                    CurrentStudent = s;
-                                    getAnswers(CurrentStudent.ID);
-
-                                  });
-                                },
-                                selectedItem: CurrentStudent),
+                                    },
+                                    label: "Edudiant",
+                                    hint: "Edudiant",
+                                    // popupItemDisabled: (String s) => s.startsWith('I'),
+                                    onChanged: (Studetns s) async {
+                                      setState(() {
+                                        CurrentStudent = s;
+                                        getAnswers(CurrentStudent.ID);
+                                      });
+                                    },
+                                    selectedItem: CurrentStudent),
                           ),
                         ),
                       ],

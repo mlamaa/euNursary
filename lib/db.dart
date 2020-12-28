@@ -23,8 +23,11 @@ class DataBaseService {
   //
   // }
   String getDateNow() {
+    return formatDate(DateTime.now());
+  }
+
+  String formatDate(DateTime datetime) {
     String Datehere = " ";
-    DateTime datetime = DateTime.now();
     var formatter = new DateFormat("yyyy.MM.dd");
     Datehere = formatter.format(datetime);
     return Datehere;
@@ -36,7 +39,8 @@ class DataBaseService {
           .document('tokens')
           .setData({email: token}, merge: true));
 
-  Future<DocumentSnapshot> getUserType(String email, BuildContext context) async {
+  Future<DocumentSnapshot> getUserType(
+      String email, BuildContext context) async {
     try {
       return await firestore.collection("UserTypes").document(email).get();
     } catch (error) {

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:garderieeu/Colors.dart';
@@ -9,7 +8,7 @@ import 'package:garderieeu/db.dart';
 import 'package:garderieeu/widgets.dart';
 import 'package:intl/intl.dart';
 
-import 'SingleReport.dart';
+import '../SingleReport.dart';
 
 class ParentClassReport extends StatefulWidget {
   @override
@@ -21,25 +20,42 @@ class _ParentClassReportState extends State<ParentClassReport> {
   DataBaseService dataBaseService = new DataBaseService();
 
   String CurrentClass;
-  String CurrentDate;
 
   List<String> ListOfDates = new List<String>();
-  getDates() {
-    dataBaseService.getDatesOfData(context).then((value) {
-      for (int i = 0; i < value.documents.length; i++) {
-        setState(() {
-          ListOfDates.add(value.documents[i].documentID);
-        });
-      }
-    });
+
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2020, 8),
+        lastDate: DateTime.now());
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+        String year = picked.year.toString();
+        String month = picked.month.toString();
+        String day = picked.day.toString();
+
+        if (month.length == 1) {
+          month = "0" + month;
+        }
+
+        if (day.length == 1) {
+          day = "0" + day;
+        }
+        GetAdminChildsClasses(year + "." + month + "." + day);
+        // GetClasses(year + "." + month + "." + day);
+      });
   }
 
   Widget DatesList;
 
-  GetAdminChildsClasses(String datee) async {
+  GetAdminChildsClasses(String date) async {
     await dataBaseService.GetSingleParents(UserCurrentInfo.email, context)
         .then((value) {
-      GetReports(value.data["ChildsClassesId"], datee);
+      GetReports(value.data["ChildsClassesId"], date);
     });
   }
 
@@ -112,12 +128,6 @@ class _ParentClassReportState extends State<ParentClassReport> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // GetReports();
-    getDates();
-
-    setState(() {
-      CurrentDate = dataBaseService.getDateNow();
-    });
     GetAdminChildsClasses(dataBaseService.getDateNow());
   }
 
@@ -143,36 +153,14 @@ class _ParentClassReportState extends State<ParentClassReport> {
           ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-            child: DropdownSearch<String>(
-                mode: Mode.DIALOG,
-                showSearchBox: true,
-                // showSelectedItem: true,
-                itemAsString: (String s) => s,
-                onFind: (String filter) async {
-                  if (filter.length != 0) {
-                    List<String> datesCurrentList = new List<String>();
-                    for (int i = 0; i < ListOfDates.length; i++) {
-                      if (ListOfDates[i].contains(filter)) {
-                        datesCurrentList.add(ListOfDates[i]);
-                      }
-                    }
-                    return datesCurrentList;
-                  } else {
-                    return ListOfDates;
-                  }
-                },
-                label: "Reports Date",
-                hint: "Reports Date",
-                // popupItemDisabled: (String s) => s.startsWith('I'),
-                onChanged: (String s) {
-                  GetAdminChildsClasses(s);
-                },
-                selectedItem: CurrentDate),
+            child: RaisedButton(
+              onPressed: () => _selectDate(context),
+              child: Text(dataBaseService.formatDate(selectedDate)),
+            ),
           ),
         ),
       ],
     );
-
     return Scaffold(
       backgroundColor: MyColors.color4,
       appBar: myAppBar(),
@@ -252,7 +240,7 @@ class _SingleReportWidgetState extends State<SingleReportWidget> {
             child: Column(
               children: <Widget>[
                 // Container(height: 10,),
-                // Text("sender:   "+widget.ReportSenderType,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
+                // Text("Enseignant:   "+widget.ReportSenderType,style: TextStyle(fontSize:25,color: Colors.white,fontWeight: FontWeight.bold),),
                 Container(
                   height: 10,
                 ),
@@ -288,7 +276,3 @@ class SingleReportt {
   String ReportSenderEmail;
   String ReportSenderType;
 }
-// class SingleQuestion{
-//   String Question;
-//   List<String> Answer=new List<String>();
-// }

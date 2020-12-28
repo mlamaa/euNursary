@@ -12,13 +12,12 @@ class SingleReport extends StatefulWidget {
  final String ClassId;
  final Timestamp Date;
  final String ClassName;
- final String StudentName;
  final String ReportSenderID;
  final String ReportSenderEmail;
  final String ReportSenderType;
 
  SingleReport({
- this.Date,this.ReportID,this.ClassName,this.ReportSenderType,this.ReportSenderID,this.ClassId,this.ReportSenderEmail,this.StudentName
+ this.Date,this.ReportID,this.ClassName,this.ReportSenderType,this.ReportSenderID,this.ClassId,this.ReportSenderEmail
 });
 
   @override
@@ -29,25 +28,31 @@ class _SingleReportState extends State<SingleReport> {
   List<SingleQuestion> ListOfQuestions = new List<SingleQuestion>();
   DataBaseService dataBaseService = new DataBaseService();
 bool loading;
+
+
+
   GetSingleQuestions() async{
     setState(() {
       loading = true;
     });
-    await dataBaseService.GetQuestionsOfStudentReport(widget.ReportID,context).then((value) {
-      for(int i=0;i<value.documents.length;i++){
-        SingleQuestion singleQuestion=new SingleQuestion();
-        singleQuestion.Question=value.documents[i].data["Question"];
-        singleQuestion.Answer=value.documents[i].data["Answer"].toString();
+    print(widget.ReportID+dataBaseService.getDateNow());
+    var list = await dataBaseService.GetQuestionsOfReport(widget.ReportID,dataBaseService.getDateNow(),context,'Class');
 
-        setState(() {
-          ListOfQuestions.add(singleQuestion);
-        });
-      }
+    //print(list.length.toString()+"aa");
+    list.sort((a,b) => a["index"]>b["index"]?1:-1);
+    for(var listItem in list){
+      SingleQuestion singleQuestion=new SingleQuestion();
+      singleQuestion.Question=listItem.data["Question"];
+      singleQuestion.Answer=listItem.data["Answer"].toString();
 
-    });
+      setState(() {
+        ListOfQuestions.add(singleQuestion);
+      });
+    }
     setState(() {
       loading = false;
     });
+
   }
 
   Widget ItemsHere(){
@@ -119,15 +124,6 @@ bool loading;
               width: 350,
               height: 40,
               color: MyColors.color1,
-              child: Center(child: Text("Student:   "+widget.StudentName,style: TextStyle(fontSize: 20,color: Colors.white),)),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: 350,
-              height: 40,
-              color: MyColors.color1,
               child: Center(child: Text("Class:   "+widget.ClassName,style: TextStyle(fontSize: 20,color: Colors.white),)),
             ),
           ),
@@ -137,7 +133,11 @@ bool loading;
               width: 350,
               height: 40,
               color: MyColors.color1,
-              child: Center(child: Text("sender:   "+widget.ReportSenderEmail,style: TextStyle(fontSize: 20,color: Colors.white),)),
+              child: Center(
+                  child: Text(
+                "Enseignant:   " + widget.ReportSenderEmail,
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              )),
             ),
           ),
           Padding(
@@ -146,7 +146,8 @@ bool loading;
               width: 350,
               height: 40,
               color: MyColors.color1,
-              child: Center(child: Text("date:   "+Datehere,style: TextStyle(fontSize: 20,color: Colors.white),)),
+              child: Center(child: Text("Date:   " + Datehere,
+                style: TextStyle(fontSize: 20, color: Colors.white),)),
             ),
           ),
 
