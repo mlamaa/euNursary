@@ -44,8 +44,9 @@ bool studentsLoading;
   getStudetns() async {
     setState(() {
       studentsLoading =true;
+      studetnsList = [];
     });
-    await widget.dataBaseService.GetStudents(context).then((values) {
+    await widget.dataBaseService.GetStudentsByClass(context, currentStudentClass.ID).then((values) {
       for (int i = 0; i < values.documents.length; i++) {
         Studetns studetns = new Studetns(" ", " ", " ");
         studetns.ParentEmail = values.documents[i].data["parentEmail"];
@@ -114,7 +115,7 @@ bool studentsLoading;
     }
     if (classID != " ") {
       var db = await DataBaseService().GetQuestionsOfReport(
-          classID, getDateNow(), context, widget.reportType);
+          widget.reportType == 'Class'?  currentStudentClass.ID : CurrentStudent.ID, getDateNow(), context, widget.reportType);
       setState(() {
         answersList = db;
       });
@@ -144,7 +145,7 @@ bool studentsLoading;
     print('submit');
     showLoadingDialog(context);
     await widget.dataBaseService.sendReport(ReportData, reportGlobalList,
-        currentStudentClass.ID, getDateNow(), context, widget.reportType);
+        widget.reportType == 'Class'?  currentStudentClass.ID : CurrentStudent.ID, getDateNow(), context, widget.reportType);
 
     widget.refresh(getDateNow());
     print("refresh");
@@ -269,7 +270,10 @@ bool studentsLoading;
                             setState(() {
                               currentStudentClass = s;
                               print('class ID: ' + currentStudentClass.ID);
-                              getAnswers(currentStudentClass.ID);
+                              if(widget.reportType == 'Class'){
+                                getAnswers(currentStudentClass.ID);
+                              }
+                              getStudetns();
                             });
                           },
                           selectedItem: currentStudentClass),
@@ -335,6 +339,7 @@ bool studentsLoading;
                                   setState(() {
                                     CurrentStudent = s;
                                     getAnswers(CurrentStudent.ID);
+
                                   });
                                 },
                                 selectedItem: CurrentStudent),
@@ -368,6 +373,7 @@ bool studentsLoading;
                           ReportData["ClassId"] = currentStudentClass.ID;
                           if (widget.reportType == 'Student') {
                             ReportData["StudentName"] = CurrentStudent.name;
+                            ReportData['StudentID'] = CurrentStudent.ID;
                             ReportData["StudentParentEmail"] =
                                 CurrentStudent.ParentEmail;
                           }
@@ -698,9 +704,9 @@ class TimeComponent extends StatelessWidget {
       NewDate = formatter.format(date);
 
       properties.controller.text = properties.controller.text +
-          NewDate.split(" ")[0] +
+          NewDate.split(" ")[0] + /*
           " " +
-          NewDate.split(" ")[1] +
+          NewDate.split(" ")[1] + */
           "\n";
 
       print('confirm $date');

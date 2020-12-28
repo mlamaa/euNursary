@@ -288,10 +288,17 @@ class DataBaseService {
       HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
   }
-
   Future<QuerySnapshot> GetStudents(BuildContext context) {
     try {
       return firestore.collection("students").getDocuments();
+    } catch (error) {
+      HelperContext.showMessage(context, 'Error: ' + error.toString());
+    }
+  }
+
+  Future<QuerySnapshot> GetStudentsByClass(BuildContext context, String classID) {
+    try {
+      return firestore.collection("students").where('class', isEqualTo: classID).getDocuments();
     } catch (error) {
       HelperContext.showMessage(context, 'Error: ' + error.toString());
     }
