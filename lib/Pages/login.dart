@@ -210,14 +210,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                         height: 20,
                       ),
                       Text(
-                        "Phone: +961 70 12 34 56",
+                        "Phone: +961 01 871 471",
                         style: TextStyle(
                             fontSize: 20,
                             color: MyColors.color1,
                             fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        "Address: +961 70 12 34 56",
+                        "Address: Ain Saade Rue ecole Mont Lasalle RDC",
                         style: TextStyle(
                             fontSize: 20,
                             color: MyColors.color1,
